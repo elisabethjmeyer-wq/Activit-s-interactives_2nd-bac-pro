@@ -1859,12 +1859,16 @@
         }
 
         function zoomImage(event, src, caption) {
-            event.stopPropagation();
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
             const zoomImg = document.getElementById('zoomImg');
             const zoomIframe = document.getElementById('zoomIframe');
             
             // Détecter si c'est une image Google Drive
-            if (src.includes('lh3.googleusercontent.com') || src.includes('drive.google.com')) {
+            if (src && (src.includes('lh3.googleusercontent.com') || src.includes('drive.google.com'))) {
                 // Extraire l'ID et créer l'URL de prévisualisation
                 let fileId = '';
                 if (src.includes('lh3.googleusercontent.com/d/')) {
@@ -1880,7 +1884,7 @@
                     zoomIframe.style.width = '80vw';
                     zoomIframe.style.height = '80vh';
                 }
-            } else {
+            } else if (src) {
                 // Image normale
                 zoomIframe.style.display = 'none';
                 zoomIframe.src = '';
@@ -1888,7 +1892,7 @@
                 zoomImg.src = src;
             }
             
-            document.getElementById('zoomCaption').textContent = caption;
+            document.getElementById('zoomCaption').textContent = caption || '';
             document.getElementById('zoomOverlay').classList.add('show');
         }
 
