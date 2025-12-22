@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma frise chronologique</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #fef3c7 100%);
+            min-height: 100vh;
+            color: #1e3a5f;
+        }
+
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #fef3c7 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            padding: 15px 20px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.85);
+            margin-top: 2px;
+        }
+
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stat-badge:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .stat-badge .count {
+            background: white;
+            color: #0ea5e9;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+
+        /* ===== MINI TIMELINE ===== */
+        .mini-timeline {
+            background: white;
+            margin: 12px;
+            padding: 12px 15px;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .mini-timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .mini-timeline-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mini-periods {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+        }
+
+        .mini-period {
+            padding: 6px 4px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+
+        .mini-period:hover {
+            filter: brightness(1.1);
+        }
+
+        .mini-period.antiquite { width: 18%; background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .mini-period.moyen-age { width: 27%; background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .mini-period.moderne { width: 27%; background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .mini-period.contemporaine { width: 28%; background: linear-gradient(135deg, #f97316, #ea580c); }
+
+        .mini-bar-container {
+            position: relative;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        .mini-bar {
+            height: 10px;
+            background: linear-gradient(90deg, 
+                #fbbf24 0%, #fbbf24 18%, 
+                #22c55e 18%, #22c55e 45%, 
+                #3b82f6 45%, #3b82f6 72%, 
+                #f97316 72%, #f97316 100%
+            );
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .mini-bar:hover {
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+
+        .mini-cursor {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            background: #ef4444;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.5);
+            transition: left 0.3s ease;
+            z-index: 10;
+            cursor: grab;
+        }
+
+        .mini-cursor:active {
+            cursor: grabbing;
+        }
+
+        .mini-view-indicator {
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            background: rgba(255,255,255,0.4);
+            border: 2px solid rgba(255,255,255,0.8);
+            border-radius: 5px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .mini-dates {
+            display: flex;
+            font-size: 8px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-top: 4px;
+            position: relative;
+            height: 12px;
+        }
+        
+        .mini-dates span {
+            position: absolute;
+            transform: translateX(-50%);
+        }
+        
+        .mini-dates span:nth-child(1) { left: 0%; transform: translateX(0); }
+        .mini-dates span:nth-child(2) { left: 18%; }
+        .mini-dates span:nth-child(3) { left: 45%; }
+        .mini-dates span:nth-child(4) { left: 72%; }
+        .mini-dates span:nth-child(5) { left: 100%; transform: translateX(-100%); }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            background: white;
+            margin: 0 12px 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 0 12px;
+            gap: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .search-box .icon {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            padding: 8px 0;
+            color: #1e3a5f;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-clear {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            background: #e2e8f0;
+            color: #64748b;
+            font-size: 10px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-clear.visible {
+            display: flex;
+        }
+
+        .search-clear:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 30px;
+            background: #e2e8f0;
+        }
+
+        .zoom-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .zoom-container .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .zoom-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .zoom-btn {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: none;
+            background: #f1f5f9;
+            font-family: 'Nunito', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .zoom-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .zoom-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .filter-container {
+            position: relative;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #3b82f6;
+        }
+
+        .filter-btn.active {
+            border-color: #8b5cf6;
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 180px;
+            z-index: 100;
+            display: none;
+        }
+
+        .filter-dropdown.visible {
+            display: block;
+        }
+
+        .filter-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .filter-option:hover {
+            background: #f1f5f9;
+        }
+
+        .filter-option.selected {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .filter-option .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* ===== SEARCH RESULTS ===== */
+        .search-results {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-results.visible {
+            display: block;
+        }
+
+        .search-results-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: #f8fafc;
+        }
+
+        .search-result-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .search-result-icon.antiquite { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .search-result-icon.moyen-age { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .search-result-icon.moderne { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .search-result-icon.contemporaine { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .search-result-icon.date { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .search-result-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e3a5f;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .search-result-date {
+            font-size: 11px;
+            font-weight: 600;
+            color: #8b5cf6;
+        }
+
+        .search-result-lesson {
+            font-size: 10px;
+            font-weight: 600;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .search-no-result {
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .search-no-result .icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .modal-filters {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .modal-filter-btn {
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .modal-filter-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .event-list-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .event-list-item:hover {
+            background: #f8fafc;
+        }
+
+        .event-list-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .event-list-dot.antiquite { background: #fbbf24; }
+        .event-list-dot.moyen-age { background: #22c55e; }
+        .event-list-dot.moderne { background: #3b82f6; }
+        .event-list-dot.contemporaine { background: #f97316; }
+
+        .event-list-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .event-list-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .event-list-excerpt {
+            font-size: 11px;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .event-list-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .event-list-date {
+            font-size: 12px;
+            font-weight: 700;
+            color: #8b5cf6;
+        }
+
+        .event-list-lesson {
+            font-size: 9px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 0 12px 100px;
+        }
+
+        .frise-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-header.antiquite { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+        .page-header.moyen-age { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+        .page-header.moderne { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .page-header.contemporaine { background: linear-gradient(135deg, #ffedd5, #fed7aa); }
+        .page-header.transition { background: linear-gradient(135deg, #e0f2fe, #f0fdf4); }
+
+        .page-title {
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-header.antiquite .page-title { color: #b45309; }
+        .page-header.moyen-age .page-title { color: #15803d; }
+        .page-header.moderne .page-title { color: #1d4ed8; }
+        .page-header.contemporaine .page-title { color: #c2410c; }
+        .page-header.transition .page-title { color: #475569; }
+
+        .page-dates {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.7);
+        }
+
+        .page-header.antiquite .page-dates { color: #b45309; }
+        .page-header.moyen-age .page-dates { color: #15803d; }
+        .page-header.moderne .page-dates { color: #1d4ed8; }
+        .page-header.contemporaine .page-dates { color: #c2410c; }
+        .page-header.transition .page-dates { color: #475569; }
+
+        /* ===== FRISE ZONE ===== */
+        .frise-zone {
+            padding: 15px;
+        }
+
+        .frise-zone.antiquite { background: #fffbeb; }
+        .frise-zone.moyen-age { background: #f0fdf4; }
+        .frise-zone.moderne { background: #eff6ff; }
+        .frise-zone.contemporaine { background: #fff7ed; }
+        
+        .timeline-track.antiquite { background: linear-gradient(90deg, #fcd34d, #fbbf24); }
+        .timeline-track.moyen-age { background: linear-gradient(90deg, #4ade80, #22c55e); }
+        .timeline-track.moderne { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+        .timeline-track.contemporaine { background: linear-gradient(90deg, #fb923c, #f97316); }
+
+        .cards-top {
+            height: 180px;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .timeline-track {
+            position: relative;
+            height: 70px;
+            border-radius: 16px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timeline-events {
+            position: absolute;
+            inset: 0;
+        }
+
+        .cards-bottom {
+            height: 180px;
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0 0;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        /* ===== POINTS ===== */
+        .event-point {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(139,92,246,0.4);
+            z-index: 10;
+        }
+
+        .event-point:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .event-point.active {
+            transform: translate(-50%, -50%) scale(1.4);
+            background: #7c3aed;
+        }
+
+        .event-point.borne {
+            background: #ef4444;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.4);
+        }
+
+        .event-point.borne.active {
+            background: #dc2626;
+        }
+
+        .event-point-date {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 700;
+            color: #475569;
+            white-space: nowrap;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ===== PÉRIODES ===== */
+        .event-period {
+            position: absolute;
+            height: 20px;
+            border-radius: 10px;
+            background: #8b5cf6;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(139,92,246,0.4);
+            z-index: 5;
+        }
+
+        .event-period.top { top: 10px; }
+        .event-period.bottom { bottom: 10px; }
+        .event-period.middle { top: 50%; transform: translateY(-50%); }
+
+        .event-period:hover {
+            box-shadow: 0 4px 12px rgba(139,92,246,0.5);
+        }
+
+        .event-period.active {
+            background: #7c3aed;
+        }
+
+        .event-period-date {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            font-weight: 700;
+            color: #475569;
+            white-space: nowrap;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ===== CARTES ===== */
+        .card-container {
+            position: absolute;
+            width: 170px;
+            height: 175px;
+            perspective: 1000px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card-container.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .card-container.top {
+            bottom: 0;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        .card-container.top.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .card-container.bottom {
+            top: 0;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        .card-container.bottom.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .card-connector {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 12px;
+            background: #8b5cf6;
+        }
+
+        .card-container.top .card-connector { bottom: -12px; }
+        .card-container.bottom .card-connector { top: -12px; }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-front {
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .card-img {
+            height: 45%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-img-zoom {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: all 0.2s;
+        }
+
+        .card-container:hover .card-img-zoom {
+            opacity: 1;
+        }
+
+        .card-lesson-tag {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(139,92,246,0.9);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 7px;
+            border-radius: 6px;
+        }
+
+        .card-body {
+            height: 55%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #7c3aed;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .card-excerpt {
+            font-size: 10px;
+            color: #64748b;
+            line-height: 1.3;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .card-flip-btn {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            background: #8b5cf6;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .card-flip-btn:hover {
+            transform: rotate(180deg);
+        }
+
+        .card-back {
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .card-back-header {
+            padding: 8px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .card-back-body {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-back-text {
+            font-size: 10px;
+            color: #475569;
+            line-height: 1.4;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .card-back .card-flip-btn {
+            position: relative;
+            align-self: flex-end;
+            margin-top: 6px;
+            background: #ef4444;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-pages {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-page-input {
+            width: 45px;
+            padding: 5px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            color: #1e3a5f;
+        }
+
+        .nav-page-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .nav-total {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        /* ===== ZOOM OVERLAY ===== */
+        .zoom-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: zoom-out;
+        }
+
+        .zoom-overlay.show {
+            display: flex;
+        }
+
+        .zoom-overlay img {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .zoom-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .zoom-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* ===== EMPTY ===== */
+        .empty-message {
+            text-align: center;
+            padding: 30px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-message .icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .empty-message p {
+            font-size: 13px;
+        }
+
+        /* ===== ERROR ===== */
+        .error-message {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            color: #dc2626;
+        }
+
+        .error-message .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .error-message h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .error-message p {
+            font-size: 12px;
+            color: #991b1b;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .header { flex-direction: column; align-items: flex-start; }
+            .toolbar { flex-direction: column; }
+            .search-container { width: 100%; }
+            .toolbar-separator { display: none; }
+            .zoom-container { width: 100%; justify-content: center; }
+            .card-container { width: 150px; height: 160px; }
+            .cards-top, .cards-bottom { height: 165px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Chargement des événements...</div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <h1>📅 Ma frise chronologique</h1>
+            <p>Explore l'Histoire de l'Antiquité à nos jours</p>
+        </div>
+        <div class="header-stats">
+            <div class="stat-badge" onclick="openEventsModal()">
+                📚 Événements <span class="count" id="eventCount">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MINI TIMELINE -->
+    <div class="mini-timeline">
+        <div class="mini-timeline-header">
+            <span class="mini-timeline-label">📍 Clique pour naviguer ou glisse le curseur</span>
+        </div>
+        <div class="mini-periods">
+            <div class="mini-period antiquite" onclick="goToPeriod('antiquite')">🏛️ Antiquité</div>
+            <div class="mini-period moyen-age" onclick="goToPeriod('moyen-age')">🏰 Moyen Âge</div>
+            <div class="mini-period moderne" onclick="goToPeriod('moderne')">⛵ Ép. moderne</div>
+            <div class="mini-period contemporaine" onclick="goToPeriod('contemporaine')">🏭 Ép. contemp.</div>
+        </div>
+        <div class="mini-bar-container">
+            <div class="mini-bar" id="miniBar">
+                <div class="mini-view-indicator" id="miniViewIndicator"></div>
+                <div class="mini-cursor" id="miniCursor"></div>
+            </div>
+        </div>
+        <div class="mini-dates">
+            <span>-3300</span>
+            <span>476</span>
+            <span>1492</span>
+            <span>1789</span>
+            <span>Auj.</span>
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <div class="search-container">
+            <div class="search-box">
+                <span class="icon">🔎</span>
+                <input type="text" id="searchInput" placeholder="Rechercher une date ou un événement..." oninput="onSearchInput()" onkeydown="onSearchKeydown(event)">
+                <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div class="toolbar-separator"></div>
+
+        <div class="zoom-container">
+            <span class="label">Échelle :</span>
+            <div class="zoom-btns">
+                <button class="zoom-btn" data-scale="10" onclick="setZoom(10)">10a</button>
+                <button class="zoom-btn" data-scale="50" onclick="setZoom(50)">50a</button>
+                <button class="zoom-btn active" data-scale="100" onclick="setZoom(100)">100a</button>
+                <button class="zoom-btn" data-scale="500" onclick="setZoom(500)">500a</button>
+                <button class="zoom-btn" data-scale="5000" onclick="setZoom(5000)">Tout</button>
+            </div>
+        </div>
+
+        <div class="toolbar-separator"></div>
+
+        <div class="filter-container">
+            <button class="filter-btn" id="filterBtn" onclick="toggleFilterDropdown()">
+                <span>📖</span>
+                <span id="filterLabel">Toutes leçons</span>
+                <span>▼</span>
+            </button>
+            <div class="filter-dropdown" id="filterDropdown"></div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="frise-container">
+            <div class="page-header moderne" id="pageHeader">
+                <div class="page-title">
+                    <span id="pageIcon">⛵</span>
+                    <span id="pageHeaderTitle">Époque moderne</span>
+                </div>
+                <div class="page-dates" id="pageHeaderDates">1500 → 1600</div>
+            </div>
+
+            <div class="frise-zone moderne" id="friseZone">
+                <div class="cards-top" id="cardsTop"></div>
+                <div class="timeline-track" id="timelineTrack">
+                    <div class="timeline-events" id="timelineEvents"></div>
+                </div>
+                <div class="timeline-labels" id="timelineLabels"></div>
+                <div class="cards-bottom" id="cardsBottom"></div>
+            </div>
+
+            <div class="nav-bar">
+                <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">❮</button>
+                <div class="nav-pages">
+                    <input type="number" class="nav-page-input" id="pageInput" value="1" min="1" onchange="goToPageInput()">
+                    <span class="nav-total">/ <span id="totalPages">50</span></span>
+                </div>
+                <button class="nav-btn" id="nextBtn" onclick="changePage(1)">❯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EVENTS MODAL -->
+    <div class="modal-overlay" id="eventsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>📚 Tous les événements</h2>
+                <button class="modal-close" onclick="closeEventsModal()">✕</button>
+            </div>
+            <div class="modal-filters" id="modalFilters">
+                <button class="modal-filter-btn active" data-filter="all" onclick="filterModalEvents('all')">Tous</button>
+                <button class="modal-filter-btn" data-filter="antiquite" onclick="filterModalEvents('antiquite')">🏛️ Antiquité</button>
+                <button class="modal-filter-btn" data-filter="moyen-age" onclick="filterModalEvents('moyen-age')">🏰 M. Âge</button>
+                <button class="modal-filter-btn" data-filter="moderne" onclick="filterModalEvents('moderne')">⛵ Moderne</button>
+                <button class="modal-filter-btn" data-filter="contemporaine" onclick="filterModalEvents('contemporaine')">🏭 Contemp.</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ZOOM OVERLAY -->
+    <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoom()">
+        <button class="zoom-close">✕</button>
+        <img id="zoomImg" src="" alt="">
+        <div class="zoom-caption" id="zoomCaption"></div>
+    </div>
+
+    <script>
+        // ===== CONFIGURATION =====
+        // 🔧 REMPLACE CET ID PAR L'ID DE TON GOOGLE SHEETS
+        const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        const SHEET_NAME = 'frise_evenements'; // Nom de l'onglet (vérifie qu'il correspond)
+        
+        const HISTORY_START = -3300;
+        const HISTORY_END = 2025;
+        const TOTAL_YEARS = HISTORY_END - HISTORY_START;
+
+        const PERIODS = {
+            'antiquite': { start: -3300, end: 476, icon: '🏛️', title: 'Antiquité' },
+            'moyen-age': { start: 476, end: 1492, icon: '🏰', title: 'Moyen Âge' },
+            'moderne': { start: 1492, end: 1789, icon: '⛵', title: 'Époque moderne' },
+            'contemporaine': { start: 1789, end: 2025, icon: '🏭', title: 'Époque contemporaine' }
+        };
+
+        const PERIOD_BOUNDS = [-3300, 476, 1492, 1789, 2025];
+
+        // ===== DONNÉES =====
+        let EVENTS = [];
+
+        // ===== ÉTAT =====
+        let currentZoom = 100;
+        let currentStart = 1500;
+        let currentPage = 1;
+        let totalPages = 1;
+        let isDragging = false;
+        let currentLessonFilter = 'all';
+        let modalFilter = 'all';
+
+        // ===== CHARGEMENT GOOGLE SHEETS =====
+        async function loadEventsFromGoogleSheets() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Google renvoie du JSONP, on extrait le JSON
+                const jsonString = text.substring(47, text.length - 2);
+                const data = JSON.parse(jsonString);
+                
+                // Convertir en tableau d'événements
+                EVENTS = [];
+                const rows = data.table.rows;
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row[0] || row[0].v === null) continue; // Skip empty rows
+                    
+                    const event = {
+                        year: parseInt(row[0]?.v) || 0,
+                        endYear: row[1]?.v ? parseInt(row[1].v) : null,
+                        title: row[2]?.v || '',
+                        excerpt: row[3]?.v || '',
+                        details: row[4]?.v || '',
+                        image: row[5]?.v || '',
+                        position: row[6]?.v || 'top',
+                        lesson: row[7]?.v || ''
+                    };
+                    
+                    if (event.title) {
+                        EVENTS.push(event);
+                    }
+                }
+                
+                console.log(`✅ ${EVENTS.length} événements chargés depuis Google Sheets`);
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Erreur chargement Google Sheets:', error);
+                return false;
+            }
+        }
+
+        // ===== INIT =====
+        async function init() {
+            const success = await loadEventsFromGoogleSheets();
+            
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            
+            if (!success || EVENTS.length === 0) {
+                document.querySelector('.main-content').innerHTML = `
+                    <div class="error-message">
+                        <div class="icon">⚠️</div>
+                        <h3>Impossible de charger les événements</h3>
+                        <p>Vérifie que le Google Sheets est bien partagé en mode "Anyone with the link"</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            updateEventCount();
+            buildLessonFilters();
+            calculatePages();
+            goToYear(1500);
+            setupMiniBarInteraction();
+        }
+
+        function updateEventCount() {
+            document.getElementById('eventCount').textContent = EVENTS.length;
+        }
+
+        function buildLessonFilters() {
+            const lessons = [...new Set(EVENTS.map(e => e.lesson).filter(l => l))].sort();
+            const dropdown = document.getElementById('filterDropdown');
+            
+            dropdown.innerHTML = `<div class="filter-option selected" data-lesson="all" onclick="setLessonFilter('all')">
+                <span>Toutes les leçons</span>
+            </div>`;
+            
+            lessons.forEach(lesson => {
+                const option = document.createElement('div');
+                option.className = 'filter-option';
+                option.dataset.lesson = lesson;
+                option.onclick = () => setLessonFilter(lesson);
+                option.innerHTML = `<div class="dot" style="background: #8b5cf6;"></div><span>${lesson}</span>`;
+                dropdown.appendChild(option);
+            });
+        }
+
+        // ===== FONCTIONS UTILITAIRES =====
+        function yearToPercent(year) {
+            if (year <= -3300) return 0;
+            if (year >= 2025) return 100;
+            
+            if (year < 476) return ((year - (-3300)) / (476 - (-3300))) * 18;
+            else if (year < 1492) return 18 + ((year - 476) / (1492 - 476)) * 27;
+            else if (year < 1789) return 45 + ((year - 1492) / (1789 - 1492)) * 27;
+            else return 72 + ((year - 1789) / (2025 - 1789)) * 28;
+        }
+
+        function percentToYear(percent) {
+            if (percent <= 0) return -3300;
+            if (percent >= 100) return 2025;
+            
+            if (percent < 18) return Math.round(-3300 + (percent / 18) * (476 - (-3300)));
+            else if (percent < 45) return Math.round(476 + ((percent - 18) / 27) * (1492 - 476));
+            else if (percent < 72) return Math.round(1492 + ((percent - 45) / 27) * (1789 - 1492));
+            else return Math.round(1789 + ((percent - 72) / 28) * (2025 - 1789));
+        }
+
+        function getPeriodForYear(year) {
+            for (const [key, period] of Object.entries(PERIODS)) {
+                if (year >= period.start && year < period.end) return key;
+            }
+            return 'contemporaine';
+        }
+
+        function getPeriodsInRange(startYear, endYear) {
+            const periods = [];
+            for (const [key, period] of Object.entries(PERIODS)) {
+                if (period.start < endYear && period.end > startYear) periods.push(key);
+            }
+            const order = ['antiquite', 'moyen-age', 'moderne', 'contemporaine'];
+            return periods.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+        }
+
+        function formatYear(year) {
+            if (year < 0) return Math.abs(year) + " av. J.-C.";
+            return year.toString();
+        }
+
+        function roundToNice(year, scale) {
+            if (scale >= 500) return Math.floor(year / 500) * 500;
+            if (scale >= 100) return Math.floor(year / 100) * 100;
+            if (scale >= 50) return Math.floor(year / 50) * 50;
+            return Math.floor(year / 10) * 10;
+        }
+
+        function getFilteredEvents() {
+            if (currentLessonFilter === 'all') return EVENTS;
+            return EVENTS.filter(e => e.lesson === currentLessonFilter);
+        }
+
+        // ===== ZOOM =====
+        function setZoom(scale) {
+            currentZoom = scale;
+            document.querySelectorAll('.zoom-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.scale) === scale);
+            });
+            calculatePages();
+            const centerYear = currentStart + currentZoom / 2;
+            goToYear(centerYear);
+        }
+
+        function calculatePages() {
+            totalPages = currentZoom >= 5000 ? 1 : Math.ceil(TOTAL_YEARS / currentZoom);
+            document.getElementById('totalPages').textContent = totalPages;
+        }
+
+        // ===== NAVIGATION =====
+        function goToYear(year) {
+            currentStart = year - currentZoom / 2;
+            currentStart = roundToNice(currentStart, currentZoom);
+            currentStart = Math.max(HISTORY_START, Math.min(currentStart, HISTORY_END - currentZoom));
+            
+            if (currentZoom >= 5000) {
+                currentStart = HISTORY_START;
+                currentPage = 1;
+            } else {
+                currentPage = Math.floor((currentStart - HISTORY_START) / currentZoom) + 1;
+                currentPage = Math.max(1, Math.min(currentPage, totalPages));
+            }
+            updateDisplay();
+        }
+
+        function goToPage(page) {
+            currentPage = Math.max(1, Math.min(page, totalPages));
+            currentStart = HISTORY_START + (currentPage - 1) * currentZoom;
+            if (currentZoom >= 5000) currentStart = HISTORY_START;
+            updateDisplay();
+        }
+
+        function changePage(delta) { goToPage(currentPage + delta); }
+
+        function goToPageInput() {
+            goToPage(parseInt(document.getElementById('pageInput').value) || 1);
+        }
+
+        function goToPeriod(periodKey) {
+            const period = PERIODS[periodKey];
+            goToYear(Math.round((period.start + period.end) / 2));
+        }
+
+        // ===== DISPLAY =====
+        function updateDisplay() {
+            const endYear = Math.min(currentStart + currentZoom, HISTORY_END);
+            const periodsInView = getPeriodsInRange(currentStart, endYear);
+            
+            const pageHeader = document.getElementById('pageHeader');
+            if (periodsInView.length > 1) {
+                pageHeader.className = 'page-header transition';
+                document.getElementById('pageIcon').textContent = periodsInView.map(p => PERIODS[p].icon).join(' ');
+                document.getElementById('pageHeaderTitle').textContent = periodsInView.map(p => PERIODS[p].title).join(' → ');
+            } else {
+                pageHeader.className = 'page-header ' + periodsInView[0];
+                document.getElementById('pageIcon').textContent = PERIODS[periodsInView[0]].icon;
+                document.getElementById('pageHeaderTitle').textContent = PERIODS[periodsInView[0]].title;
+            }
+            document.getElementById('pageHeaderDates').textContent = formatYear(currentStart) + ' → ' + formatYear(endYear);
+
+            updateFriseZoneBackground(currentStart, endYear, periodsInView);
+            updateTimelineLabels();
+            updateEvents();
+            updateNavigation();
+            updateMiniTimeline();
+        }
+
+        function updateFriseZoneBackground(startYear, endYear, periodsInView) {
+            const friseZone = document.getElementById('friseZone');
+            const timelineTrack = document.getElementById('timelineTrack');
+            
+            if (periodsInView.length === 1) {
+                friseZone.className = 'frise-zone ' + periodsInView[0];
+                friseZone.removeAttribute('style');
+                timelineTrack.removeAttribute('style');
+                timelineTrack.className = 'timeline-track ' + periodsInView[0];
+            } else {
+                friseZone.className = 'frise-zone transition';
+                timelineTrack.className = 'timeline-track';
+                
+                const gradientStops = [], bgGradientStops = [];
+                const colors = {
+                    'antiquite': { main: '#fbbf24', light: '#fef3c7' },
+                    'moyen-age': { main: '#22c55e', light: '#dcfce7' },
+                    'moderne': { main: '#3b82f6', light: '#dbeafe' },
+                    'contemporaine': { main: '#f97316', light: '#ffedd5' }
+                };
+                
+                periodsInView.forEach(periodKey => {
+                    const period = PERIODS[periodKey];
+                    const startPercent = ((Math.max(period.start, startYear) - startYear) / (endYear - startYear)) * 100;
+                    const endPercent = ((Math.min(period.end, endYear) - startYear) / (endYear - startYear)) * 100;
+                    const color = colors[periodKey];
+                    gradientStops.push(`${color.main} ${startPercent}%`, `${color.main} ${endPercent}%`);
+                    bgGradientStops.push(`${color.light} ${startPercent}%`, `${color.light} ${endPercent}%`);
+                });
+                
+                timelineTrack.style.background = `linear-gradient(90deg, ${gradientStops.join(', ')})`;
+                friseZone.style.background = `linear-gradient(90deg, ${bgGradientStops.join(', ')})`;
+            }
+        }
+
+        function updateTimelineLabels() {
+            const container = document.getElementById('timelineLabels');
+            container.innerHTML = '';
+            const endYear = Math.min(currentStart + currentZoom, HISTORY_END);
+            
+            let step = currentZoom >= 5000 ? 1000 : currentZoom >= 500 ? 100 : currentZoom >= 100 ? 20 : currentZoom >= 50 ? 10 : 2;
+            let labelYear = Math.ceil(currentStart / step) * step;
+            
+            while (labelYear <= endYear) {
+                const span = document.createElement('span');
+                span.textContent = formatYear(labelYear);
+                container.appendChild(span);
+                labelYear += step;
+            }
+        }
+
+        function updateEvents() {
+            const eventsContainer = document.getElementById('timelineEvents');
+            const cardsTop = document.getElementById('cardsTop');
+            const cardsBottom = document.getElementById('cardsBottom');
+            
+            eventsContainer.innerHTML = '';
+            cardsTop.innerHTML = '';
+            cardsBottom.innerHTML = '';
+
+            const endYear = currentStart + currentZoom;
+            const filteredEvents = getFilteredEvents();
+            
+            const visibleEvents = filteredEvents.filter(evt => {
+                const evtEnd = evt.endYear || evt.year;
+                return evtEnd >= currentStart && evt.year <= endYear;
+            });
+
+            if (visibleEvents.length === 0) {
+                eventsContainer.innerHTML = '<div class="empty-message"><div class="icon">📭</div><p>Aucun événement sur cette période</p></div>';
+                return;
+            }
+
+            visibleEvents.forEach((evt, index) => {
+                const startPercent = Math.max(0, ((evt.year - currentStart) / currentZoom) * 100);
+                const isBorne = PERIOD_BOUNDS.includes(evt.year);
+
+                if (evt.endYear) {
+                    const endPercent = Math.min(100, ((evt.endYear - currentStart) / currentZoom) * 100);
+                    const periodEl = document.createElement('div');
+                    periodEl.className = 'event-period ' + evt.position;
+                    periodEl.style.left = startPercent + '%';
+                    periodEl.style.width = Math.max(endPercent - startPercent, 3) + '%';
+                    periodEl.dataset.index = index;
+                    periodEl.onclick = () => toggleCard(periodEl, index);
+                    periodEl.innerHTML = `<span class="event-period-date">${formatYear(evt.year)} - ${formatYear(evt.endYear)}</span>`;
+                    eventsContainer.appendChild(periodEl);
+                } else {
+                    const pointEl = document.createElement('div');
+                    pointEl.className = 'event-point' + (isBorne ? ' borne' : '');
+                    pointEl.style.left = startPercent + '%';
+                    pointEl.dataset.index = index;
+                    pointEl.onclick = () => toggleCard(pointEl, index);
+                    pointEl.innerHTML = `<span class="event-point-date">${formatYear(evt.year)}</span>`;
+                    eventsContainer.appendChild(pointEl);
+                }
+
+                createCard(evt, index, startPercent);
+            });
+        }
+
+        function createCard(evt, index, leftPercent) {
+            const container = evt.position === 'top' ? document.getElementById('cardsTop') : document.getElementById('cardsBottom');
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'card-container ' + evt.position;
+            cardContainer.id = 'card-' + index;
+            cardContainer.style.left = Math.max(12, Math.min(88, leftPercent)) + '%';
+
+            const safeImage = evt.image.replace(/'/g, "\\'");
+            const safeTitle = evt.title.replace(/'/g, "\\'");
+
+            cardContainer.innerHTML = `
+                <div class="card" id="cardInner-${index}">
+                    <div class="card-face card-front">
+                        <div class="card-img">
+                            <img src="${evt.image}" alt="${evt.title}" onerror="this.src='https://via.placeholder.com/200x100?text=Image+manquante'">
+                            <button class="card-img-zoom" onclick="zoomImage(event, '${safeImage}', '${safeTitle}')">🔍</button>
+                            ${evt.lesson ? `<div class="card-lesson-tag">${evt.lesson}</div>` : ''}
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">${evt.title}</div>
+                            <div class="card-excerpt">${evt.excerpt}</div>
+                            <button class="card-flip-btn" onclick="flipCard(event, ${index})">↻</button>
+                        </div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="card-back-header">💡 En savoir plus</div>
+                        <div class="card-back-body">
+                            <div class="card-back-text">${evt.details}</div>
+                            <button class="card-flip-btn" onclick="flipCard(event, ${index})">↻</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-connector"></div>
+            `;
+            container.appendChild(cardContainer);
+        }
+
+        function updateNavigation() {
+            document.getElementById('pageInput').value = currentPage;
+            document.getElementById('prevBtn').disabled = currentPage <= 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+
+        function updateMiniTimeline() {
+            const centerYear = currentStart + currentZoom / 2;
+            document.getElementById('miniCursor').style.left = Math.max(1, Math.min(99, yearToPercent(centerYear))) + '%';
+            
+            const viewStart = yearToPercent(currentStart);
+            const viewEnd = yearToPercent(Math.min(currentStart + currentZoom, HISTORY_END));
+            const indicator = document.getElementById('miniViewIndicator');
+            indicator.style.left = Math.max(0, viewStart) + '%';
+            indicator.style.width = Math.min(100, viewEnd - viewStart) + '%';
+        }
+
+        // ===== INTERACTIONS =====
+        function toggleCard(element, index) {
+            const card = document.getElementById('card-' + index);
+            if (!card) return;
+
+            const isVisible = card.classList.contains('visible');
+            closeAllCards();
+
+            if (!isVisible) {
+                card.classList.add('visible');
+                element.classList.add('active');
+                
+                const filteredEvents = getFilteredEvents().filter(evt => {
+                    const evtEnd = evt.endYear || evt.year;
+                    return evtEnd >= currentStart && evt.year <= currentStart + currentZoom;
+                });
+                const evt = filteredEvents[index];
+                if (evt) {
+                    document.getElementById('miniCursor').style.left = yearToPercent(evt.year) + '%';
+                }
+            }
+        }
+
+        function closeAllCards() {
+            document.querySelectorAll('.card-container').forEach(c => c.classList.remove('visible'));
+            document.querySelectorAll('.event-point, .event-period').forEach(el => el.classList.remove('active'));
+        }
+
+        function flipCard(event, index) {
+            event.stopPropagation();
+            document.getElementById('cardInner-' + index).classList.toggle('flipped');
+        }
+
+        function zoomImage(event, src, caption) {
+            event.stopPropagation();
+            document.getElementById('zoomImg').src = src;
+            document.getElementById('zoomCaption').textContent = caption;
+            document.getElementById('zoomOverlay').classList.add('show');
+        }
+
+        function closeZoom() {
+            document.getElementById('zoomOverlay').classList.remove('show');
+        }
+
+        // ===== SEARCH =====
+        function onSearchInput() {
+            const query = document.getElementById('searchInput').value.trim();
+            document.getElementById('searchClear').classList.toggle('visible', query.length > 0);
+            
+            if (query.length === 0) {
+                document.getElementById('searchResults').classList.remove('visible');
+                return;
+            }
+
+            const results = searchEvents(query);
+            displaySearchResults(results, query);
+        }
+
+        function searchEvents(query) {
+            const results = [];
+            const queryLower = query.toLowerCase();
+            const queryNumber = parseInt(query);
+
+            if (!isNaN(queryNumber) && queryNumber >= HISTORY_START && queryNumber <= HISTORY_END) {
+                results.push({ type: 'date', year: queryNumber, title: 'Aller à ' + formatYear(queryNumber), period: getPeriodForYear(queryNumber) });
+            }
+
+            EVENTS.forEach((evt, index) => {
+                if (evt.title.toLowerCase().includes(queryLower) || 
+                    evt.excerpt.toLowerCase().includes(queryLower) ||
+                    (evt.lesson && evt.lesson.toLowerCase().includes(queryLower))) {
+                    if (!results.find(r => r.type === 'event' && r.index === index)) {
+                        results.push({ type: 'event', index, ...evt, period: getPeriodForYear(evt.year) });
+                    }
+                }
+            });
+
+            return results;
+        }
+
+        function displaySearchResults(results, query) {
+            const container = document.getElementById('searchResults');
+            
+            if (results.length === 0) {
+                container.innerHTML = `<div class="search-no-result"><div class="icon">🔍</div><p>Aucun résultat pour "${query}"</p></div>`;
+                container.classList.add('visible');
+                return;
+            }
+
+            let html = `<div class="search-results-header">${results.length} résultat${results.length > 1 ? 's' : ''}</div>`;
+            
+            results.slice(0, 8).forEach(result => {
+                if (result.type === 'date') {
+                    html += `<div class="search-result-item" onclick="goToSearchResult('date', ${result.year})">
+                        <div class="search-result-icon date">📅</div>
+                        <div class="search-result-content">
+                            <div class="search-result-title">${result.title}</div>
+                            <div class="search-result-meta"><span class="search-result-date">${PERIODS[result.period].title}</span></div>
+                        </div>
+                    </div>`;
+                } else {
+                    html += `<div class="search-result-item" onclick="goToSearchResult('event', ${result.index})">
+                        <div class="search-result-icon ${result.period}">${PERIODS[result.period].icon}</div>
+                        <div class="search-result-content">
+                            <div class="search-result-title">${result.title}</div>
+                            <div class="search-result-meta">
+                                <span class="search-result-date">${formatYear(result.year)}</span>
+                                ${result.lesson ? `<span class="search-result-lesson">${result.lesson}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            });
+
+            container.innerHTML = html;
+            container.classList.add('visible');
+        }
+
+        function goToSearchResult(type, value) {
+            clearSearch();
+            if (type === 'date') {
+                goToYear(value);
+            } else {
+                goToYear(EVENTS[value].year);
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchClear').classList.remove('visible');
+            document.getElementById('searchResults').classList.remove('visible');
+        }
+
+        function onSearchKeydown(event) {
+            if (event.key === 'Escape') clearSearch();
+            else if (event.key === 'Enter') {
+                const firstResult = document.querySelector('.search-result-item');
+                if (firstResult) firstResult.click();
+            }
+        }
+
+        // ===== LESSON FILTER =====
+        function toggleFilterDropdown() {
+            document.getElementById('filterDropdown').classList.toggle('visible');
+        }
+
+        function setLessonFilter(lesson) {
+            currentLessonFilter = lesson;
+            document.getElementById('filterLabel').textContent = lesson === 'all' ? 'Toutes leçons' : lesson;
+            document.getElementById('filterBtn').classList.toggle('active', lesson !== 'all');
+            
+            document.querySelectorAll('.filter-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.lesson === lesson);
+            });
+            
+            document.getElementById('filterDropdown').classList.remove('visible');
+            updateDisplay();
+        }
+
+        // ===== EVENTS MODAL =====
+        function openEventsModal() {
+            document.getElementById('eventsModal').classList.add('visible');
+            renderModalEvents();
+        }
+
+        function closeEventsModal() {
+            document.getElementById('eventsModal').classList.remove('visible');
+        }
+
+        function filterModalEvents(filter) {
+            modalFilter = filter;
+            document.querySelectorAll('.modal-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderModalEvents();
+        }
+
+        function renderModalEvents() {
+            const container = document.getElementById('modalBody');
+            let events = modalFilter === 'all' ? EVENTS : EVENTS.filter(e => getPeriodForYear(e.year) === modalFilter);
+            events = [...events].sort((a, b) => a.year - b.year);
+
+            container.innerHTML = events.map((evt, i) => `
+                <div class="event-list-item" onclick="goToEventFromModal(${EVENTS.indexOf(evt)})">
+                    <div class="event-list-dot ${getPeriodForYear(evt.year)}"></div>
+                    <div class="event-list-info">
+                        <div class="event-list-title">${evt.title}</div>
+                        <div class="event-list-excerpt">${evt.excerpt}</div>
+                    </div>
+                    <div class="event-list-right">
+                        <div class="event-list-date">${formatYear(evt.year)}</div>
+                        ${evt.lesson ? `<div class="event-list-lesson">${evt.lesson}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function goToEventFromModal(index) {
+            closeEventsModal();
+            goToYear(EVENTS[index].year);
+        }
+
+        // ===== MINI BAR =====
+        function setupMiniBarInteraction() {
+            const miniBar = document.getElementById('miniBar');
+            const miniCursor = document.getElementById('miniCursor');
+
+            miniBar.addEventListener('click', (e) => {
+                if (isDragging) return;
+                const rect = miniBar.getBoundingClientRect();
+                goToYear(percentToYear(((e.clientX - rect.left) / rect.width) * 100));
+            });
+
+            miniCursor.addEventListener('mousedown', (e) => { isDragging = true; e.preventDefault(); });
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = miniBar.getBoundingClientRect();
+                goToYear(percentToYear(Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100))));
+            });
+            document.addEventListener('mouseup', () => { isDragging = false; });
+
+            miniCursor.addEventListener('touchstart', (e) => { isDragging = true; e.preventDefault(); }, { passive: false });
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const rect = miniBar.getBoundingClientRect();
+                goToYear(percentToYear(Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100))));
+            }, { passive: true });
+            document.addEventListener('touchend', () => { isDragging = false; });
+        }
+
+        // ===== KEYBOARD =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changePage(-1);
+            if (e.key === 'ArrowRight') changePage(1);
+            if (e.key === 'Escape') { closeZoom(); closeAllCards(); closeEventsModal(); clearSearch(); }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.filter-container')) document.getElementById('filterDropdown').classList.remove('visible');
+            if (!e.target.closest('.search-container')) document.getElementById('searchResults').classList.remove('visible');
+        });
+
+        // ===== START =====
+        init();
+    </script>
+
+</body>
+</html>
