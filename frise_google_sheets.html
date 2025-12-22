@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ma frise chronologique</title>
+    <title>Frise chronologique de synthèse</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
@@ -61,7 +61,7 @@
         /* ===== HEADER ===== */
         .header {
             background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-            padding: 15px 20px;
+            padding: 20px 25px;
             border-radius: 0 0 20px 20px;
             box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
             display: flex;
@@ -72,18 +72,18 @@
         }
 
         .header-left h1 {
-            font-size: 20px;
+            font-size: 26px;
             font-weight: 800;
             color: white;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .header-left p {
-            font-size: 12px;
-            color: rgba(255,255,255,0.85);
-            margin-top: 2px;
+            font-size: 15px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 4px;
         }
 
         .header-stats {
@@ -94,9 +94,9 @@
 
         .stat-badge {
             background: rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 15px;
             font-weight: 700;
             color: white;
             cursor: pointer;
@@ -110,17 +110,17 @@
         .stat-badge .count {
             background: white;
             color: #0ea5e9;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-left: 6px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-left: 8px;
         }
 
         /* ===== MINI TIMELINE ===== */
         .mini-timeline {
             background: white;
-            margin: 12px;
-            padding: 12px 15px;
-            border-radius: 14px;
+            margin: 15px;
+            padding: 15px 20px;
+            border-radius: 16px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
@@ -128,11 +128,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .mini-timeline-label {
-            font-size: 10px;
+            font-size: 13px;
             font-weight: 700;
             color: #94a3b8;
             text-transform: uppercase;
@@ -141,9 +141,9 @@
 
         .mini-periods {
             display: flex;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
-            font-size: 9px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -151,7 +151,7 @@
         }
 
         .mini-period {
-            padding: 6px 4px;
+            padding: 10px 6px;
             text-align: center;
             color: white;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
@@ -174,14 +174,14 @@
         }
 
         .mini-bar {
-            height: 10px;
+            height: 14px;
             background: linear-gradient(90deg, 
                 #fbbf24 0%, #fbbf24 18%, 
                 #22c55e 18%, #22c55e 45%, 
                 #3b82f6 45%, #3b82f6 72%, 
                 #f97316 72%, #f97316 100%
             );
-            border-radius: 5px;
+            border-radius: 7px;
             position: relative;
         }
 
@@ -193,10 +193,10 @@
             position: absolute;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 18px;
-            height: 18px;
+            width: 24px;
+            height: 24px;
             background: #ef4444;
-            border: 3px solid white;
+            border: 4px solid white;
             border-radius: 50%;
             box-shadow: 0 2px 8px rgba(239,68,68,0.5);
             transition: left 0.3s ease;
@@ -221,12 +221,12 @@
 
         .mini-dates {
             display: flex;
-            font-size: 8px;
+            font-size: 11px;
             font-weight: 600;
             color: #94a3b8;
-            margin-top: 4px;
+            margin-top: 6px;
             position: relative;
-            height: 12px;
+            height: 14px;
         }
         
         .mini-dates span {
@@ -243,13 +243,13 @@
         /* ===== TOOLBAR ===== */
         .toolbar {
             background: white;
-            margin: 0 12px 12px;
-            padding: 10px 12px;
-            border-radius: 12px;
+            margin: 0 15px 15px;
+            padding: 14px 18px;
+            border-radius: 14px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
@@ -263,9 +263,9 @@
             display: flex;
             align-items: center;
             background: #f1f5f9;
-            border-radius: 10px;
-            padding: 0 12px;
-            gap: 8px;
+            border-radius: 12px;
+            padding: 0 15px;
+            gap: 10px;
             border: 2px solid transparent;
             transition: all 0.2s;
         }
@@ -276,7 +276,7 @@
         }
 
         .search-box .icon {
-            font-size: 14px;
+            font-size: 18px;
             color: #94a3b8;
         }
 
@@ -285,8 +285,8 @@
             border: none;
             background: transparent;
             font-family: 'Nunito', sans-serif;
-            font-size: 13px;
-            padding: 8px 0;
+            font-size: 15px;
+            padding: 12px 0;
             color: #1e3a5f;
             outline: none;
         }
@@ -331,23 +331,23 @@
         }
 
         .zoom-container .label {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             color: #64748b;
         }
 
         .zoom-btns {
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .zoom-btn {
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
             border: none;
             background: #f1f5f9;
             font-family: 'Nunito', sans-serif;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             color: #64748b;
             cursor: pointer;
@@ -361,81 +361,6 @@
         .zoom-btn.active {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
-        }
-
-        .filter-container {
-            position: relative;
-        }
-
-        .filter-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            font-family: 'Nunito', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover {
-            border-color: #3b82f6;
-        }
-
-        .filter-btn.active {
-            border-color: #8b5cf6;
-            background: #f3e8ff;
-            color: #7c3aed;
-        }
-
-        .filter-dropdown {
-            position: absolute;
-            top: calc(100% + 5px);
-            right: 0;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            padding: 8px;
-            min-width: 180px;
-            z-index: 100;
-            display: none;
-        }
-
-        .filter-dropdown.visible {
-            display: block;
-        }
-
-        .filter-option {
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #475569;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .filter-option:hover {
-            background: #f1f5f9;
-        }
-
-        .filter-option.selected {
-            background: #f3e8ff;
-            color: #7c3aed;
-        }
-
-        .filter-option .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
         }
 
         /* ===== SEARCH RESULTS ===== */
@@ -607,30 +532,75 @@
             background: rgba(255,255,255,0.3);
         }
 
-        .modal-filters {
-            padding: 12px 15px;
+        .modal-filters-row {
+            padding: 15px;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
-            gap: 6px;
+            gap: 15px;
             flex-wrap: wrap;
+            background: #f8fafc;
         }
 
-        .modal-filter-btn {
-            padding: 5px 10px;
-            border-radius: 15px;
-            border: none;
-            font-family: 'Nunito', sans-serif;
+        .modal-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .modal-filter-group label {
             font-size: 11px;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #f1f5f9;
             color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .modal-filter-btn.active {
-            background: #3b82f6;
-            color: white;
+        .modal-filter-group select {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e3a5f;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-filter-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .modal-filter-group select:hover {
+            border-color: #3b82f6;
+        }
+
+        .modal-results-count {
+            padding: 10px 15px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .modal-empty .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .modal-empty p {
+            font-size: 13px;
         }
 
         .modal-body {
@@ -715,7 +685,7 @@
 
         /* ===== PAGE HEADER ===== */
         .page-header {
-            padding: 10px 15px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -728,11 +698,11 @@
         .page-header.transition { background: linear-gradient(135deg, #e0f2fe, #f0fdf4); }
 
         .page-title {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .page-header.antiquite .page-title { color: #b45309; }
@@ -742,9 +712,9 @@
         .page-header.transition .page-title { color: #475569; }
 
         .page-dates {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 15px;
             background: rgba(255,255,255,0.7);
         }
@@ -757,7 +727,7 @@
 
         /* ===== FRISE ZONE ===== */
         .frise-zone {
-            padding: 15px;
+            padding: 20px;
         }
 
         .frise-zone.antiquite { background: #fffbeb; }
@@ -771,15 +741,15 @@
         .timeline-track.contemporaine { background: linear-gradient(90deg, #fb923c, #f97316); }
 
         .cards-top {
-            height: 180px;
+            height: 220px;
             position: relative;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .timeline-track {
             position: relative;
-            height: 70px;
-            border-radius: 16px;
+            height: 90px;
+            border-radius: 20px;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
@@ -789,16 +759,16 @@
         }
 
         .cards-bottom {
-            height: 180px;
+            height: 220px;
             position: relative;
-            margin-top: 12px;
+            margin-top: 15px;
         }
 
         .timeline-labels {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0 0;
-            font-size: 11px;
+            margin: 12px 0 0;
+            font-size: 12px;
             font-weight: 700;
             color: #64748b;
         }
@@ -808,14 +778,14 @@
             position: absolute;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 20px;
-            height: 20px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: #8b5cf6;
-            border: 3px solid white;
+            border: 4px solid white;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(139,92,246,0.4);
+            box-shadow: 0 3px 10px rgba(139,92,246,0.4);
             z-index: 10;
         }
 
@@ -839,17 +809,17 @@
 
         .event-point-date {
             position: absolute;
-            top: calc(100% + 5px);
+            top: calc(100% + 6px);
             left: 50%;
             transform: translateX(-50%);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             color: #475569;
             white-space: nowrap;
             background: white;
-            padding: 2px 6px;
-            border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 3px 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         /* ===== PÉRIODES ===== */
@@ -895,8 +865,8 @@
         /* ===== CARTES ===== */
         .card-container {
             position: absolute;
-            width: 170px;
-            height: 175px;
+            width: 220px;
+            height: 210px;
             perspective: 1000px;
             opacity: 0;
             visibility: hidden;
@@ -1035,17 +1005,17 @@
         }
 
         .card-title {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 800;
             color: #7c3aed;
             line-height: 1.2;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .card-excerpt {
-            font-size: 10px;
+            font-size: 11px;
             color: #64748b;
-            line-height: 1.3;
+            line-height: 1.4;
             flex: 1;
             overflow: hidden;
         }
@@ -1283,8 +1253,8 @@
     <!-- HEADER -->
     <div class="header">
         <div class="header-left">
-            <h1>📅 Ma frise chronologique</h1>
-            <p>Explore l'Histoire de l'Antiquité à nos jours</p>
+            <h1>📅 Frise chronologique de synthèse</h1>
+            <p>Explore les connaissances de tes cours à travers le temps</p>
         </div>
         <div class="header-stats">
             <div class="stat-badge" onclick="openEventsModal()">
@@ -1342,17 +1312,6 @@
                 <button class="zoom-btn" data-scale="5000" onclick="setZoom(5000)">Tout</button>
             </div>
         </div>
-
-        <div class="toolbar-separator"></div>
-
-        <div class="filter-container">
-            <button class="filter-btn" id="filterBtn" onclick="toggleFilterDropdown()">
-                <span>📖</span>
-                <span id="filterLabel">Toutes leçons</span>
-                <span>▼</span>
-            </button>
-            <div class="filter-dropdown" id="filterDropdown"></div>
-        </div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -1393,13 +1352,25 @@
                 <h2>📚 Tous les événements</h2>
                 <button class="modal-close" onclick="closeEventsModal()">✕</button>
             </div>
-            <div class="modal-filters" id="modalFilters">
-                <button class="modal-filter-btn active" data-filter="all" onclick="filterModalEvents('all')">Tous</button>
-                <button class="modal-filter-btn" data-filter="antiquite" onclick="filterModalEvents('antiquite')">🏛️ Antiquité</button>
-                <button class="modal-filter-btn" data-filter="moyen-age" onclick="filterModalEvents('moyen-age')">🏰 M. Âge</button>
-                <button class="modal-filter-btn" data-filter="moderne" onclick="filterModalEvents('moderne')">⛵ Moderne</button>
-                <button class="modal-filter-btn" data-filter="contemporaine" onclick="filterModalEvents('contemporaine')">🏭 Contemp.</button>
+            <div class="modal-filters-row">
+                <div class="modal-filter-group">
+                    <label>Période :</label>
+                    <select id="modalPeriodFilter" onchange="renderModalEvents()">
+                        <option value="all">Toutes les périodes</option>
+                        <option value="antiquite">🏛️ Antiquité</option>
+                        <option value="moyen-age">🏰 Moyen Âge</option>
+                        <option value="moderne">⛵ Époque moderne</option>
+                        <option value="contemporaine">🏭 Époque contemporaine</option>
+                    </select>
+                </div>
+                <div class="modal-filter-group">
+                    <label>Leçon :</label>
+                    <select id="modalLessonFilter" onchange="renderModalEvents()">
+                        <option value="all">Toutes les leçons</option>
+                    </select>
+                </div>
             </div>
+            <div class="modal-results-count" id="modalResultsCount">0 événement(s)</div>
             <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
@@ -1440,8 +1411,6 @@
         let currentPage = 1;
         let totalPages = 1;
         let isDragging = false;
-        let currentLessonFilter = 'all';
-        let modalFilter = 'all';
 
         // ===== CHARGEMENT GOOGLE SHEETS =====
         async function loadEventsFromGoogleSheets() {
@@ -1505,7 +1474,6 @@
             }
             
             updateEventCount();
-            buildLessonFilters();
             calculatePages();
             goToYear(1500);
             setupMiniBarInteraction();
@@ -1513,24 +1481,6 @@
 
         function updateEventCount() {
             document.getElementById('eventCount').textContent = EVENTS.length;
-        }
-
-        function buildLessonFilters() {
-            const lessons = [...new Set(EVENTS.map(e => e.lesson).filter(l => l))].sort();
-            const dropdown = document.getElementById('filterDropdown');
-            
-            dropdown.innerHTML = `<div class="filter-option selected" data-lesson="all" onclick="setLessonFilter('all')">
-                <span>Toutes les leçons</span>
-            </div>`;
-            
-            lessons.forEach(lesson => {
-                const option = document.createElement('div');
-                option.className = 'filter-option';
-                option.dataset.lesson = lesson;
-                option.onclick = () => setLessonFilter(lesson);
-                option.innerHTML = `<div class="dot" style="background: #8b5cf6;"></div><span>${lesson}</span>`;
-                dropdown.appendChild(option);
-            });
         }
 
         // ===== FONCTIONS UTILITAIRES =====
@@ -1580,11 +1530,6 @@
             if (scale >= 100) return Math.floor(year / 100) * 100;
             if (scale >= 50) return Math.floor(year / 50) * 50;
             return Math.floor(year / 10) * 10;
-        }
-
-        function getFilteredEvents() {
-            if (currentLessonFilter === 'all') return EVENTS;
-            return EVENTS.filter(e => e.lesson === currentLessonFilter);
         }
 
         // ===== ZOOM =====
@@ -1722,7 +1667,7 @@
             cardsBottom.innerHTML = '';
 
             const endYear = currentStart + currentZoom;
-            const filteredEvents = getFilteredEvents();
+            const filteredEvents = EVENTS;
             
             const visibleEvents = filteredEvents.filter(evt => {
                 const evtEnd = evt.endYear || evt.year;
@@ -1837,7 +1782,7 @@
                 card.classList.add('visible');
                 element.classList.add('active');
                 
-                const filteredEvents = getFilteredEvents().filter(evt => {
+                const filteredEvents = EVENTS.filter(evt => {
                     const evtEnd = evt.endYear || evt.year;
                     return evtEnd >= currentStart && evt.year <= currentStart + currentZoom;
                 });
@@ -1998,27 +1943,10 @@
             }
         }
 
-        // ===== LESSON FILTER =====
-        function toggleFilterDropdown() {
-            document.getElementById('filterDropdown').classList.toggle('visible');
-        }
-
-        function setLessonFilter(lesson) {
-            currentLessonFilter = lesson;
-            document.getElementById('filterLabel').textContent = lesson === 'all' ? 'Toutes leçons' : lesson;
-            document.getElementById('filterBtn').classList.toggle('active', lesson !== 'all');
-            
-            document.querySelectorAll('.filter-option').forEach(opt => {
-                opt.classList.toggle('selected', opt.dataset.lesson === lesson);
-            });
-            
-            document.getElementById('filterDropdown').classList.remove('visible');
-            updateDisplay();
-        }
-
         // ===== EVENTS MODAL =====
         function openEventsModal() {
             document.getElementById('eventsModal').classList.add('visible');
+            populateModalLessonFilter();
             renderModalEvents();
         }
 
@@ -2026,20 +1954,53 @@
             document.getElementById('eventsModal').classList.remove('visible');
         }
 
-        function filterModalEvents(filter) {
-            modalFilter = filter;
-            document.querySelectorAll('.modal-filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filter);
+        function populateModalLessonFilter() {
+            const select = document.getElementById('modalLessonFilter');
+            const lessons = [...new Set(EVENTS.map(e => e.lesson).filter(l => l))].sort();
+            
+            // Garder seulement l'option "Toutes les leçons"
+            select.innerHTML = '<option value="all">Toutes les leçons</option>';
+            
+            lessons.forEach(lesson => {
+                const option = document.createElement('option');
+                option.value = lesson;
+                option.textContent = lesson;
+                select.appendChild(option);
             });
-            renderModalEvents();
         }
 
         function renderModalEvents() {
+            const periodFilter = document.getElementById('modalPeriodFilter').value;
+            const lessonFilter = document.getElementById('modalLessonFilter').value;
             const container = document.getElementById('modalBody');
-            let events = modalFilter === 'all' ? EVENTS : EVENTS.filter(e => getPeriodForYear(e.year) === modalFilter);
+            
+            // Filtrer les événements
+            let events = EVENTS.filter(evt => {
+                const matchPeriod = periodFilter === 'all' || getPeriodForYear(evt.year) === periodFilter;
+                const matchLesson = lessonFilter === 'all' || evt.lesson === lessonFilter;
+                return matchPeriod && matchLesson;
+            });
+            
+            // Trier par année
             events = [...events].sort((a, b) => a.year - b.year);
+            
+            // Mettre à jour le compteur
+            document.getElementById('modalResultsCount').textContent = 
+                events.length + ' événement' + (events.length > 1 ? 's' : '');
 
-            container.innerHTML = events.map((evt, i) => `
+            // Afficher message si aucun résultat
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="modal-empty">
+                        <div class="icon">📭</div>
+                        <p>Aucun événement ne correspond à ces critères</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Afficher les événements
+            container.innerHTML = events.map((evt) => `
                 <div class="event-list-item" onclick="goToEventFromModal(${EVENTS.indexOf(evt)})">
                     <div class="event-list-dot ${getPeriodForYear(evt.year)}"></div>
                     <div class="event-list-info">
@@ -2095,7 +2056,6 @@
         });
 
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.filter-container')) document.getElementById('filterDropdown').classList.remove('visible');
             if (!e.target.closest('.search-container')) document.getElementById('searchResults').classList.remove('visible');
         });
 
