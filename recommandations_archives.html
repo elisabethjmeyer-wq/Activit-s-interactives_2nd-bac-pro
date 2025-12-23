@@ -892,8 +892,7 @@
                 
                 RECOS = [];
                 
-                // Commencer à i = 1 pour ignorer la première ligne (en-têtes)
-                for (let i = 1; i < rows.length; i++) {
+                for (let i = 0; i < rows.length; i++) {
                     const row = rows[i].c;
                     if (!row || !row[0] || row[0].v === null) continue;
                     
@@ -911,7 +910,12 @@
                         tags: row[6]?.v || ''
                     };
                     
-                    if (reco.titre) {
+                    // Ignorer les lignes d'en-têtes (contiennent "Titre", "Date", etc.)
+                    const isHeader = reco.titre.toLowerCase().includes('titre') || 
+                                     reco.date.toLowerCase().includes('date') ||
+                                     reco.description.toLowerCase().includes('description');
+                    
+                    if (reco.titre && !isHeader) {
                         RECOS.push(reco);
                     }
                 }
