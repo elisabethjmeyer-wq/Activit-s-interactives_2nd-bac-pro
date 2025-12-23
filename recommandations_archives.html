@@ -892,7 +892,8 @@
                 
                 RECOS = [];
                 
-                for (let i = 0; i < rows.length; i++) {
+                // Commencer à i = 1 pour ignorer la première ligne (en-têtes)
+                for (let i = 1; i < rows.length; i++) {
                     const row = rows[i].c;
                     if (!row || !row[0] || row[0].v === null) continue;
                     
