@@ -163,6 +163,21 @@
             margin-bottom: 20px;
         }
 
+        .featured-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .featured-tag {
+            background: rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
         .featured-date {
             font-size: 14px;
             color: rgba(255,255,255,0.5);
@@ -192,13 +207,40 @@
         }
 
         /* ===== SECTION TITLE ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
         .section-title {
             font-size: 22px;
             font-weight: 800;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .section-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .section-nav button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .section-nav button:hover {
+            background: rgba(255,255,255,0.15);
         }
 
         /* ===== CARDS GRID ===== */
@@ -253,7 +295,7 @@
         .card-type-badge {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             padding: 5px 10px;
@@ -314,14 +356,20 @@
             overflow: hidden;
         }
 
-        .card-description {
-            font-size: 13px;
-            color: rgba(255,255,255,0.6);
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .card-tag {
+            background: rgba(102, 126, 234, 0.2);
+            color: #a5b4fc;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
         }
 
         /* ===== MODAL ===== */
@@ -638,16 +686,23 @@
             <div class="featured-overlay"></div>
             <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
             <div class="featured-content">
-                <span class="featured-badge">⭐ Recommandation de la semaine</span>
+                <span class="featured-badge">⭐ Cette semaine</span>
                 <span class="featured-type" id="featuredType"></span>
                 <h1 class="featured-title" id="featuredTitle"></h1>
                 <p class="featured-description" id="featuredDescription"></p>
+                <div class="featured-tags" id="featuredTags"></div>
                 <p class="featured-date" id="featuredDate"></p>
             </div>
         </div>
 
         <!-- PREVIOUS -->
-        <h2 class="section-title">📅 Les semaines précédentes</h2>
+        <div class="section-header">
+            <h2 class="section-title">🎵 À écouter</h2>
+            <div class="section-nav">
+                <button onclick="scrollCards(-1)">‹</button>
+                <button onclick="scrollCards(1)">›</button>
+            </div>
+        </div>
         <div class="cards-grid" id="cardsGrid"></div>
 
     </div>
@@ -690,68 +745,88 @@
     </div>
 
     <script>
-        // ===== DONNÉES DE DÉMONSTRATION =====
+        // ===== DONNÉES - À REMPLACER PAR TON GOOGLE SHEET =====
         let RECOS = [
             {
-                date: '2024-12-20',
-                titre: 'À écouter cette semaine',
-                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son à la mode en France en 1756 ! Découvrez ce morceau emblématique de l\'époque baroque.',
-                lien: 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT',
-                image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800'
+                date: '2026-09-02',
+                titre: 'Les quatres saisons de Vivaldi',
+                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son de 1756 !',
+                lien: 'https://drive.google.com/file/d/1MfSP7mxY90Yom6bPdwpkI20zPZfLgcc7/view?usp=sharing',
+                image: 'https://drive.google.com/file/d/1yZMJmRfSPWVSU5E4pA9NhlGD1tNUBFKb/view?usp=sharing',
+                type: 'ecouter',
+                tags: ['Histoire', 'Littérature', 'La mise en relation du monde']
             },
             {
-                date: '2024-12-13',
-                titre: 'Documentaire à voir absolument',
-                description: 'Un voyage fascinant dans l\'histoire de la Révolution française, raconté comme jamais auparavant.',
-                lien: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                image: 'https://images.unsplash.com/photo-1460881680093-7c8e4dc2c622?w=800'
-            },
-            {
-                date: '2024-12-06',
-                titre: 'Chef-d\'œuvre à découvrir',
-                description: 'La Liberté guidant le peuple de Delacroix : analyse complète de cette œuvre iconique.',
-                lien: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg'
-            },
-            {
-                date: '2024-11-29',
-                titre: 'Podcast passionnant',
-                description: 'Comment vivaient les gens au Moyen Âge ? Un podcast qui démonte les clichés.',
-                lien: 'https://open.spotify.com/episode/example',
-                image: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800'
-            },
-            {
-                date: '2024-11-22',
-                titre: 'Film à ne pas manquer',
-                description: 'Une plongée dans l\'histoire avec ce film primé aux Oscars.',
-                lien: 'https://www.youtube.com/watch?v=example',
-                image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800'
-            },
-            {
-                date: '2024-11-15',
-                titre: 'Chaîne YouTube recommandée',
-                description: 'Une chaîne incontournable pour réviser l\'histoire de manière fun et efficace.',
-                lien: 'https://www.youtube.com/@example',
-                image: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=800'
+                date: '2026-01-05',
+                titre: 'Les quatres saisons de Vivaldi',
+                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son de 1756 !',
+                lien: 'https://drive.google.com/file/d/1MfSP7mxY90Yom6bPdwpkI20zPZfLgcc7/view?usp=sharing',
+                image: 'https://drive.google.com/file/d/1yZMJmRfSPWVSU5E4pA9NhlGD1tNUBFKb/view?usp=sharing',
+                type: 'ecouter',
+                tags: ['Histoire', 'Littérature']
             }
         ];
 
+        // ===== CONVERTIR LIEN GOOGLE DRIVE EN IMAGE DIRECTE =====
+        function convertGoogleDriveUrl(url) {
+            if (!url) return null;
+            
+            // Si c'est déjà une URL d'image normale, la retourner telle quelle
+            if (!url.includes('drive.google.com')) {
+                return url;
+            }
+            
+            // Extraire l'ID du fichier Google Drive
+            let fileId = null;
+            
+            // Format: /file/d/FILE_ID/view ou /file/d/FILE_ID/
+            const match1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (match1) {
+                fileId = match1[1];
+            }
+            
+            // Format: ?id=FILE_ID
+            const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (match2) {
+                fileId = match2[1];
+            }
+            
+            if (fileId) {
+                // Utiliser thumbnail avec grande taille pour les images
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+            }
+            
+            return url;
+        }
+
         // ===== DETECT CONTENT TYPE =====
-        function getContentType(lien) {
+        function getContentType(lien, type) {
+            // Si un type est spécifié dans les données, l'utiliser
+            if (type) {
+                const types = {
+                    'ecouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
+                    'regarder': { type: 'video', icon: '🎬', label: 'À regarder' },
+                    'lire': { type: 'read', icon: '📖', label: 'À lire' }
+                };
+                if (types[type.toLowerCase()]) {
+                    return types[type.toLowerCase()];
+                }
+            }
+            
             if (!lien) return { type: 'link', icon: '🔗', label: 'Lien' };
             
             if (lien.includes('spotify.com')) {
-                return { type: 'spotify', icon: '🎵', label: 'Musique' };
+                return { type: 'spotify', icon: '🎵', label: 'À écouter' };
             } else if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) {
-                return { type: 'youtube', icon: '🎬', label: 'Vidéo' };
+                return { type: 'youtube', icon: '🎬', label: 'À regarder' };
             } else if (lien.includes('youtube.com/@') || lien.includes('youtube.com/channel') || lien.includes('youtube.com/c/')) {
                 return { type: 'link', icon: '📺', label: 'Chaîne' };
             } else if (lien.includes('loom.com')) {
-                return { type: 'loom', icon: '🎬', label: 'Vidéo' };
+                return { type: 'loom', icon: '🎬', label: 'À regarder' };
             } else if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) {
                 return { type: 'image', icon: '🖼️', label: 'Image' };
             } else if (lien.includes('drive.google.com') && lien.includes('/file/')) {
-                return { type: 'gdrive', icon: '📄', label: 'Document' };
+                return { type: 'gdrive', icon: '🎵', label: 'À écouter' };
             } else {
                 return { type: 'link', icon: '🔗', label: 'Lien' };
             }
@@ -759,6 +834,9 @@
 
         // ===== INIT =====
         function init() {
+            // Trier par date décroissante (plus récent en premier)
+            RECOS.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
             document.getElementById('recoCount').textContent = RECOS.length;
             displayFeatured();
             displayCards();
@@ -772,13 +850,22 @@
             }
 
             const reco = RECOS[0];
-            const contentType = getContentType(reco.lien);
+            const contentType = getContentType(reco.lien, reco.type);
+            const imageUrl = convertGoogleDriveUrl(reco.image);
 
-            document.getElementById('featuredBg').style.backgroundImage = `url('${reco.image || ''}')`;
+            document.getElementById('featuredBg').style.backgroundImage = imageUrl ? `url('${imageUrl}')` : '';
             document.getElementById('featuredTitle').textContent = reco.titre;
             document.getElementById('featuredDescription').textContent = reco.description;
             document.getElementById('featuredDate').textContent = formatDate(reco.date);
             document.getElementById('featuredType').innerHTML = `${contentType.icon} ${contentType.label}`;
+            
+            // Afficher les tags
+            const tagsContainer = document.getElementById('featuredTags');
+            if (reco.tags && reco.tags.length > 0) {
+                tagsContainer.innerHTML = reco.tags.map(tag => `<span class="featured-tag">${tag}</span>`).join('');
+            } else {
+                tagsContainer.innerHTML = '';
+            }
             
             // Afficher/masquer le bouton play selon le type
             const playBtn = document.getElementById('featuredPlayBtn');
@@ -794,7 +881,7 @@
         // ===== DISPLAY CARDS =====
         function displayCards() {
             const grid = document.getElementById('cardsGrid');
-            const recentRecos = RECOS.slice(1, 5);
+            const recentRecos = RECOS.slice(1);
 
             if (recentRecos.length === 0) {
                 grid.innerHTML = '<p style="color: rgba(255,255,255,0.5);">Pas encore d\'archives</p>';
@@ -802,14 +889,16 @@
             }
 
             grid.innerHTML = recentRecos.map((reco, index) => {
-                const contentType = getContentType(reco.lien);
+                const contentType = getContentType(reco.lien, reco.type);
                 const realIndex = index + 1;
+                const imageUrl = convertGoogleDriveUrl(reco.image);
                 
                 return `
                     <div class="card" onclick="openContent(${realIndex})">
                         <div class="card-image">
-                            ${reco.image 
-                                ? `<img src="${reco.image}" alt="${reco.titre}">`
+                            ${imageUrl 
+                                ? `<img src="${imageUrl}" alt="${reco.titre}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                   <div class="card-image-placeholder" style="display:none;">${contentType.icon}</div>`
                                 : `<div class="card-image-placeholder">${contentType.icon}</div>`
                             }
                             <div class="card-type-badge">${contentType.icon} ${contentType.label}</div>
@@ -820,7 +909,11 @@
                         <div class="card-info">
                             <div class="card-date">${formatDate(reco.date)}</div>
                             <h3 class="card-title">${reco.titre}</h3>
-                            <p class="card-description">${reco.description}</p>
+                            ${reco.tags && reco.tags.length > 0 ? `
+                                <div class="card-tags">
+                                    ${reco.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -832,7 +925,7 @@
             const reco = RECOS[index];
             if (!reco) return;
 
-            const contentType = getContentType(reco.lien);
+            const contentType = getContentType(reco.lien, reco.type);
             
             // Si c'est un lien externe (chaîne YouTube, site web), ouvrir dans nouvel onglet
             if (contentType.type === 'link') {
@@ -855,14 +948,17 @@
                 const embedUrl = reco.lien.replace('/share/', '/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
             } else if (contentType.type === 'spotify') {
-                // Convertir le lien Spotify en embed
                 let embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="aspect-ratio: auto; height: 352px;" allow="encrypted-media"></iframe>`;
             } else if (contentType.type === 'image') {
-                mediaContainer.innerHTML = `<img src="${reco.lien}" alt="${reco.titre}">`;
-            } else if (contentType.type === 'gdrive') {
-                const fileId = reco.lien.split('/d/')[1]?.split('/')[0];
-                mediaContainer.innerHTML = `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="aspect-ratio: 4/3;"></iframe>`;
+                const imageUrl = convertGoogleDriveUrl(reco.lien);
+                mediaContainer.innerHTML = `<img src="${imageUrl}" alt="${reco.titre}">`;
+            } else if (contentType.type === 'gdrive' || contentType.type === 'audio' || contentType.type === 'video') {
+                // Pour les fichiers Google Drive (audio, vidéo, etc.)
+                const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+                if (fileId) {
+                    mediaContainer.innerHTML = `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="aspect-ratio: 16/9;" allow="autoplay"></iframe>`;
+                }
             }
 
             document.getElementById('contentPopup').classList.add('visible');
@@ -936,7 +1032,7 @@
             }
 
             container.innerHTML = filtered.map(reco => {
-                const contentType = getContentType(reco.lien);
+                const contentType = getContentType(reco.lien, reco.type);
                 const index = RECOS.indexOf(reco);
                 return `
                     <div class="modal-item" onclick="openContent(${index}); closeModal();">
