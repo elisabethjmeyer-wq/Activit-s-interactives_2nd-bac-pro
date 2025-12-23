@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 50%, #1e1e2e 100%);
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
             color: #ffffff;
         }
@@ -28,7 +28,7 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
         }
 
         .header-left {
@@ -91,20 +91,11 @@
         /* ===== FEATURED SECTION ===== */
         .featured-section {
             position: relative;
+            height: 500px;
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 40px;
             cursor: pointer;
-            display: flex;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .featured-image {
-            width: 45%;
-            min-height: 350px;
-            position: relative;
-            overflow: hidden;
         }
 
         .featured-background {
@@ -119,56 +110,30 @@
             transform: scale(1.05);
         }
 
-        .featured-play-btn {
+        .featured-overlay {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70px;
-            height: 70px;
-            background: rgba(255,255,255,0.95);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            color: #1e1e2e;
-            opacity: 0.9;
-            transition: all 0.3s;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-        }
-
-        .featured-section:hover .featured-play-btn {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
+            inset: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
         }
 
         .featured-content {
-            width: 55%;
-            padding: 35px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .featured-badges {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
         }
 
         .featured-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 15px;
         }
 
         .featured-type {
@@ -180,121 +145,80 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
+            margin-left: 10px;
         }
 
         .featured-title {
-            font-size: 32px;
+            font-size: 42px;
             font-weight: 800;
             margin-bottom: 15px;
-            line-height: 1.2;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
         }
 
         .featured-description {
-            font-size: 15px;
-            color: rgba(255,255,255,0.75);
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
             line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .featured-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .featured-tag {
-            background: rgba(102, 126, 234, 0.3);
-            color: #a5b4fc;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 600;
+            margin-bottom: 20px;
         }
 
         .featured-date {
-            font-size: 13px;
+            font-size: 14px;
             color: rgba(255,255,255,0.5);
         }
 
-        /* ===== CAROUSEL SECTION ===== */
-        .carousel-section {
-            margin-bottom: 35px;
-        }
-
-        .carousel-header {
+        .featured-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
+            justify-content: center;
+            font-size: 30px;
+            color: #1a1a2e;
+            opacity: 0;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
-        .carousel-title {
-            font-size: 20px;
+        .featured-section:hover .featured-play-btn {
+            opacity: 1;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 22px;
             font-weight: 800;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .carousel-nav {
-            display: flex;
-            gap: 8px;
+        /* ===== CARDS GRID ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
 
-        .carousel-nav-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .carousel-nav-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .carousel-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            padding: 10px 0;
-        }
-
-        .carousel-track::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* ===== CARDS ===== */
         .card {
-            flex-shrink: 0;
-            width: 280px;
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .card:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-8px);
             background: rgba(255,255,255,0.1);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
@@ -323,17 +247,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 45px;
+            font-size: 50px;
         }
 
         .card-type-badge {
             position: absolute;
             top: 10px;
-            left: 10px;
+            right: 10px;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             padding: 5px 10px;
-            border-radius: 12px;
+            border-radius: 15px;
             font-size: 11px;
             font-weight: 700;
             display: flex;
@@ -365,22 +289,22 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            color: #1e1e2e;
+            color: #1a1a2e;
         }
 
         .card-info {
-            padding: 15px;
+            padding: 18px;
         }
 
         .card-date {
-            font-size: 11px;
+            font-size: 12px;
             color: #667eea;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .card-title {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 8px;
             line-height: 1.3;
@@ -390,26 +314,14 @@
             overflow: hidden;
         }
 
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .card-tag {
-            background: rgba(102, 126, 234, 0.2);
-            color: #a5b4fc;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        /* ===== EMPTY CAROUSEL ===== */
-        .carousel-empty {
-            color: rgba(255,255,255,0.4);
-            font-size: 14px;
-            padding: 20px;
+        .card-description {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         /* ===== MODAL ===== */
@@ -430,11 +342,11 @@
         }
 
         .modal {
-            background: #252538;
+            background: #1a1a2e;
             border-radius: 20px;
             width: 100%;
-            max-width: 550px;
-            max-height: 85vh;
+            max-width: 500px;
+            max-height: 80vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -472,23 +384,18 @@
 
         .modal-filters {
             padding: 15px 20px;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
-            flex: 1;
-            min-width: 120px;
         }
 
         .filter-group label {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             color: rgba(255,255,255,0.5);
             text-transform: uppercase;
@@ -496,28 +403,28 @@
         }
 
         .filter-group select {
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.15);
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
             font-family: 'Nunito', sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: white;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             cursor: pointer;
         }
 
         .filter-group select option {
-            background: #252538;
+            background: #1a1a2e;
             color: white;
         }
 
         .modal-results-count {
             padding: 10px 20px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
-            color: rgba(255,255,255,0.4);
-            background: rgba(0,0,0,0.2);
+            color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.03);
         }
 
         .modal-body {
@@ -528,8 +435,8 @@
         .modal-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
+            gap: 15px;
+            padding: 15px 20px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             cursor: pointer;
             transition: background 0.2s;
@@ -540,47 +447,35 @@
         }
 
         .modal-item-icon {
-            width: 42px;
-            height: 42px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
             flex-shrink: 0;
         }
 
         .modal-item-info {
             flex: 1;
-            min-width: 0;
         }
 
         .modal-item-title {
             font-size: 14px;
             font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .modal-item-meta {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 2px;
         }
 
         .modal-item-date {
+            font-size: 12px;
             color: #667eea;
         }
 
         .modal-empty {
             padding: 40px 20px;
             text-align: center;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.5);
         }
 
         .modal-empty .icon {
@@ -606,7 +501,7 @@
 
         .content-popup {
             width: 100%;
-            max-width: 950px;
+            max-width: 1000px;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
@@ -643,7 +538,7 @@
         }
 
         .content-popup-body {
-            background: #252538;
+            background: #1a1a2e;
             border-radius: 0 0 16px 16px;
             overflow: hidden;
             flex: 1;
@@ -665,28 +560,12 @@
 
         .content-popup-media img {
             width: 100%;
-            max-height: 65vh;
+            max-height: 70vh;
             object-fit: contain;
         }
 
         .content-popup-info {
             padding: 20px;
-        }
-
-        .content-popup-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .content-popup-tag {
-            background: rgba(102, 126, 234, 0.3);
-            color: #a5b4fc;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 600;
         }
 
         .content-popup-description {
@@ -697,8 +576,8 @@
 
         .content-popup-date {
             font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            margin-top: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 10px;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -716,35 +595,20 @@
             }
 
             .featured-section {
-                flex-direction: column;
-            }
-
-            .featured-image {
-                width: 100%;
-                min-height: 200px;
-            }
-
-            .featured-content {
-                width: 100%;
-                padding: 25px;
+                height: 350px;
             }
 
             .featured-title {
-                font-size: 24px;
+                font-size: 28px;
             }
 
-            .featured-play-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 22px;
+            .featured-content {
+                padding: 25px;
             }
 
-            .card {
-                width: 240px;
-            }
-
-            .modal-filters {
-                flex-direction: column;
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 15px;
             }
         }
     </style>
@@ -761,7 +625,7 @@
             </div>
         </div>
         <div class="header-badge" onclick="openModal()">
-            🔍 Rechercher (<span id="recoCount">0</span>)
+            📚 Toutes les recommandations (<span id="recoCount">0</span>)
         </div>
     </div>
 
@@ -770,24 +634,21 @@
 
         <!-- FEATURED -->
         <div class="featured-section" id="featuredSection" onclick="openContent(0)">
-            <div class="featured-image">
-                <div class="featured-background" id="featuredBg"></div>
-                <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
-            </div>
+            <div class="featured-background" id="featuredBg"></div>
+            <div class="featured-overlay"></div>
+            <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
             <div class="featured-content">
-                <div class="featured-badges">
-                    <span class="featured-badge">⭐ Cette semaine</span>
-                    <span class="featured-type" id="featuredType"></span>
-                </div>
+                <span class="featured-badge">⭐ Recommandation de la semaine</span>
+                <span class="featured-type" id="featuredType"></span>
                 <h1 class="featured-title" id="featuredTitle"></h1>
                 <p class="featured-description" id="featuredDescription"></p>
-                <div class="featured-tags" id="featuredTags"></div>
                 <p class="featured-date" id="featuredDate"></p>
             </div>
         </div>
 
-        <!-- CAROUSELS -->
-        <div id="carouselsContainer"></div>
+        <!-- PREVIOUS -->
+        <h2 class="section-title">📅 Les semaines précédentes</h2>
+        <div class="cards-grid" id="cardsGrid"></div>
 
     </div>
 
@@ -795,33 +656,18 @@
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2>🔍 Rechercher</h2>
+                <h2>📚 Toutes les recommandations</h2>
                 <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
             <div class="modal-filters">
                 <div class="filter-group">
-                    <label>Mois</label>
+                    <label>Mois :</label>
                     <select id="monthFilter" onchange="filterModalItems()">
-                        <option value="all">Tous</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Type</label>
-                    <select id="typeFilter" onchange="filterModalItems()">
-                        <option value="all">Tous</option>
-                        <option value="ecouter">🎵 À écouter</option>
-                        <option value="regarder">🎬 À regarder</option>
-                        <option value="lire">📖 À lire</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Discipline</label>
-                    <select id="tagFilter" onchange="filterModalItems()">
-                        <option value="all">Toutes</option>
+                        <option value="all">Tous les mois</option>
                     </select>
                 </div>
             </div>
-            <div class="modal-results-count" id="modalResultsCount">0 résultat(s)</div>
+            <div class="modal-results-count" id="modalResultsCount">0 recommandation(s)</div>
             <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
@@ -836,7 +682,6 @@
             <div class="content-popup-body">
                 <div class="content-popup-media" id="popupMedia"></div>
                 <div class="content-popup-info">
-                    <div class="content-popup-tags" id="popupTags"></div>
                     <p class="content-popup-description" id="popupDescription"></p>
                     <p class="content-popup-date" id="popupDate"></p>
                 </div>
@@ -845,106 +690,78 @@
     </div>
 
     <script>
-        // ===== CONFIGURATION =====
-        const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_NAME = 'recommandations'; // Nom de l'onglet
-
-        // ===== DONNÉES =====
-        let RECOS = [];
-
-        // ===== CHARGEMENT GOOGLE SHEETS =====
-        async function loadRecosFromGoogleSheets() {
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
-                const response = await fetch(url);
-                const text = await response.text();
-                
-                const jsonString = text.substring(47, text.length - 2);
-                const data = JSON.parse(jsonString);
-                
-                RECOS = [];
-                const rows = data.table.rows;
-                
-                for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i].c;
-                    if (!row[0] || row[0].v === null) continue;
-                    
-                    // Extraire la date (peut être formatée ou valeur brute)
-                    let dateValue = row[0]?.f || row[0]?.v || '';
-                    
-                    const reco = {
-                        date: dateValue,
-                        titre: row[1]?.v || '',
-                        description: row[2]?.v || '',
-                        lien: row[3]?.v || '',
-                        image: row[4]?.v || '',
-                        type: row[5]?.v || '',
-                        tags: row[6]?.v || ''
-                    };
-                    
-                    if (reco.titre) {
-                        RECOS.push(reco);
-                    }
-                }
-                
-                // Trier par date décroissante (plus récent en premier)
-                RECOS.sort((a, b) => {
-                    const dateA = new Date(a.date);
-                    const dateB = new Date(b.date);
-                    return dateB - dateA;
-                });
-                
-                console.log(`✅ ${RECOS.length} recommandations chargées depuis Google Sheets`);
-                return true;
-                
-            } catch (error) {
-                console.error('❌ Erreur chargement Google Sheets:', error);
-                return false;
+        // ===== DONNÉES DE DÉMONSTRATION =====
+        let RECOS = [
+            {
+                date: '2024-12-20',
+                titre: 'À écouter cette semaine',
+                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son à la mode en France en 1756 ! Découvrez ce morceau emblématique de l\'époque baroque.',
+                lien: 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT',
+                image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800'
+            },
+            {
+                date: '2024-12-13',
+                titre: 'Documentaire à voir absolument',
+                description: 'Un voyage fascinant dans l\'histoire de la Révolution française, raconté comme jamais auparavant.',
+                lien: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                image: 'https://images.unsplash.com/photo-1460881680093-7c8e4dc2c622?w=800'
+            },
+            {
+                date: '2024-12-06',
+                titre: 'Chef-d\'œuvre à découvrir',
+                description: 'La Liberté guidant le peuple de Delacroix : analyse complète de cette œuvre iconique.',
+                lien: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg',
+                image: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Eug%C3%A8ne_Delacroix_-_La_libert%C3%A9_guidant_le_peuple.jpg'
+            },
+            {
+                date: '2024-11-29',
+                titre: 'Podcast passionnant',
+                description: 'Comment vivaient les gens au Moyen Âge ? Un podcast qui démonte les clichés.',
+                lien: 'https://open.spotify.com/episode/example',
+                image: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800'
+            },
+            {
+                date: '2024-11-22',
+                titre: 'Film à ne pas manquer',
+                description: 'Une plongée dans l\'histoire avec ce film primé aux Oscars.',
+                lien: 'https://www.youtube.com/watch?v=example',
+                image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800'
+            },
+            {
+                date: '2024-11-15',
+                titre: 'Chaîne YouTube recommandée',
+                description: 'Une chaîne incontournable pour réviser l\'histoire de manière fun et efficace.',
+                lien: 'https://www.youtube.com/@example',
+                image: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=800'
             }
-        }
+        ];
 
-        // ===== TYPE CONFIG =====
-        const TYPE_CONFIG = {
-            'ecouter': { icon: '🎵', label: 'À écouter', emoji: '🎵' },
-            'regarder': { icon: '🎬', label: 'À regarder', emoji: '🎬' },
-            'lire': { icon: '📖', label: 'À lire', emoji: '📖' }
-        };
-
-        // ===== DETECT CONTENT TYPE FROM LINK =====
-        function getContentTypeFromLink(lien) {
-            if (!lien) return 'link';
+        // ===== DETECT CONTENT TYPE =====
+        function getContentType(lien) {
+            if (!lien) return { type: 'link', icon: '🔗', label: 'Lien' };
             
-            if (lien.includes('spotify.com')) return 'spotify';
-            if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) return 'youtube';
-            if (lien.includes('loom.com')) return 'loom';
-            if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return 'image';
-            if (lien.includes('drive.google.com') && lien.includes('/file/')) return 'gdrive';
-            return 'link';
-        }
-
-        // ===== PARSE TAGS =====
-        function parseTags(tagsStr) {
-            if (!tagsStr) return [];
-            return tagsStr.split(',').map(t => t.trim()).filter(t => t);
+            if (lien.includes('spotify.com')) {
+                return { type: 'spotify', icon: '🎵', label: 'Musique' };
+            } else if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) {
+                return { type: 'youtube', icon: '🎬', label: 'Vidéo' };
+            } else if (lien.includes('youtube.com/@') || lien.includes('youtube.com/channel') || lien.includes('youtube.com/c/')) {
+                return { type: 'link', icon: '📺', label: 'Chaîne' };
+            } else if (lien.includes('loom.com')) {
+                return { type: 'loom', icon: '🎬', label: 'Vidéo' };
+            } else if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) {
+                return { type: 'image', icon: '🖼️', label: 'Image' };
+            } else if (lien.includes('drive.google.com') && lien.includes('/file/')) {
+                return { type: 'gdrive', icon: '📄', label: 'Document' };
+            } else {
+                return { type: 'link', icon: '🔗', label: 'Lien' };
+            }
         }
 
         // ===== INIT =====
-        async function init() {
-            const success = await loadRecosFromGoogleSheets();
-            
-            if (!success || RECOS.length === 0) {
-                document.querySelector('.main-container').innerHTML = `
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 40px; text-align: center; color: rgba(255,255,255,0.6);">
-                        <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
-                        <p>Impossible de charger les recommandations.<br>Vérifie que l'onglet "recommandations" existe et que le Google Sheets est partagé.</p>
-                    </div>
-                `;
-                return;
-            }
-            
+        function init() {
             document.getElementById('recoCount').textContent = RECOS.length;
             displayFeatured();
-            displayCarousels();
+            displayCards();
         }
 
         // ===== DISPLAY FEATURED =====
@@ -955,112 +772,59 @@
             }
 
             const reco = RECOS[0];
-            const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌', label: 'Recommandation' };
-            const tags = parseTags(reco.tags);
-            const linkType = getContentTypeFromLink(reco.lien);
+            const contentType = getContentType(reco.lien);
 
             document.getElementById('featuredBg').style.backgroundImage = `url('${reco.image || ''}')`;
             document.getElementById('featuredTitle').textContent = reco.titre;
             document.getElementById('featuredDescription').textContent = reco.description;
             document.getElementById('featuredDate').textContent = formatDate(reco.date);
-            document.getElementById('featuredType').innerHTML = `${typeConfig.icon} ${typeConfig.label}`;
+            document.getElementById('featuredType').innerHTML = `${contentType.icon} ${contentType.label}`;
             
-            // Tags
-            document.getElementById('featuredTags').innerHTML = tags.map(tag => 
-                `<span class="featured-tag">${tag}</span>`
-            ).join('');
-            
-            // Play button
+            // Afficher/masquer le bouton play selon le type
             const playBtn = document.getElementById('featuredPlayBtn');
-            if (linkType === 'link') {
+            if (contentType.type === 'link') {
                 playBtn.textContent = '↗';
-            } else if (linkType === 'image') {
+            } else if (contentType.type === 'image') {
                 playBtn.textContent = '🔍';
             } else {
                 playBtn.textContent = '▶';
             }
         }
 
-        // ===== DISPLAY CAROUSELS =====
-        function displayCarousels() {
-            const container = document.getElementById('carouselsContainer');
-            const recosWithoutFeatured = RECOS.slice(1);
+        // ===== DISPLAY CARDS =====
+        function displayCards() {
+            const grid = document.getElementById('cardsGrid');
+            const recentRecos = RECOS.slice(1, 5);
 
-            // Grouper par type
-            const byType = {
-                'ecouter': recosWithoutFeatured.filter(r => r.type === 'ecouter'),
-                'regarder': recosWithoutFeatured.filter(r => r.type === 'regarder'),
-                'lire': recosWithoutFeatured.filter(r => r.type === 'lire')
-            };
+            if (recentRecos.length === 0) {
+                grid.innerHTML = '<p style="color: rgba(255,255,255,0.5);">Pas encore d\'archives</p>';
+                return;
+            }
 
-            let html = '';
-
-            for (const [type, recos] of Object.entries(byType)) {
-                if (recos.length === 0) continue;
-
-                const config = TYPE_CONFIG[type];
-                const carouselId = `carousel-${type}`;
-
-                html += `
-                    <div class="carousel-section">
-                        <div class="carousel-header">
-                            <h2 class="carousel-title">${config.icon} ${config.label}</h2>
-                            <div class="carousel-nav">
-                                <button class="carousel-nav-btn" onclick="scrollCarousel('${carouselId}', -1)">❮</button>
-                                <button class="carousel-nav-btn" onclick="scrollCarousel('${carouselId}', 1)">❯</button>
+            grid.innerHTML = recentRecos.map((reco, index) => {
+                const contentType = getContentType(reco.lien);
+                const realIndex = index + 1;
+                
+                return `
+                    <div class="card" onclick="openContent(${realIndex})">
+                        <div class="card-image">
+                            ${reco.image 
+                                ? `<img src="${reco.image}" alt="${reco.titre}">`
+                                : `<div class="card-image-placeholder">${contentType.icon}</div>`
+                            }
+                            <div class="card-type-badge">${contentType.icon} ${contentType.label}</div>
+                            <div class="card-play-overlay">
+                                <div class="card-play-btn">${contentType.type === 'link' ? '↗' : contentType.type === 'image' ? '🔍' : '▶'}</div>
                             </div>
                         </div>
-                        <div class="carousel-container">
-                            <div class="carousel-track" id="${carouselId}">
-                                ${recos.map(reco => createCard(reco)).join('')}
-                            </div>
+                        <div class="card-info">
+                            <div class="card-date">${formatDate(reco.date)}</div>
+                            <h3 class="card-title">${reco.titre}</h3>
+                            <p class="card-description">${reco.description}</p>
                         </div>
                     </div>
                 `;
-            }
-
-            container.innerHTML = html || '<p class="carousel-empty">Aucune recommandation pour le moment</p>';
-        }
-
-        // ===== CREATE CARD =====
-        function createCard(reco) {
-            const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌', label: 'Autre' };
-            const tags = parseTags(reco.tags);
-            const index = RECOS.indexOf(reco);
-            const linkType = getContentTypeFromLink(reco.lien);
-            
-            let playIcon = '▶';
-            if (linkType === 'link') playIcon = '↗';
-            else if (linkType === 'image') playIcon = '🔍';
-
-            return `
-                <div class="card" onclick="openContent(${index})">
-                    <div class="card-image">
-                        ${reco.image 
-                            ? `<img src="${reco.image}" alt="${reco.titre}">`
-                            : `<div class="card-image-placeholder">${typeConfig.icon}</div>`
-                        }
-                        <div class="card-type-badge">${typeConfig.icon} ${typeConfig.label}</div>
-                        <div class="card-play-overlay">
-                            <div class="card-play-btn">${playIcon}</div>
-                        </div>
-                    </div>
-                    <div class="card-info">
-                        <div class="card-date">${formatDate(reco.date)}</div>
-                        <h3 class="card-title">${reco.titre}</h3>
-                        <div class="card-tags">
-                            ${tags.slice(0, 3).map(tag => `<span class="card-tag">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ===== SCROLL CAROUSEL =====
-        function scrollCarousel(id, direction) {
-            const track = document.getElementById(id);
-            const scrollAmount = 300;
-            track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            }).join('');
         }
 
         // ===== OPEN CONTENT =====
@@ -1068,11 +832,10 @@
             const reco = RECOS[index];
             if (!reco) return;
 
-            const linkType = getContentTypeFromLink(reco.lien);
-            const tags = parseTags(reco.tags);
+            const contentType = getContentType(reco.lien);
             
-            // Si c'est un lien externe, ouvrir dans nouvel onglet
-            if (linkType === 'link') {
+            // Si c'est un lien externe (chaîne YouTube, site web), ouvrir dans nouvel onglet
+            if (contentType.type === 'link') {
                 window.open(reco.lien, '_blank');
                 return;
             }
@@ -1080,26 +843,24 @@
             document.getElementById('popupTitle').textContent = reco.titre;
             document.getElementById('popupDescription').textContent = reco.description;
             document.getElementById('popupDate').textContent = formatDate(reco.date);
-            document.getElementById('popupTags').innerHTML = tags.map(tag => 
-                `<span class="content-popup-tag">${tag}</span>`
-            ).join('');
 
             const mediaContainer = document.getElementById('popupMedia');
             
-            if (linkType === 'youtube') {
+            if (contentType.type === 'youtube') {
                 const videoId = reco.lien.includes('youtu.be/') 
                     ? reco.lien.split('youtu.be/')[1]?.split('?')[0]
                     : reco.lien.split('v=')[1]?.split('&')[0];
                 mediaContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
-            } else if (linkType === 'loom') {
+            } else if (contentType.type === 'loom') {
                 const embedUrl = reco.lien.replace('/share/', '/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-            } else if (linkType === 'spotify') {
+            } else if (contentType.type === 'spotify') {
+                // Convertir le lien Spotify en embed
                 let embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="aspect-ratio: auto; height: 352px;" allow="encrypted-media"></iframe>`;
-            } else if (linkType === 'image') {
+            } else if (contentType.type === 'image') {
                 mediaContainer.innerHTML = `<img src="${reco.lien}" alt="${reco.titre}">`;
-            } else if (linkType === 'gdrive') {
+            } else if (contentType.type === 'gdrive') {
                 const fileId = reco.lien.split('/d/')[1]?.split('/')[0];
                 mediaContainer.innerHTML = `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="aspect-ratio: 4/3;"></iframe>`;
             }
@@ -1116,7 +877,7 @@
 
         // ===== MODAL =====
         function openModal() {
-            buildFilters();
+            buildMonthFilter();
             filterModalItems();
             document.getElementById('modalOverlay').classList.add('visible');
         }
@@ -1127,75 +888,62 @@
             }
         }
 
-        function buildFilters() {
-            // Month filter
-            const monthSelect = document.getElementById('monthFilter');
+        function buildMonthFilter() {
+            const select = document.getElementById('monthFilter');
             const months = {};
+            
             RECOS.forEach(reco => {
                 const date = new Date(reco.date);
                 const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                 const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
                 months[key] = label.charAt(0).toUpperCase() + label.slice(1);
             });
-            const sortedMonths = Object.keys(months).sort().reverse();
-            monthSelect.innerHTML = '<option value="all">Tous</option>' + 
-                sortedMonths.map(key => `<option value="${key}">${months[key]}</option>`).join('');
 
-            // Tag filter
-            const tagSelect = document.getElementById('tagFilter');
-            const allTags = new Set();
-            RECOS.forEach(reco => parseTags(reco.tags).forEach(tag => allTags.add(tag)));
-            const sortedTags = [...allTags].sort();
-            tagSelect.innerHTML = '<option value="all">Toutes</option>' + 
-                sortedTags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
+            const sortedKeys = Object.keys(months).sort().reverse();
+            select.innerHTML = '<option value="all">Tous les mois</option>';
+            sortedKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = months[key];
+                select.appendChild(option);
+            });
         }
 
         function filterModalItems() {
             const monthFilter = document.getElementById('monthFilter').value;
-            const typeFilter = document.getElementById('typeFilter').value;
-            const tagFilter = document.getElementById('tagFilter').value;
             const container = document.getElementById('modalBody');
 
-            let filtered = RECOS.filter(reco => {
-                // Month
-                if (monthFilter !== 'all') {
+            let filtered = RECOS;
+            if (monthFilter !== 'all') {
+                filtered = RECOS.filter(reco => {
                     const date = new Date(reco.date);
                     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    if (key !== monthFilter) return false;
-                }
-                // Type
-                if (typeFilter !== 'all' && reco.type !== typeFilter) return false;
-                // Tag
-                if (tagFilter !== 'all' && !parseTags(reco.tags).includes(tagFilter)) return false;
-                return true;
-            });
+                    return key === monthFilter;
+                });
+            }
 
             document.getElementById('modalResultsCount').textContent = 
-                filtered.length + ' résultat' + (filtered.length > 1 ? 's' : '');
+                filtered.length + ' recommandation' + (filtered.length > 1 ? 's' : '');
 
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="modal-empty">
                         <div class="icon">📭</div>
-                        <p>Aucune recommandation trouvée</p>
+                        <p>Aucune recommandation ce mois-ci</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = filtered.map(reco => {
-                const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌' };
-                const tags = parseTags(reco.tags);
+                const contentType = getContentType(reco.lien);
                 const index = RECOS.indexOf(reco);
                 return `
                     <div class="modal-item" onclick="openContent(${index}); closeModal();">
-                        <div class="modal-item-icon">${typeConfig.icon}</div>
+                        <div class="modal-item-icon">${contentType.icon}</div>
                         <div class="modal-item-info">
                             <div class="modal-item-title">${reco.titre}</div>
-                            <div class="modal-item-meta">
-                                <span class="modal-item-date">${formatDate(reco.date)}</span>
-                                <span>${tags.join(', ')}</span>
-                            </div>
+                            <div class="modal-item-date">${formatDate(reco.date)}</div>
                         </div>
                     </div>
                 `;
