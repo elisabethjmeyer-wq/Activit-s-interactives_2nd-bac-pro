@@ -20,6 +20,34 @@
             color: #ffffff;
         }
 
+        /* ===== LOADING ===== */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+        }
+
         /* ===== HEADER ===== */
         .header {
             padding: 25px 30px;
@@ -628,6 +656,24 @@
             margin-top: 10px;
         }
 
+        /* ===== ERROR MESSAGE ===== */
+        .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .error-message .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .error-message h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .header {
@@ -679,31 +725,40 @@
 
     <!-- MAIN CONTAINER -->
     <div class="main-container">
-
-        <!-- FEATURED -->
-        <div class="featured-section" id="featuredSection" onclick="openContent(0)">
-            <div class="featured-background" id="featuredBg"></div>
-            <div class="featured-overlay"></div>
-            <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
-            <div class="featured-content">
-                <span class="featured-badge">⭐ Cette semaine</span>
-                <span class="featured-type" id="featuredType"></span>
-                <h1 class="featured-title" id="featuredTitle"></h1>
-                <p class="featured-description" id="featuredDescription"></p>
-                <div class="featured-tags" id="featuredTags"></div>
-                <p class="featured-date" id="featuredDate"></p>
-            </div>
+        
+        <!-- LOADING STATE -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Chargement des recommandations...</p>
         </div>
 
-        <!-- PREVIOUS -->
-        <div class="section-header">
-            <h2 class="section-title">🎵 À écouter</h2>
-            <div class="section-nav">
-                <button onclick="scrollCards(-1)">‹</button>
-                <button onclick="scrollCards(1)">›</button>
+        <!-- CONTENT (hidden initially) -->
+        <div id="mainContent" style="display: none;">
+            <!-- FEATURED -->
+            <div class="featured-section" id="featuredSection" onclick="openContent(0)">
+                <div class="featured-background" id="featuredBg"></div>
+                <div class="featured-overlay"></div>
+                <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
+                <div class="featured-content">
+                    <span class="featured-badge">⭐ Cette semaine</span>
+                    <span class="featured-type" id="featuredType"></span>
+                    <h1 class="featured-title" id="featuredTitle"></h1>
+                    <p class="featured-description" id="featuredDescription"></p>
+                    <div class="featured-tags" id="featuredTags"></div>
+                    <p class="featured-date" id="featuredDate"></p>
+                </div>
             </div>
+
+            <!-- PREVIOUS -->
+            <div class="section-header">
+                <h2 class="section-title">🎵 À écouter</h2>
+                <div class="section-nav">
+                    <button onclick="scrollCards(-1)">‹</button>
+                    <button onclick="scrollCards(1)">›</button>
+                </div>
+            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
         </div>
-        <div class="cards-grid" id="cardsGrid"></div>
 
     </div>
 
@@ -745,27 +800,111 @@
     </div>
 
     <script>
-        // ===== DONNÉES - À REMPLACER PAR TON GOOGLE SHEET =====
-        let RECOS = [
-            {
-                date: '2026-09-02',
-                titre: 'Les quatres saisons de Vivaldi',
-                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son de 1756 !',
-                lien: 'https://drive.google.com/file/d/1MfSP7mxY90Yom6bPdwpkI20zPZfLgcc7/view?usp=sharing',
-                image: 'https://drive.google.com/file/d/1yZMJmRfSPWVSU5E4pA9NhlGD1tNUBFKb/view?usp=sharing',
-                type: 'ecouter',
-                tags: ['Histoire', 'Littérature', 'La mise en relation du monde']
-            },
-            {
-                date: '2026-01-05',
-                titre: 'Les quatres saisons de Vivaldi',
-                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son de 1756 !',
-                lien: 'https://drive.google.com/file/d/1MfSP7mxY90Yom6bPdwpkI20zPZfLgcc7/view?usp=sharing',
-                image: 'https://drive.google.com/file/d/1yZMJmRfSPWVSU5E4pA9NhlGD1tNUBFKb/view?usp=sharing',
-                type: 'ecouter',
-                tags: ['Histoire', 'Littérature']
+        // ===== CONFIGURATION GOOGLE SHEET =====
+        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        const SHEET_NAME = 'Feuille 1'; // Nom de l'onglet (modifie si différent)
+        
+        // URL pour récupérer les données en JSON
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+        let RECOS = [];
+
+        // ===== CHARGER LES DONNÉES DU GOOGLE SHEET =====
+        async function loadFromGoogleSheet() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                
+                // Google renvoie du JSONP, on extrait le JSON
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+                if (!jsonString || !jsonString[1]) {
+                    throw new Error('Format de réponse invalide');
+                }
+                
+                const data = JSON.parse(jsonString[1]);
+                const rows = data.table.rows;
+                const cols = data.table.cols;
+                
+                // Trouver les indices des colonnes
+                const colIndex = {};
+                cols.forEach((col, index) => {
+                    const label = col.label?.toLowerCase().trim() || '';
+                    if (label.includes('date')) colIndex.date = index;
+                    else if (label.includes('titre')) colIndex.titre = index;
+                    else if (label.includes('description')) colIndex.description = index;
+                    else if (label.includes('lien') && !label.includes('image')) colIndex.lien = index;
+                    else if (label.includes('image')) colIndex.image = index;
+                    else if (label.includes('type')) colIndex.type = index;
+                    else if (label.includes('tag')) colIndex.tags = index;
+                });
+                
+                // Si les colonnes ne sont pas trouvées par label, utiliser l'ordre par défaut
+                // A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
+                if (colIndex.date === undefined) colIndex.date = 0;
+                if (colIndex.titre === undefined) colIndex.titre = 1;
+                if (colIndex.description === undefined) colIndex.description = 2;
+                if (colIndex.lien === undefined) colIndex.lien = 3;
+                if (colIndex.image === undefined) colIndex.image = 4;
+                if (colIndex.type === undefined) colIndex.type = 5;
+                if (colIndex.tags === undefined) colIndex.tags = 6;
+                
+                // Convertir les lignes en objets
+                RECOS = rows
+                    .filter(row => row.c && row.c[colIndex.date]?.v) // Ignorer les lignes vides
+                    .map(row => {
+                        const getValue = (index) => {
+                            const cell = row.c[index];
+                            if (!cell) return '';
+                            return cell.v || '';
+                        };
+                        
+                        // Gérer la date (peut être au format Date() ou string)
+                        let dateValue = getValue(colIndex.date);
+                        if (typeof dateValue === 'string' && dateValue.startsWith('Date(')) {
+                            // Format Google: Date(year,month,day)
+                            const match = dateValue.match(/Date\((\d+),(\d+),(\d+)\)/);
+                            if (match) {
+                                const year = parseInt(match[1]);
+                                const month = String(parseInt(match[2]) + 1).padStart(2, '0');
+                                const day = String(parseInt(match[3])).padStart(2, '0');
+                                dateValue = `${year}-${month}-${day}`;
+                            }
+                        } else if (dateValue instanceof Date) {
+                            dateValue = dateValue.toISOString().split('T')[0];
+                        } else if (typeof dateValue === 'string') {
+                            // Convertir DD-MM-YYYY en YYYY-MM-DD
+                            const parts = dateValue.split(/[-\/]/);
+                            if (parts.length === 3 && parts[0].length <= 2) {
+                                dateValue = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+                            }
+                        }
+                        
+                        // Gérer les tags (séparés par virgule ou point-virgule)
+                        let tags = getValue(colIndex.tags);
+                        if (typeof tags === 'string' && tags.trim()) {
+                            tags = tags.split(/[,;]/).map(t => t.trim()).filter(t => t);
+                        } else {
+                            tags = [];
+                        }
+                        
+                        return {
+                            date: dateValue,
+                            titre: getValue(colIndex.titre),
+                            description: getValue(colIndex.description),
+                            lien: getValue(colIndex.lien),
+                            image: getValue(colIndex.image),
+                            type: getValue(colIndex.type),
+                            tags: tags
+                        };
+                    })
+                    .filter(reco => reco.titre); // Ignorer les entrées sans titre
+                
+                return true;
+            } catch (error) {
+                console.error('Erreur lors du chargement du Google Sheet:', error);
+                return false;
             }
-        ];
+        }
 
         // ===== CONVERTIR LIEN GOOGLE DRIVE EN IMAGE DIRECTE =====
         function convertGoogleDriveUrl(url) {
@@ -803,13 +942,15 @@
         function getContentType(lien, type) {
             // Si un type est spécifié dans les données, l'utiliser
             if (type) {
+                const typeStr = type.toLowerCase().trim();
                 const types = {
                     'ecouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
+                    'écouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
                     'regarder': { type: 'video', icon: '🎬', label: 'À regarder' },
                     'lire': { type: 'read', icon: '📖', label: 'À lire' }
                 };
-                if (types[type.toLowerCase()]) {
-                    return types[type.toLowerCase()];
+                if (types[typeStr]) {
+                    return types[typeStr];
                 }
             }
             
@@ -833,11 +974,29 @@
         }
 
         // ===== INIT =====
-        function init() {
+        async function init() {
+            const success = await loadFromGoogleSheet();
+            
+            document.getElementById('loadingState').style.display = 'none';
+            
+            if (!success || RECOS.length === 0) {
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="error-message">
+                        <div class="icon">📭</div>
+                        <h2>Aucune recommandation</h2>
+                        <p>Vérifie que ton Google Sheet contient des données et qu'il est bien partagé.</p>
+                    </div>
+                `;
+                document.getElementById('mainContent').style.display = 'block';
+                return;
+            }
+            
             // Trier par date décroissante (plus récent en premier)
             RECOS.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             document.getElementById('recoCount').textContent = RECOS.length;
+            document.getElementById('mainContent').style.display = 'block';
+            
             displayFeatured();
             displayCards();
         }
@@ -990,6 +1149,7 @@
             
             RECOS.forEach(reco => {
                 const date = new Date(reco.date);
+                if (isNaN(date.getTime())) return;
                 const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                 const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
                 months[key] = label.charAt(0).toUpperCase() + label.slice(1);
@@ -1013,6 +1173,7 @@
             if (monthFilter !== 'all') {
                 filtered = RECOS.filter(reco => {
                     const date = new Date(reco.date);
+                    if (isNaN(date.getTime())) return false;
                     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                     return key === monthFilter;
                 });
