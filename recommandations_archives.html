@@ -1097,8 +1097,8 @@
 
             const contentType = getContentType(reco.lien, reco.type);
             
-            // Si c'est un lien externe (chaîne YouTube, site web), ouvrir dans nouvel onglet
-            if (contentType.type === 'link') {
+            // Si c'est un lien externe (chaîne YouTube, site web, article), ouvrir dans nouvel onglet
+            if (contentType.type === 'link' || contentType.type === 'read') {
                 window.open(reco.lien, '_blank');
                 return;
             }
