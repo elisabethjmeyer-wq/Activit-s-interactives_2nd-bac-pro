@@ -802,10 +802,9 @@
     <script>
         // ===== CONFIGURATION GOOGLE SHEET =====
         const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_NAME = 'Feuille 1'; // Nom de l'onglet (modifie si différent)
         
         // URL pour récupérer les données en JSON
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
 
         let RECOS = [];
 
@@ -823,64 +822,37 @@
                 
                 const data = JSON.parse(jsonString[1]);
                 const rows = data.table.rows;
-                const cols = data.table.cols;
                 
-                // Trouver les indices des colonnes
-                const colIndex = {};
-                cols.forEach((col, index) => {
-                    const label = col.label?.toLowerCase().trim() || '';
-                    if (label.includes('date')) colIndex.date = index;
-                    else if (label.includes('titre')) colIndex.titre = index;
-                    else if (label.includes('description')) colIndex.description = index;
-                    else if (label.includes('lien') && !label.includes('image')) colIndex.lien = index;
-                    else if (label.includes('image')) colIndex.image = index;
-                    else if (label.includes('type')) colIndex.type = index;
-                    else if (label.includes('tag')) colIndex.tags = index;
-                });
+                console.log('Données brutes:', data.table);
                 
-                // Si les colonnes ne sont pas trouvées par label, utiliser l'ordre par défaut
-                // A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
-                if (colIndex.date === undefined) colIndex.date = 0;
-                if (colIndex.titre === undefined) colIndex.titre = 1;
-                if (colIndex.description === undefined) colIndex.description = 2;
-                if (colIndex.lien === undefined) colIndex.lien = 3;
-                if (colIndex.image === undefined) colIndex.image = 4;
-                if (colIndex.type === undefined) colIndex.type = 5;
-                if (colIndex.tags === undefined) colIndex.tags = 6;
-                
-                // Convertir les lignes en objets
+                // Les colonnes sont dans l'ordre: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
                 RECOS = rows
-                    .filter(row => row.c && row.c[colIndex.date]?.v) // Ignorer les lignes vides
+                    .filter(row => row.c && row.c[0]) // Ignorer les lignes sans date
                     .map(row => {
                         const getValue = (index) => {
                             const cell = row.c[index];
                             if (!cell) return '';
-                            return cell.v || '';
+                            // Priorité à la valeur formatée (f) si disponible, sinon la valeur brute (v)
+                            return cell.f || cell.v || '';
                         };
                         
-                        // Gérer la date (peut être au format Date() ou string)
-                        let dateValue = getValue(colIndex.date);
-                        if (typeof dateValue === 'string' && dateValue.startsWith('Date(')) {
-                            // Format Google: Date(year,month,day)
-                            const match = dateValue.match(/Date\((\d+),(\d+),(\d+)\)/);
-                            if (match) {
-                                const year = parseInt(match[1]);
-                                const month = String(parseInt(match[2]) + 1).padStart(2, '0');
-                                const day = String(parseInt(match[3])).padStart(2, '0');
-                                dateValue = `${year}-${month}-${day}`;
-                            }
-                        } else if (dateValue instanceof Date) {
-                            dateValue = dateValue.toISOString().split('T')[0];
-                        } else if (typeof dateValue === 'string') {
-                            // Convertir DD-MM-YYYY en YYYY-MM-DD
-                            const parts = dateValue.split(/[-\/]/);
-                            if (parts.length === 3 && parts[0].length <= 2) {
-                                dateValue = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+                        // Gérer la date
+                        let dateValue = '';
+                        const dateCell = row.c[0];
+                        if (dateCell) {
+                            if (dateCell.f) {
+                                // Utiliser la valeur formatée si disponible (ex: "01-05-2026")
+                                dateValue = dateCell.f;
+                            } else if (dateCell.v) {
+                                dateValue = dateCell.v;
                             }
                         }
                         
+                        // Convertir la date au format YYYY-MM-DD pour le tri
+                        const dateForSort = parseDate(dateValue);
+                        
                         // Gérer les tags (séparés par virgule ou point-virgule)
-                        let tags = getValue(colIndex.tags);
+                        let tags = getValue(6);
                         if (typeof tags === 'string' && tags.trim()) {
                             tags = tags.split(/[,;]/).map(t => t.trim()).filter(t => t);
                         } else {
@@ -889,21 +861,53 @@
                         
                         return {
                             date: dateValue,
-                            titre: getValue(colIndex.titre),
-                            description: getValue(colIndex.description),
-                            lien: getValue(colIndex.lien),
-                            image: getValue(colIndex.image),
-                            type: getValue(colIndex.type),
+                            dateSort: dateForSort,
+                            titre: getValue(1),
+                            description: getValue(2),
+                            lien: getValue(3),
+                            image: getValue(4),
+                            type: getValue(5),
                             tags: tags
                         };
                     })
                     .filter(reco => reco.titre); // Ignorer les entrées sans titre
                 
+                console.log('Recommandations chargées:', RECOS);
                 return true;
             } catch (error) {
                 console.error('Erreur lors du chargement du Google Sheet:', error);
                 return false;
             }
+        }
+
+        // ===== PARSER LA DATE =====
+        function parseDate(dateStr) {
+            if (!dateStr) return '1970-01-01';
+            
+            // Si c'est déjà au format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                return dateStr;
+            }
+            
+            // Format DD-MM-YYYY ou DD/MM/YYYY
+            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const day = match[1].padStart(2, '0');
+                const month = match[2].padStart(2, '0');
+                const year = match[3];
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Format Google Date(year,month,day)
+            const googleMatch = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+            if (googleMatch) {
+                const year = googleMatch[1];
+                const month = String(parseInt(googleMatch[2]) + 1).padStart(2, '0');
+                const day = googleMatch[3].padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            return '1970-01-01';
         }
 
         // ===== CONVERTIR LIEN GOOGLE DRIVE EN IMAGE DIRECTE =====
@@ -992,7 +996,11 @@
             }
             
             // Trier par date décroissante (plus récent en premier)
-            RECOS.sort((a, b) => new Date(b.date) - new Date(a.date));
+            RECOS.sort((a, b) => {
+                if (a.dateSort > b.dateSort) return -1;
+                if (a.dateSort < b.dateSort) return 1;
+                return 0;
+            });
             
             document.getElementById('recoCount').textContent = RECOS.length;
             document.getElementById('mainContent').style.display = 'block';
@@ -1015,7 +1023,7 @@
             document.getElementById('featuredBg').style.backgroundImage = imageUrl ? `url('${imageUrl}')` : '';
             document.getElementById('featuredTitle').textContent = reco.titre;
             document.getElementById('featuredDescription').textContent = reco.description;
-            document.getElementById('featuredDate').textContent = formatDate(reco.date);
+            document.getElementById('featuredDate').textContent = formatDateDisplay(reco.date);
             document.getElementById('featuredType').innerHTML = `${contentType.icon} ${contentType.label}`;
             
             // Afficher les tags
@@ -1066,7 +1074,7 @@
                             </div>
                         </div>
                         <div class="card-info">
-                            <div class="card-date">${formatDate(reco.date)}</div>
+                            <div class="card-date">${formatDateDisplay(reco.date)}</div>
                             <h3 class="card-title">${reco.titre}</h3>
                             ${reco.tags && reco.tags.length > 0 ? `
                                 <div class="card-tags">
@@ -1094,7 +1102,7 @@
 
             document.getElementById('popupTitle').textContent = reco.titre;
             document.getElementById('popupDescription').textContent = reco.description;
-            document.getElementById('popupDate').textContent = formatDate(reco.date);
+            document.getElementById('popupDate').textContent = formatDateDisplay(reco.date);
 
             const mediaContainer = document.getElementById('popupMedia');
             
@@ -1102,7 +1110,7 @@
                 const videoId = reco.lien.includes('youtu.be/') 
                     ? reco.lien.split('youtu.be/')[1]?.split('?')[0]
                     : reco.lien.split('v=')[1]?.split('&')[0];
-                mediaContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+                mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen></iframe>`;
             } else if (contentType.type === 'loom') {
                 const embedUrl = reco.lien.replace('/share/', '/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
@@ -1148,9 +1156,10 @@
             const months = {};
             
             RECOS.forEach(reco => {
-                const date = new Date(reco.date);
-                if (isNaN(date.getTime())) return;
-                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                if (!reco.dateSort || reco.dateSort === '1970-01-01') return;
+                const [year, month] = reco.dateSort.split('-');
+                const key = `${year}-${month}`;
+                const date = new Date(reco.dateSort);
                 const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
                 months[key] = label.charAt(0).toUpperCase() + label.slice(1);
             });
@@ -1172,10 +1181,9 @@
             let filtered = RECOS;
             if (monthFilter !== 'all') {
                 filtered = RECOS.filter(reco => {
-                    const date = new Date(reco.date);
-                    if (isNaN(date.getTime())) return false;
-                    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    return key === monthFilter;
+                    if (!reco.dateSort) return false;
+                    const [year, month] = reco.dateSort.split('-');
+                    return `${year}-${month}` === monthFilter;
                 });
             }
 
@@ -1200,27 +1208,42 @@
                         <div class="modal-item-icon">${contentType.icon}</div>
                         <div class="modal-item-info">
                             <div class="modal-item-title">${reco.titre}</div>
-                            <div class="modal-item-date">${formatDate(reco.date)}</div>
+                            <div class="modal-item-date">${formatDateDisplay(reco.date)}</div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // ===== FORMAT DATE =====
-        function formatDate(dateStr) {
+        // ===== FORMAT DATE FOR DISPLAY =====
+        function formatDateDisplay(dateStr) {
             if (!dateStr) return '';
-            try {
-                const date = new Date(dateStr);
-                if (isNaN(date.getTime())) return dateStr;
+            
+            // Si c'est déjà au format DD-MM-YYYY ou DD/MM/YYYY, le convertir pour l'affichage
+            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = parseInt(match[3]);
+                const date = new Date(year, month, day);
                 return date.toLocaleDateString('fr-FR', { 
                     day: 'numeric', 
                     month: 'long', 
                     year: 'numeric' 
                 });
-            } catch {
-                return dateStr;
             }
+            
+            // Si c'est au format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('fr-FR', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
+            
+            return dateStr;
         }
 
         // ===== KEYBOARD =====
