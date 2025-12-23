@@ -398,17 +398,6 @@
             font-weight: 600;
         }
 
-        .current-video-arrow {
-            font-size: 24px;
-            color: #cbd5e1;
-            transition: all 0.2s;
-        }
-
-        .current-video-content:hover .current-video-arrow {
-            color: #8b5cf6;
-            transform: translateX(5px);
-        }
-
         /* ===== ARCHIVES LIST ===== */
         .archives-section {
             background: white;
@@ -477,17 +466,6 @@
         .video-item-date {
             font-size: 13px;
             color: #64748b;
-        }
-
-        .video-item-arrow {
-            color: #cbd5e1;
-            font-size: 18px;
-            transition: transform 0.2s;
-        }
-
-        .video-item:hover .video-item-arrow {
-            color: #8b5cf6;
-            transform: translateX(3px);
         }
 
         /* ===== EMPTY STATE ===== */
@@ -564,7 +542,6 @@
                     <div class="current-video-title" id="currentTitle"></div>
                     <div class="current-video-date" id="currentDate"></div>
                 </div>
-                <div class="current-video-arrow">→</div>
             </div>
         </div>
 
@@ -723,7 +700,6 @@
                         <div class="video-item-title">${video.titre}</div>
                         <div class="video-item-date">${formatDate(video.date)}</div>
                     </div>
-                    <div class="video-item-arrow">→</div>
                 </div>
             `).join('');
         }
