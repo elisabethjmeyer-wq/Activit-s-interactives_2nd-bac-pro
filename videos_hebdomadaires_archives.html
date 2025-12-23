@@ -557,8 +557,11 @@
                     const row = rows[i].c;
                     if (!row[0] || row[0].v === null) continue;
                     
+                    // Extraire la date (peut être formatée ou valeur brute)
+                    let dateValue = row[0]?.f || row[0]?.v || '';
+                    
                     const video = {
-                        date: row[0]?.v || '',
+                        date: dateValue,
                         titre: row[1]?.v || '',
                         lien: row[2]?.v || ''
                     };
@@ -569,7 +572,11 @@
                 }
                 
                 // Trier par date décroissante (plus récent en premier)
-                VIDEOS.sort((a, b) => new Date(b.date) - new Date(a.date));
+                VIDEOS.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateB - dateA;
+                });
                 
                 console.log(`✅ ${VIDEOS.length} vidéos chargées depuis Google Sheets`);
                 return true;
@@ -649,8 +656,30 @@
         // ===== FORMAT DATE =====
         function formatDate(dateStr) {
             if (!dateStr) return '';
+            
             try {
+                // Si c'est déjà un objet Date de Google Sheets (format Date(year,month,day))
+                if (typeof dateStr === 'string' && dateStr.includes('Date(')) {
+                    const match = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+                    if (match) {
+                        const year = parseInt(match[1]);
+                        const month = parseInt(match[2]); // 0-indexed dans Google
+                        const day = parseInt(match[3]);
+                        const date = new Date(year, month, day);
+                        return date.toLocaleDateString('fr-FR', { 
+                            day: 'numeric', 
+                            month: 'long', 
+                            year: 'numeric' 
+                        });
+                    }
+                }
+                
+                // Format AAAA-MM-JJ ou autre format standard
                 const date = new Date(dateStr);
+                if (isNaN(date.getTime())) {
+                    return dateStr; // Retourner tel quel si pas parsable
+                }
+                
                 return date.toLocaleDateString('fr-FR', { 
                     day: 'numeric', 
                     month: 'long', 
