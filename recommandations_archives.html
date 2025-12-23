@@ -20,6 +20,34 @@
             color: #ffffff;
         }
 
+        /* ===== LOADING ===== */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+        }
+
         /* ===== HEADER ===== */
         .header {
             padding: 25px 30px;
@@ -628,6 +656,24 @@
             margin-top: 10px;
         }
 
+        /* ===== ERROR MESSAGE ===== */
+        .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .error-message .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .error-message h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .header {
@@ -679,31 +725,40 @@
 
     <!-- MAIN CONTAINER -->
     <div class="main-container">
-
-        <!-- FEATURED -->
-        <div class="featured-section" id="featuredSection" onclick="openContent(0)">
-            <div class="featured-background" id="featuredBg"></div>
-            <div class="featured-overlay"></div>
-            <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
-            <div class="featured-content">
-                <span class="featured-badge">⭐ Cette semaine</span>
-                <span class="featured-type" id="featuredType"></span>
-                <h1 class="featured-title" id="featuredTitle"></h1>
-                <p class="featured-description" id="featuredDescription"></p>
-                <div class="featured-tags" id="featuredTags"></div>
-                <p class="featured-date" id="featuredDate"></p>
-            </div>
+        
+        <!-- LOADING STATE -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Chargement des recommandations...</p>
         </div>
 
-        <!-- PREVIOUS -->
-        <div class="section-header">
-            <h2 class="section-title">🎵 À écouter</h2>
-            <div class="section-nav">
-                <button onclick="scrollCards(-1)">‹</button>
-                <button onclick="scrollCards(1)">›</button>
+        <!-- CONTENT (hidden initially) -->
+        <div id="mainContent" style="display: none;">
+            <!-- FEATURED -->
+            <div class="featured-section" id="featuredSection" onclick="openContent(0)">
+                <div class="featured-background" id="featuredBg"></div>
+                <div class="featured-overlay"></div>
+                <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
+                <div class="featured-content">
+                    <span class="featured-badge">⭐ Cette semaine</span>
+                    <span class="featured-type" id="featuredType"></span>
+                    <h1 class="featured-title" id="featuredTitle"></h1>
+                    <p class="featured-description" id="featuredDescription"></p>
+                    <div class="featured-tags" id="featuredTags"></div>
+                    <p class="featured-date" id="featuredDate"></p>
+                </div>
             </div>
+
+            <!-- PREVIOUS -->
+            <div class="section-header">
+                <h2 class="section-title">🎵 À écouter</h2>
+                <div class="section-nav">
+                    <button onclick="scrollCards(-1)">‹</button>
+                    <button onclick="scrollCards(1)">›</button>
+                </div>
+            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
         </div>
-        <div class="cards-grid" id="cardsGrid"></div>
 
     </div>
 
@@ -745,27 +800,118 @@
     </div>
 
     <script>
-        // ===== DONNÉES - À REMPLACER PAR TON GOOGLE SHEET =====
-        let RECOS = [
-            {
-                date: '2026-09-02',
-                titre: 'Les quatres saisons de Vivaldi',
-                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son de 1756 !',
-                lien: 'https://drive.google.com/file/d/1MfSP7mxY90Yom6bPdwpkI20zPZfLgcc7/view?usp=sharing',
-                image: 'https://drive.google.com/file/d/1yZMJmRfSPWVSU5E4pA9NhlGD1tNUBFKb/view?usp=sharing',
-                type: 'ecouter',
-                tags: ['Histoire', 'Littérature', 'La mise en relation du monde']
-            },
-            {
-                date: '2026-01-05',
-                titre: 'Les quatres saisons de Vivaldi',
-                description: 'Cette semaine on se met dans l\'ambiance du 18e siècle avec LE son de 1756 !',
-                lien: 'https://drive.google.com/file/d/1MfSP7mxY90Yom6bPdwpkI20zPZfLgcc7/view?usp=sharing',
-                image: 'https://drive.google.com/file/d/1yZMJmRfSPWVSU5E4pA9NhlGD1tNUBFKb/view?usp=sharing',
-                type: 'ecouter',
-                tags: ['Histoire', 'Littérature']
+        // ===== CONFIGURATION GOOGLE SHEET =====
+        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        
+        // Nom de l'onglet contenant les recommandations (modifie si différent)
+        const SHEET_NAME = 'recommandations';
+        
+        // URL pour récupérer les données en JSON
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+        let RECOS = [];
+
+        // ===== CHARGER LES DONNÉES DU GOOGLE SHEET =====
+        async function loadFromGoogleSheet() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                
+                // Google renvoie du JSONP, on extrait le JSON
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+                if (!jsonString || !jsonString[1]) {
+                    throw new Error('Format de réponse invalide');
+                }
+                
+                const data = JSON.parse(jsonString[1]);
+                const rows = data.table.rows;
+                
+                console.log('Données brutes:', data.table);
+                
+                // Les colonnes sont dans l'ordre: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
+                RECOS = rows
+                    .filter(row => row.c && row.c[0]) // Ignorer les lignes sans date
+                    .map(row => {
+                        const getValue = (index) => {
+                            const cell = row.c[index];
+                            if (!cell) return '';
+                            // Priorité à la valeur formatée (f) si disponible, sinon la valeur brute (v)
+                            return cell.f || cell.v || '';
+                        };
+                        
+                        // Gérer la date
+                        let dateValue = '';
+                        const dateCell = row.c[0];
+                        if (dateCell) {
+                            if (dateCell.f) {
+                                // Utiliser la valeur formatée si disponible (ex: "01-05-2026")
+                                dateValue = dateCell.f;
+                            } else if (dateCell.v) {
+                                dateValue = dateCell.v;
+                            }
+                        }
+                        
+                        // Convertir la date au format YYYY-MM-DD pour le tri
+                        const dateForSort = parseDate(dateValue);
+                        
+                        // Gérer les tags (séparés par virgule ou point-virgule)
+                        let tags = getValue(6);
+                        if (typeof tags === 'string' && tags.trim()) {
+                            tags = tags.split(/[,;]/).map(t => t.trim()).filter(t => t);
+                        } else {
+                            tags = [];
+                        }
+                        
+                        return {
+                            date: dateValue,
+                            dateSort: dateForSort,
+                            titre: getValue(1),
+                            description: getValue(2),
+                            lien: getValue(3),
+                            image: getValue(4),
+                            type: getValue(5),
+                            tags: tags
+                        };
+                    })
+                    .filter(reco => reco.titre); // Ignorer les entrées sans titre
+                
+                console.log('Recommandations chargées:', RECOS);
+                return true;
+            } catch (error) {
+                console.error('Erreur lors du chargement du Google Sheet:', error);
+                return false;
             }
-        ];
+        }
+
+        // ===== PARSER LA DATE =====
+        function parseDate(dateStr) {
+            if (!dateStr) return '1970-01-01';
+            
+            // Si c'est déjà au format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                return dateStr;
+            }
+            
+            // Format DD-MM-YYYY ou DD/MM/YYYY
+            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const day = match[1].padStart(2, '0');
+                const month = match[2].padStart(2, '0');
+                const year = match[3];
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Format Google Date(year,month,day)
+            const googleMatch = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+            if (googleMatch) {
+                const year = googleMatch[1];
+                const month = String(parseInt(googleMatch[2]) + 1).padStart(2, '0');
+                const day = googleMatch[3].padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            return '1970-01-01';
+        }
 
         // ===== CONVERTIR LIEN GOOGLE DRIVE EN IMAGE DIRECTE =====
         function convertGoogleDriveUrl(url) {
@@ -803,13 +949,15 @@
         function getContentType(lien, type) {
             // Si un type est spécifié dans les données, l'utiliser
             if (type) {
+                const typeStr = type.toLowerCase().trim();
                 const types = {
                     'ecouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
+                    'écouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
                     'regarder': { type: 'video', icon: '🎬', label: 'À regarder' },
                     'lire': { type: 'read', icon: '📖', label: 'À lire' }
                 };
-                if (types[type.toLowerCase()]) {
-                    return types[type.toLowerCase()];
+                if (types[typeStr]) {
+                    return types[typeStr];
                 }
             }
             
@@ -833,11 +981,33 @@
         }
 
         // ===== INIT =====
-        function init() {
+        async function init() {
+            const success = await loadFromGoogleSheet();
+            
+            document.getElementById('loadingState').style.display = 'none';
+            
+            if (!success || RECOS.length === 0) {
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="error-message">
+                        <div class="icon">📭</div>
+                        <h2>Aucune recommandation</h2>
+                        <p>Vérifie que ton Google Sheet contient des données et qu'il est bien partagé.</p>
+                    </div>
+                `;
+                document.getElementById('mainContent').style.display = 'block';
+                return;
+            }
+            
             // Trier par date décroissante (plus récent en premier)
-            RECOS.sort((a, b) => new Date(b.date) - new Date(a.date));
+            RECOS.sort((a, b) => {
+                if (a.dateSort > b.dateSort) return -1;
+                if (a.dateSort < b.dateSort) return 1;
+                return 0;
+            });
             
             document.getElementById('recoCount').textContent = RECOS.length;
+            document.getElementById('mainContent').style.display = 'block';
+            
             displayFeatured();
             displayCards();
         }
@@ -856,7 +1026,7 @@
             document.getElementById('featuredBg').style.backgroundImage = imageUrl ? `url('${imageUrl}')` : '';
             document.getElementById('featuredTitle').textContent = reco.titre;
             document.getElementById('featuredDescription').textContent = reco.description;
-            document.getElementById('featuredDate').textContent = formatDate(reco.date);
+            document.getElementById('featuredDate').textContent = formatDateDisplay(reco.date);
             document.getElementById('featuredType').innerHTML = `${contentType.icon} ${contentType.label}`;
             
             // Afficher les tags
@@ -907,7 +1077,7 @@
                             </div>
                         </div>
                         <div class="card-info">
-                            <div class="card-date">${formatDate(reco.date)}</div>
+                            <div class="card-date">${formatDateDisplay(reco.date)}</div>
                             <h3 class="card-title">${reco.titre}</h3>
                             ${reco.tags && reco.tags.length > 0 ? `
                                 <div class="card-tags">
@@ -935,7 +1105,7 @@
 
             document.getElementById('popupTitle').textContent = reco.titre;
             document.getElementById('popupDescription').textContent = reco.description;
-            document.getElementById('popupDate').textContent = formatDate(reco.date);
+            document.getElementById('popupDate').textContent = formatDateDisplay(reco.date);
 
             const mediaContainer = document.getElementById('popupMedia');
             
@@ -943,7 +1113,7 @@
                 const videoId = reco.lien.includes('youtu.be/') 
                     ? reco.lien.split('youtu.be/')[1]?.split('?')[0]
                     : reco.lien.split('v=')[1]?.split('&')[0];
-                mediaContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+                mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen></iframe>`;
             } else if (contentType.type === 'loom') {
                 const embedUrl = reco.lien.replace('/share/', '/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
@@ -989,8 +1159,10 @@
             const months = {};
             
             RECOS.forEach(reco => {
-                const date = new Date(reco.date);
-                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                if (!reco.dateSort || reco.dateSort === '1970-01-01') return;
+                const [year, month] = reco.dateSort.split('-');
+                const key = `${year}-${month}`;
+                const date = new Date(reco.dateSort);
                 const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
                 months[key] = label.charAt(0).toUpperCase() + label.slice(1);
             });
@@ -1012,9 +1184,9 @@
             let filtered = RECOS;
             if (monthFilter !== 'all') {
                 filtered = RECOS.filter(reco => {
-                    const date = new Date(reco.date);
-                    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    return key === monthFilter;
+                    if (!reco.dateSort) return false;
+                    const [year, month] = reco.dateSort.split('-');
+                    return `${year}-${month}` === monthFilter;
                 });
             }
 
@@ -1039,27 +1211,42 @@
                         <div class="modal-item-icon">${contentType.icon}</div>
                         <div class="modal-item-info">
                             <div class="modal-item-title">${reco.titre}</div>
-                            <div class="modal-item-date">${formatDate(reco.date)}</div>
+                            <div class="modal-item-date">${formatDateDisplay(reco.date)}</div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // ===== FORMAT DATE =====
-        function formatDate(dateStr) {
+        // ===== FORMAT DATE FOR DISPLAY =====
+        function formatDateDisplay(dateStr) {
             if (!dateStr) return '';
-            try {
-                const date = new Date(dateStr);
-                if (isNaN(date.getTime())) return dateStr;
+            
+            // Si c'est déjà au format DD-MM-YYYY ou DD/MM/YYYY, le convertir pour l'affichage
+            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = parseInt(match[3]);
+                const date = new Date(year, month, day);
                 return date.toLocaleDateString('fr-FR', { 
                     day: 'numeric', 
                     month: 'long', 
                     year: 'numeric' 
                 });
-            } catch {
-                return dateStr;
             }
+            
+            // Si c'est au format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('fr-FR', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
+            
+            return dateStr;
         }
 
         // ===== KEYBOARD =====
