@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives - Vidéo de la semaine</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .header-badge {
+            background: #f3e8ff;
+            color: #7c3aed;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .header-badge:hover {
+            background: #ede9fe;
+            border-color: #a855f7;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 18px 20px;
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .modal-filters {
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group select {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .modal-results-count {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            background: #f1f5f9;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-video-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-video-item:last-child {
+            border-bottom: none;
+        }
+
+        .modal-video-item:hover {
+            background: #faf5ff;
+        }
+
+        .modal-video-icon {
+            width: 40px;
+            height: 40px;
+            background: #f3e8ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .modal-video-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modal-video-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .modal-video-date {
+            font-size: 12px;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        .modal-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .modal-empty .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 25px 20px;
+        }
+
+        /* ===== CURRENT VIDEO ===== */
+        .current-video {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .current-video-label {
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            color: white;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-video-content {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .current-video-content:hover {
+            background: #faf5ff;
+        }
+
+        .current-video-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            flex-shrink: 0;
+        }
+
+        .current-video-info {
+            flex: 1;
+        }
+
+        .current-video-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .current-video-date {
+            font-size: 14px;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        .current-video-arrow {
+            font-size: 24px;
+            color: #cbd5e1;
+            transition: all 0.2s;
+        }
+
+        .current-video-content:hover .current-video-arrow {
+            color: #8b5cf6;
+            transform: translateX(5px);
+        }
+
+        /* ===== ARCHIVES LIST ===== */
+        .archives-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .archives-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .video-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .video-item:last-child {
+            border-bottom: none;
+        }
+
+        .video-item:hover {
+            background: #faf5ff;
+        }
+
+        .video-item-icon {
+            width: 45px;
+            height: 45px;
+            background: #f3e8ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .video-item:hover .video-item-icon {
+            background: #e9d5ff;
+        }
+
+        .video-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .video-item-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 3px;
+        }
+
+        .video-item-date {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .video-item-arrow {
+            color: #cbd5e1;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+
+        .video-item:hover .video-item-arrow {
+            color: #8b5cf6;
+            transform: translateX(3px);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            padding: 50px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .header {
+                padding: 15px;
+            }
+
+            .header-left {
+                gap: 12px;
+            }
+
+            .header-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+            }
+
+            .header-text h1 {
+                font-size: 18px;
+            }
+
+            .current-video-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-icon">🎬</div>
+            <div class="header-text">
+                <h1>Vidéo de la semaine</h1>
+                <p>Archives</p>
+            </div>
+        </div>
+        <div class="header-badge" onclick="openModal()">
+            📺 Toutes les vidéos (<span id="videoCount">0</span>)
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+
+        <!-- CURRENT VIDEO -->
+        <div class="current-video" id="currentVideoSection">
+            <div class="current-video-label">
+                <span>⭐</span> Dernière vidéo
+            </div>
+            <div class="current-video-content" id="currentVideoContent">
+                <div class="current-video-icon">🎬</div>
+                <div class="current-video-info">
+                    <div class="current-video-title" id="currentTitle"></div>
+                    <div class="current-video-date" id="currentDate"></div>
+                </div>
+                <div class="current-video-arrow">→</div>
+            </div>
+        </div>
+
+        <!-- ARCHIVES LIST -->
+        <div class="archives-section" id="archivesSection">
+            <div class="archives-header">
+                📅 Les semaines précédentes
+            </div>
+            <div id="archivesList"></div>
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>📺 Toutes les vidéos</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Mois :</label>
+                        <select id="monthFilter" onchange="filterModalVideos()">
+                            <option value="all">Tous les mois</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-results-count" id="modalResultsCount">0 vidéo(s)</div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURATION =====
+        // 🔧 REMPLACE CET ID PAR L'ID DE TON GOOGLE SHEETS
+        const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        const SHEET_NAME = 'videos'; // Nom de l'onglet
+
+        // ===== DONNÉES =====
+        let VIDEOS = [];
+
+        // ===== CHARGEMENT GOOGLE SHEETS =====
+        async function loadVideosFromGoogleSheets() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const jsonString = text.substring(47, text.length - 2);
+                const data = JSON.parse(jsonString);
+                
+                VIDEOS = [];
+                const rows = data.table.rows;
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row[0] || row[0].v === null) continue;
+                    
+                    const video = {
+                        date: row[0]?.v || '',
+                        titre: row[1]?.v || '',
+                        lien: row[2]?.v || ''
+                    };
+                    
+                    if (video.titre) {
+                        VIDEOS.push(video);
+                    }
+                }
+                
+                // Trier par date décroissante (plus récent en premier)
+                VIDEOS.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                console.log(`✅ ${VIDEOS.length} vidéos chargées depuis Google Sheets`);
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Erreur chargement Google Sheets:', error);
+                return false;
+            }
+        }
+
+        // ===== INIT =====
+        async function init() {
+            const success = await loadVideosFromGoogleSheets();
+            
+            if (!success || VIDEOS.length === 0) {
+                document.querySelector('.main-container').innerHTML = `
+                    <div class="empty-state" style="background: white; border-radius: 16px; padding: 40px;">
+                        <div class="icon">⚠️</div>
+                        <p>Impossible de charger les vidéos.<br>Vérifie que l'onglet "videos" existe et que le Google Sheets est partagé.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('videoCount').textContent = VIDEOS.length;
+            displayCurrentVideo();
+            displayArchives();
+        }
+
+        // ===== DISPLAY CURRENT VIDEO =====
+        function displayCurrentVideo() {
+            if (VIDEOS.length === 0) {
+                document.getElementById('currentVideoSection').style.display = 'none';
+                return;
+            }
+
+            const video = VIDEOS[0];
+            document.getElementById('currentTitle').textContent = video.titre;
+            document.getElementById('currentDate').textContent = formatDate(video.date);
+            document.getElementById('currentVideoContent').onclick = () => openVideo(video.lien);
+        }
+
+        // ===== DISPLAY ARCHIVES =====
+        function displayArchives() {
+            const container = document.getElementById('archivesList');
+            const section = document.getElementById('archivesSection');
+            
+            // Prendre les 4 vidéos suivantes (après la "Dernière vidéo")
+            const recentVideos = VIDEOS.slice(1, 5);
+            
+            // Si pas d'autres vidéos, masquer la section
+            if (recentVideos.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            container.innerHTML = recentVideos.map(video => `
+                <div class="video-item" onclick="openVideo('${video.lien}')">
+                    <div class="video-item-icon">🎬</div>
+                    <div class="video-item-info">
+                        <div class="video-item-title">${video.titre}</div>
+                        <div class="video-item-date">${formatDate(video.date)}</div>
+                    </div>
+                    <div class="video-item-arrow">→</div>
+                </div>
+            `).join('');
+        }
+
+        // ===== OPEN VIDEO =====
+        function openVideo(lien) {
+            if (lien) {
+                window.open(lien, '_blank');
+            }
+        }
+
+        // ===== FORMAT DATE =====
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('fr-FR', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            } catch {
+                return dateStr;
+            }
+        }
+
+        // ===== START =====
+        init();
+
+        // ===== MODAL FUNCTIONS =====
+        function openModal() {
+            buildMonthFilter();
+            filterModalVideos();
+            document.getElementById('modalOverlay').classList.add('visible');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('modalOverlay').classList.remove('visible');
+            }
+        }
+
+        function buildMonthFilter() {
+            const select = document.getElementById('monthFilter');
+            
+            // Extraire les mois uniques
+            const months = {};
+            VIDEOS.forEach(video => {
+                const date = new Date(video.date);
+                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+                months[key] = label.charAt(0).toUpperCase() + label.slice(1);
+            });
+
+            // Trier par date décroissante
+            const sortedKeys = Object.keys(months).sort().reverse();
+
+            select.innerHTML = '<option value="all">Tous les mois</option>';
+            sortedKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = months[key];
+                select.appendChild(option);
+            });
+        }
+
+        function filterModalVideos() {
+            const monthFilter = document.getElementById('monthFilter').value;
+            const container = document.getElementById('modalBody');
+
+            let filtered = VIDEOS;
+            
+            if (monthFilter !== 'all') {
+                filtered = VIDEOS.filter(video => {
+                    const date = new Date(video.date);
+                    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    return key === monthFilter;
+                });
+            }
+
+            document.getElementById('modalResultsCount').textContent = 
+                filtered.length + ' vidéo' + (filtered.length > 1 ? 's' : '');
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="modal-empty">
+                        <div class="icon">📭</div>
+                        <p>Aucune vidéo ce mois-ci</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(video => `
+                <div class="modal-video-item" onclick="openVideo('${video.lien}'); closeModal();">
+                    <div class="modal-video-icon">🎬</div>
+                    <div class="modal-video-info">
+                        <div class="modal-video-title">${video.titre}</div>
+                        <div class="modal-video-date">${formatDate(video.date)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fermer avec Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+
+</body>
+</html>
