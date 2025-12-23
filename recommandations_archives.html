@@ -15,37 +15,9 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 50%, #1e1e2e 100%);
             min-height: 100vh;
             color: #ffffff;
-        }
-
-        /* ===== LOADING ===== */
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            gap: 20px;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: rgba(255,255,255,0.6);
-            font-size: 16px;
         }
 
         /* ===== HEADER ===== */
@@ -56,7 +28,7 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
         }
 
         .header-left {
@@ -119,11 +91,20 @@
         /* ===== FEATURED SECTION ===== */
         .featured-section {
             position: relative;
-            height: 500px;
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 40px;
             cursor: pointer;
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .featured-image {
+            width: 45%;
+            min-height: 350px;
+            position: relative;
+            overflow: hidden;
         }
 
         .featured-background {
@@ -138,30 +119,56 @@
             transform: scale(1.05);
         }
 
-        .featured-overlay {
+        .featured-play-btn {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #1e1e2e;
+            opacity: 0.9;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .featured-section:hover .featured-play-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
         }
 
         .featured-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 40px;
+            width: 55%;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
         .featured-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 15px;
         }
 
         .featured-type {
@@ -173,22 +180,20 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            margin-left: 10px;
         }
 
         .featured-title {
-            font-size: 42px;
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 15px;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            line-height: 1.2;
         }
 
         .featured-description {
-            font-size: 16px;
-            color: rgba(255,255,255,0.8);
-            max-width: 600px;
+            font-size: 15px;
+            color: rgba(255,255,255,0.75);
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .featured-tags {
@@ -199,7 +204,8 @@
         }
 
         .featured-tag {
-            background: rgba(255,255,255,0.15);
+            background: rgba(102, 126, 234, 0.3);
+            color: #a5b4fc;
             padding: 5px 12px;
             border-radius: 15px;
             font-size: 12px;
@@ -207,88 +213,88 @@
         }
 
         .featured-date {
-            font-size: 14px;
+            font-size: 13px;
             color: rgba(255,255,255,0.5);
         }
 
-        .featured-play-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: rgba(255,255,255,0.95);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: #1a1a2e;
-            opacity: 0;
-            transition: all 0.3s;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        /* ===== CAROUSEL SECTION ===== */
+        .carousel-section {
+            margin-bottom: 35px;
         }
 
-        .featured-section:hover .featured-play-btn {
-            opacity: 1;
-        }
-
-        /* ===== SECTION TITLE ===== */
-        .section-header {
+        .carousel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .section-title {
-            font-size: 22px;
+        .carousel-title {
+            font-size: 20px;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .section-nav {
+        .carousel-nav {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .section-nav button {
-            width: 40px;
-            height: 40px;
+        .carousel-nav-btn {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
+            border: none;
+            background: rgba(255,255,255,0.1);
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .section-nav button:hover {
-            background: rgba(255,255,255,0.15);
+        .carousel-nav-btn:hover {
+            background: rgba(255,255,255,0.2);
         }
 
-        /* ===== CARDS GRID ===== */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+        .carousel-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            padding: 10px 0;
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ===== CARDS ===== */
         .card {
+            flex-shrink: 0;
+            width: 280px;
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-8px) scale(1.02);
             background: rgba(255,255,255,0.1);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
@@ -317,7 +323,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 45px;
         }
 
         .card-type-badge {
@@ -327,7 +333,7 @@
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             padding: 5px 10px;
-            border-radius: 15px;
+            border-radius: 12px;
             font-size: 11px;
             font-weight: 700;
             display: flex;
@@ -359,22 +365,22 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            color: #1a1a2e;
+            color: #1e1e2e;
         }
 
         .card-info {
-            padding: 18px;
+            padding: 15px;
         }
 
         .card-date {
-            font-size: 12px;
+            font-size: 11px;
             color: #667eea;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .card-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             margin-bottom: 8px;
             line-height: 1.3;
@@ -388,7 +394,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-top: 10px;
         }
 
         .card-tag {
@@ -398,6 +403,13 @@
             border-radius: 10px;
             font-size: 10px;
             font-weight: 600;
+        }
+
+        /* ===== EMPTY CAROUSEL ===== */
+        .carousel-empty {
+            color: rgba(255,255,255,0.4);
+            font-size: 14px;
+            padding: 20px;
         }
 
         /* ===== MODAL ===== */
@@ -418,11 +430,11 @@
         }
 
         .modal {
-            background: #1a1a2e;
+            background: #252538;
             border-radius: 20px;
             width: 100%;
-            max-width: 500px;
-            max-height: 80vh;
+            max-width: 550px;
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -460,18 +472,23 @@
 
         .modal-filters {
             padding: 15px 20px;
-            background: rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
+            flex: 1;
+            min-width: 120px;
         }
 
         .filter-group label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: rgba(255,255,255,0.5);
             text-transform: uppercase;
@@ -479,28 +496,28 @@
         }
 
         .filter-group select {
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
             font-family: 'Nunito', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: white;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             cursor: pointer;
         }
 
         .filter-group select option {
-            background: #1a1a2e;
+            background: #252538;
             color: white;
         }
 
         .modal-results-count {
             padding: 10px 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            color: rgba(255,255,255,0.5);
-            background: rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.4);
+            background: rgba(0,0,0,0.2);
         }
 
         .modal-body {
@@ -511,8 +528,8 @@
         .modal-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px 20px;
+            gap: 12px;
+            padding: 12px 20px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             cursor: pointer;
             transition: background 0.2s;
@@ -523,35 +540,47 @@
         }
 
         .modal-item-icon {
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
         .modal-item-info {
             flex: 1;
+            min-width: 0;
         }
 
         .modal-item-title {
             font-size: 14px;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-item-meta {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
         }
 
         .modal-item-date {
-            font-size: 12px;
             color: #667eea;
         }
 
         .modal-empty {
             padding: 40px 20px;
             text-align: center;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.4);
         }
 
         .modal-empty .icon {
@@ -577,7 +606,7 @@
 
         .content-popup {
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
@@ -614,7 +643,7 @@
         }
 
         .content-popup-body {
-            background: #1a1a2e;
+            background: #252538;
             border-radius: 0 0 16px 16px;
             overflow: hidden;
             flex: 1;
@@ -636,12 +665,28 @@
 
         .content-popup-media img {
             width: 100%;
-            max-height: 70vh;
+            max-height: 65vh;
             object-fit: contain;
         }
 
         .content-popup-info {
             padding: 20px;
+        }
+
+        .content-popup-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .content-popup-tag {
+            background: rgba(102, 126, 234, 0.3);
+            color: #a5b4fc;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .content-popup-description {
@@ -652,26 +697,31 @@
 
         .content-popup-date {
             font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 12px;
         }
 
-        /* ===== ERROR MESSAGE ===== */
-        .error-message {
+        /* ===== EXTERNAL LINK BUTTON ===== */
+        .external-link-container {
+            padding: 30px;
             text-align: center;
-            padding: 60px 20px;
-            color: rgba(255,255,255,0.6);
         }
 
-        .error-message .icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-
-        .error-message h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .external-link-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .external-link-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
         /* ===== RESPONSIVE ===== */
@@ -689,20 +739,35 @@
             }
 
             .featured-section {
-                height: 350px;
+                flex-direction: column;
             }
 
-            .featured-title {
-                font-size: 28px;
+            .featured-image {
+                width: 100%;
+                min-height: 200px;
             }
 
             .featured-content {
+                width: 100%;
                 padding: 25px;
             }
 
-            .cards-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                gap: 15px;
+            .featured-title {
+                font-size: 24px;
+            }
+
+            .featured-play-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
+            }
+
+            .card {
+                width: 240px;
+            }
+
+            .modal-filters {
+                flex-direction: column;
             }
         }
     </style>
@@ -719,46 +784,33 @@
             </div>
         </div>
         <div class="header-badge" onclick="openModal()">
-            📚 Toutes les recommandations (<span id="recoCount">0</span>)
+            🔍 Rechercher (<span id="recoCount">0</span>)
         </div>
     </div>
 
     <!-- MAIN CONTAINER -->
     <div class="main-container">
-        
-        <!-- LOADING STATE -->
-        <div class="loading" id="loadingState">
-            <div class="loading-spinner"></div>
-            <p class="loading-text">Chargement des recommandations...</p>
-        </div>
 
-        <!-- CONTENT (hidden initially) -->
-        <div id="mainContent" style="display: none;">
-            <!-- FEATURED -->
-            <div class="featured-section" id="featuredSection" onclick="openContent(0)">
+        <!-- FEATURED -->
+        <div class="featured-section" id="featuredSection" onclick="openContent(0)">
+            <div class="featured-image">
                 <div class="featured-background" id="featuredBg"></div>
-                <div class="featured-overlay"></div>
                 <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
-                <div class="featured-content">
+            </div>
+            <div class="featured-content">
+                <div class="featured-badges">
                     <span class="featured-badge">⭐ Cette semaine</span>
                     <span class="featured-type" id="featuredType"></span>
-                    <h1 class="featured-title" id="featuredTitle"></h1>
-                    <p class="featured-description" id="featuredDescription"></p>
-                    <div class="featured-tags" id="featuredTags"></div>
-                    <p class="featured-date" id="featuredDate"></p>
                 </div>
+                <h1 class="featured-title" id="featuredTitle"></h1>
+                <p class="featured-description" id="featuredDescription"></p>
+                <div class="featured-tags" id="featuredTags"></div>
+                <p class="featured-date" id="featuredDate"></p>
             </div>
-
-            <!-- PREVIOUS -->
-            <div class="section-header">
-                <h2 class="section-title">🎵 À écouter</h2>
-                <div class="section-nav">
-                    <button onclick="scrollCards(-1)">‹</button>
-                    <button onclick="scrollCards(1)">›</button>
-                </div>
-            </div>
-            <div class="cards-grid" id="cardsGrid"></div>
         </div>
+
+        <!-- CAROUSELS -->
+        <div id="carouselsContainer"></div>
 
     </div>
 
@@ -766,18 +818,33 @@
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2>📚 Toutes les recommandations</h2>
+                <h2>🔍 Rechercher</h2>
                 <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
             <div class="modal-filters">
                 <div class="filter-group">
-                    <label>Mois :</label>
+                    <label>Mois</label>
                     <select id="monthFilter" onchange="filterModalItems()">
-                        <option value="all">Tous les mois</option>
+                        <option value="all">Tous</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Type</label>
+                    <select id="typeFilter" onchange="filterModalItems()">
+                        <option value="all">Tous</option>
+                        <option value="ecouter">🎵 À écouter</option>
+                        <option value="regarder">🎬 À regarder</option>
+                        <option value="lire">📖 À lire</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Discipline</label>
+                    <select id="tagFilter" onchange="filterModalItems()">
+                        <option value="all">Toutes</option>
                     </select>
                 </div>
             </div>
-            <div class="modal-results-count" id="modalResultsCount">0 recommandation(s)</div>
+            <div class="modal-results-count" id="modalResultsCount">0 résultat(s)</div>
             <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
@@ -792,6 +859,7 @@
             <div class="content-popup-body">
                 <div class="content-popup-media" id="popupMedia"></div>
                 <div class="content-popup-info">
+                    <div class="content-popup-tags" id="popupTags"></div>
                     <p class="content-popup-description" id="popupDescription"></p>
                     <p class="content-popup-date" id="popupDate"></p>
                 </div>
@@ -800,24 +868,20 @@
     </div>
 
     <script>
-        // ===== CONFIGURATION GOOGLE SHEET =====
-        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        
-        // Nom de l'onglet contenant les recommandations (modifie si différent)
+        // ===== CONFIGURATION =====
+        const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
         const SHEET_NAME = 'recommandations';
-        
-        // URL pour récupérer les données en JSON
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
+        // ===== DONNÉES =====
         let RECOS = [];
 
-        // ===== CHARGER LES DONNÉES DU GOOGLE SHEET =====
-        async function loadFromGoogleSheet() {
+        // ===== CHARGEMENT GOOGLE SHEETS =====
+        async function loadRecosFromGoogleSheets() {
             try {
-                const response = await fetch(SHEET_URL);
+                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+                const response = await fetch(url);
                 const text = await response.text();
                 
-                // Google renvoie du JSONP, on extrait le JSON
                 const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
                 if (!jsonString || !jsonString[1]) {
                     throw new Error('Format de réponse invalide');
@@ -826,71 +890,50 @@
                 const data = JSON.parse(jsonString[1]);
                 const rows = data.table.rows;
                 
-                console.log('Données brutes:', data.table);
+                RECOS = [];
                 
-                // Les colonnes sont dans l'ordre: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
-                RECOS = rows
-                    .filter(row => row.c && row.c[0]) // Ignorer les lignes sans date
-                    .map(row => {
-                        const getValue = (index) => {
-                            const cell = row.c[index];
-                            if (!cell) return '';
-                            // Priorité à la valeur formatée (f) si disponible, sinon la valeur brute (v)
-                            return cell.f || cell.v || '';
-                        };
-                        
-                        // Gérer la date
-                        let dateValue = '';
-                        const dateCell = row.c[0];
-                        if (dateCell) {
-                            if (dateCell.f) {
-                                // Utiliser la valeur formatée si disponible (ex: "01-05-2026")
-                                dateValue = dateCell.f;
-                            } else if (dateCell.v) {
-                                dateValue = dateCell.v;
-                            }
-                        }
-                        
-                        // Convertir la date au format YYYY-MM-DD pour le tri
-                        const dateForSort = parseDate(dateValue);
-                        
-                        // Gérer les tags (séparés par virgule ou point-virgule)
-                        let tags = getValue(6);
-                        if (typeof tags === 'string' && tags.trim()) {
-                            tags = tags.split(/[,;]/).map(t => t.trim()).filter(t => t);
-                        } else {
-                            tags = [];
-                        }
-                        
-                        return {
-                            date: dateValue,
-                            dateSort: dateForSort,
-                            titre: getValue(1),
-                            description: getValue(2),
-                            lien: getValue(3),
-                            image: getValue(4),
-                            type: getValue(5),
-                            tags: tags
-                        };
-                    })
-                    .filter(reco => reco.titre); // Ignorer les entrées sans titre
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row || !row[0] || row[0].v === null) continue;
+                    
+                    // Extraire la date (peut être formatée ou valeur brute)
+                    let dateValue = row[0]?.f || row[0]?.v || '';
+                    
+                    const reco = {
+                        date: dateValue,
+                        dateSort: parseDate(dateValue),
+                        titre: row[1]?.v || '',
+                        description: row[2]?.v || '',
+                        lien: row[3]?.v || '',
+                        image: row[4]?.v || '',
+                        type: (row[5]?.v || '').toLowerCase().trim(),
+                        tags: row[6]?.v || ''
+                    };
+                    
+                    if (reco.titre) {
+                        RECOS.push(reco);
+                    }
+                }
                 
-                console.log('Recommandations chargées:', RECOS);
+                // Trier par date décroissante
+                RECOS.sort((a, b) => {
+                    if (a.dateSort > b.dateSort) return -1;
+                    if (a.dateSort < b.dateSort) return 1;
+                    return 0;
+                });
+                
+                console.log(`✅ ${RECOS.length} recommandations chargées`);
                 return true;
+                
             } catch (error) {
-                console.error('Erreur lors du chargement du Google Sheet:', error);
+                console.error('❌ Erreur chargement:', error);
                 return false;
             }
         }
 
-        // ===== PARSER LA DATE =====
+        // ===== PARSE DATE =====
         function parseDate(dateStr) {
             if (!dateStr) return '1970-01-01';
-            
-            // Si c'est déjà au format YYYY-MM-DD
-            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-                return dateStr;
-            }
             
             // Format DD-MM-YYYY ou DD/MM/YYYY
             const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
@@ -901,115 +944,98 @@
                 return `${year}-${month}-${day}`;
             }
             
-            // Format Google Date(year,month,day)
-            const googleMatch = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
-            if (googleMatch) {
-                const year = googleMatch[1];
-                const month = String(parseInt(googleMatch[2]) + 1).padStart(2, '0');
-                const day = googleMatch[3].padStart(2, '0');
-                return `${year}-${month}-${day}`;
+            // Format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                return dateStr;
             }
             
             return '1970-01-01';
         }
 
-        // ===== CONVERTIR LIEN GOOGLE DRIVE EN IMAGE DIRECTE =====
-        function convertGoogleDriveUrl(url) {
-            if (!url) return null;
+        // ===== TYPE CONFIG =====
+        const TYPE_CONFIG = {
+            'ecouter': { icon: '🎵', label: 'À écouter' },
+            'regarder': { icon: '🎬', label: 'À regarder' },
+            'lire': { icon: '📖', label: 'À lire' }
+        };
+
+        // ===== CONVERT GOOGLE DRIVE LINK TO IMAGE =====
+        function convertToImageUrl(url) {
+            if (!url) return '';
             
-            // Si c'est déjà une URL d'image normale, la retourner telle quelle
-            if (!url.includes('drive.google.com')) {
-                return url;
-            }
-            
-            // Extraire l'ID du fichier Google Drive
-            let fileId = null;
-            
-            // Format: /file/d/FILE_ID/view ou /file/d/FILE_ID/
-            const match1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-            if (match1) {
-                fileId = match1[1];
-            }
-            
-            // Format: ?id=FILE_ID
-            const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-            if (match2) {
-                fileId = match2[1];
-            }
-            
-            if (fileId) {
-                // Utiliser thumbnail avec grande taille pour les images
-                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                if (match) {
+                    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+                }
             }
             
             return url;
         }
 
-        // ===== DETECT CONTENT TYPE =====
-        function getContentType(lien, type) {
-            // Si un type est spécifié dans les données, l'utiliser
-            if (type) {
-                const typeStr = type.toLowerCase().trim();
-                const types = {
-                    'ecouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
-                    'écouter': { type: 'audio', icon: '🎵', label: 'À écouter' },
-                    'regarder': { type: 'video', icon: '🎬', label: 'À regarder' },
-                    'lire': { type: 'read', icon: '📖', label: 'À lire' }
-                };
-                if (types[typeStr]) {
-                    return types[typeStr];
-                }
+        // ===== DETECT CONTENT TYPE FROM LINK =====
+        function getContentTypeFromLink(lien, type) {
+            if (!lien) return 'link';
+            
+            // Détection par le lien
+            if (lien.includes('spotify.com')) return 'spotify';
+            if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) return 'youtube';
+            if (lien.includes('loom.com')) return 'loom';
+            if (lien.includes('docs.google.com/document') || 
+                lien.includes('docs.google.com/spreadsheets') || 
+                lien.includes('docs.google.com/presentation')) return 'googledoc';
+            if (lien.includes('drive.google.com') && lien.includes('/file/')) return 'gdrive';
+            if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return 'image';
+            
+            // Si type "lire" mais pas un Google Doc, c'est un article externe
+            if (type === 'lire') return 'article';
+            
+            return 'link';
+        }
+
+        // ===== PARSE TAGS =====
+        function parseTags(tagsStr) {
+            if (!tagsStr) return [];
+            return tagsStr.split(/[,;]/).map(t => t.trim()).filter(t => t);
+        }
+
+        // ===== FORMAT DATE =====
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            
+            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const day = parseInt(match[1]);
+                const month = parseInt(match[2]) - 1;
+                const year = parseInt(match[3]);
+                const date = new Date(year, month, day);
+                return date.toLocaleDateString('fr-FR', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
             }
             
-            if (!lien) return { type: 'link', icon: '🔗', label: 'Lien' };
-            
-            if (lien.includes('spotify.com')) {
-                return { type: 'spotify', icon: '🎵', label: 'À écouter' };
-            } else if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) {
-                return { type: 'youtube', icon: '🎬', label: 'À regarder' };
-            } else if (lien.includes('youtube.com/@') || lien.includes('youtube.com/channel') || lien.includes('youtube.com/c/')) {
-                return { type: 'link', icon: '📺', label: 'Chaîne' };
-            } else if (lien.includes('loom.com')) {
-                return { type: 'loom', icon: '🎬', label: 'À regarder' };
-            } else if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) {
-                return { type: 'image', icon: '🖼️', label: 'Image' };
-            } else if (lien.includes('drive.google.com') && lien.includes('/file/')) {
-                return { type: 'gdrive', icon: '🎵', label: 'À écouter' };
-            } else {
-                return { type: 'link', icon: '🔗', label: 'Lien' };
-            }
+            return dateStr;
         }
 
         // ===== INIT =====
         async function init() {
-            const success = await loadFromGoogleSheet();
-            
-            document.getElementById('loadingState').style.display = 'none';
+            const success = await loadRecosFromGoogleSheets();
             
             if (!success || RECOS.length === 0) {
-                document.getElementById('mainContent').innerHTML = `
-                    <div class="error-message">
-                        <div class="icon">📭</div>
-                        <h2>Aucune recommandation</h2>
-                        <p>Vérifie que ton Google Sheet contient des données et qu'il est bien partagé.</p>
+                document.querySelector('.main-container').innerHTML = `
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 40px; text-align: center; color: rgba(255,255,255,0.6);">
+                        <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
+                        <p>Impossible de charger les recommandations.</p>
                     </div>
                 `;
-                document.getElementById('mainContent').style.display = 'block';
                 return;
             }
             
-            // Trier par date décroissante (plus récent en premier)
-            RECOS.sort((a, b) => {
-                if (a.dateSort > b.dateSort) return -1;
-                if (a.dateSort < b.dateSort) return 1;
-                return 0;
-            });
-            
             document.getElementById('recoCount').textContent = RECOS.length;
-            document.getElementById('mainContent').style.display = 'block';
-            
             displayFeatured();
-            displayCards();
+            displayCarousels();
         }
 
         // ===== DISPLAY FEATURED =====
@@ -1020,74 +1046,112 @@
             }
 
             const reco = RECOS[0];
-            const contentType = getContentType(reco.lien, reco.type);
-            const imageUrl = convertGoogleDriveUrl(reco.image);
+            const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌', label: 'Recommandation' };
+            const tags = parseTags(reco.tags);
+            const linkType = getContentTypeFromLink(reco.lien, reco.type);
+            const imageUrl = convertToImageUrl(reco.image);
 
-            document.getElementById('featuredBg').style.backgroundImage = imageUrl ? `url('${imageUrl}')` : '';
+            document.getElementById('featuredBg').style.backgroundImage = imageUrl ? `url('${imageUrl}')` : 'none';
             document.getElementById('featuredTitle').textContent = reco.titre;
             document.getElementById('featuredDescription').textContent = reco.description;
-            document.getElementById('featuredDate').textContent = formatDateDisplay(reco.date);
-            document.getElementById('featuredType').innerHTML = `${contentType.icon} ${contentType.label}`;
+            document.getElementById('featuredDate').textContent = formatDate(reco.date);
+            document.getElementById('featuredType').innerHTML = `${typeConfig.icon} ${typeConfig.label}`;
             
-            // Afficher les tags
-            const tagsContainer = document.getElementById('featuredTags');
-            if (reco.tags && reco.tags.length > 0) {
-                tagsContainer.innerHTML = reco.tags.map(tag => `<span class="featured-tag">${tag}</span>`).join('');
-            } else {
-                tagsContainer.innerHTML = '';
-            }
+            document.getElementById('featuredTags').innerHTML = tags.map(tag => 
+                `<span class="featured-tag">${tag}</span>`
+            ).join('');
             
-            // Afficher/masquer le bouton play selon le type
             const playBtn = document.getElementById('featuredPlayBtn');
-            if (contentType.type === 'link') {
+            if (linkType === 'link' || linkType === 'article') {
                 playBtn.textContent = '↗';
-            } else if (contentType.type === 'image') {
+            } else if (linkType === 'image') {
                 playBtn.textContent = '🔍';
             } else {
                 playBtn.textContent = '▶';
             }
         }
 
-        // ===== DISPLAY CARDS =====
-        function displayCards() {
-            const grid = document.getElementById('cardsGrid');
-            const recentRecos = RECOS.slice(1);
+        // ===== DISPLAY CAROUSELS =====
+        function displayCarousels() {
+            const container = document.getElementById('carouselsContainer');
+            const recosWithoutFeatured = RECOS.slice(1);
 
-            if (recentRecos.length === 0) {
-                grid.innerHTML = '<p style="color: rgba(255,255,255,0.5);">Pas encore d\'archives</p>';
-                return;
-            }
+            const byType = {
+                'ecouter': recosWithoutFeatured.filter(r => r.type === 'ecouter'),
+                'regarder': recosWithoutFeatured.filter(r => r.type === 'regarder'),
+                'lire': recosWithoutFeatured.filter(r => r.type === 'lire')
+            };
 
-            grid.innerHTML = recentRecos.map((reco, index) => {
-                const contentType = getContentType(reco.lien, reco.type);
-                const realIndex = index + 1;
-                const imageUrl = convertGoogleDriveUrl(reco.image);
-                
-                return `
-                    <div class="card" onclick="openContent(${realIndex})">
-                        <div class="card-image">
-                            ${imageUrl 
-                                ? `<img src="${imageUrl}" alt="${reco.titre}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                   <div class="card-image-placeholder" style="display:none;">${contentType.icon}</div>`
-                                : `<div class="card-image-placeholder">${contentType.icon}</div>`
-                            }
-                            <div class="card-type-badge">${contentType.icon} ${contentType.label}</div>
-                            <div class="card-play-overlay">
-                                <div class="card-play-btn">${contentType.type === 'link' ? '↗' : contentType.type === 'image' ? '🔍' : '▶'}</div>
+            let html = '';
+
+            for (const [type, recos] of Object.entries(byType)) {
+                if (recos.length === 0) continue;
+
+                const config = TYPE_CONFIG[type];
+                const carouselId = `carousel-${type}`;
+
+                html += `
+                    <div class="carousel-section">
+                        <div class="carousel-header">
+                            <h2 class="carousel-title">${config.icon} ${config.label}</h2>
+                            <div class="carousel-nav">
+                                <button class="carousel-nav-btn" onclick="scrollCarousel('${carouselId}', -1)">❮</button>
+                                <button class="carousel-nav-btn" onclick="scrollCarousel('${carouselId}', 1)">❯</button>
                             </div>
                         </div>
-                        <div class="card-info">
-                            <div class="card-date">${formatDateDisplay(reco.date)}</div>
-                            <h3 class="card-title">${reco.titre}</h3>
-                            ${reco.tags && reco.tags.length > 0 ? `
-                                <div class="card-tags">
-                                    ${reco.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
-                                </div>
-                            ` : ''}
+                        <div class="carousel-container">
+                            <div class="carousel-track" id="${carouselId}">
+                                ${recos.map(reco => createCard(reco)).join('')}
+                            </div>
                         </div>
                     </div>
                 `;
-            }).join('');
+            }
+
+            container.innerHTML = html || '<p class="carousel-empty">Aucune recommandation pour le moment</p>';
+        }
+
+        // ===== CREATE CARD =====
+        function createCard(reco) {
+            const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌', label: 'Autre' };
+            const tags = parseTags(reco.tags);
+            const index = RECOS.indexOf(reco);
+            const linkType = getContentTypeFromLink(reco.lien, reco.type);
+            const imageUrl = convertToImageUrl(reco.image);
+            
+            let playIcon = '▶';
+            if (linkType === 'link' || linkType === 'article') playIcon = '↗';
+            else if (linkType === 'image') playIcon = '🔍';
+
+            return `
+                <div class="card" onclick="openContent(${index})">
+                    <div class="card-image">
+                        ${imageUrl 
+                            ? `<img src="${imageUrl}" alt="${reco.titre}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div class="card-image-placeholder" style="display:none;">${typeConfig.icon}</div>`
+                            : `<div class="card-image-placeholder">${typeConfig.icon}</div>`
+                        }
+                        <div class="card-type-badge">${typeConfig.icon} ${typeConfig.label}</div>
+                        <div class="card-play-overlay">
+                            <div class="card-play-btn">${playIcon}</div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-date">${formatDate(reco.date)}</div>
+                        <h3 class="card-title">${reco.titre}</h3>
+                        <div class="card-tags">
+                            ${tags.slice(0, 3).map(tag => `<span class="card-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== SCROLL CAROUSEL =====
+        function scrollCarousel(id, direction) {
+            const track = document.getElementById(id);
+            const scrollAmount = 300;
+            track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
         // ===== OPEN CONTENT =====
@@ -1095,51 +1159,28 @@
             const reco = RECOS[index];
             if (!reco) return;
 
-            const contentType = getContentType(reco.lien, reco.type);
-            
-            // Si c'est un lien externe (chaîne YouTube, site web), ouvrir dans nouvel onglet
-            if (contentType.type === 'link') {
-                window.open(reco.lien, '_blank');
-                return;
-            }
+            const linkType = getContentTypeFromLink(reco.lien, reco.type);
+            const tags = parseTags(reco.tags);
+            const imageUrl = convertToImageUrl(reco.image);
 
             document.getElementById('popupTitle').textContent = reco.titre;
             document.getElementById('popupDescription').textContent = reco.description;
-            document.getElementById('popupDate').textContent = formatDateDisplay(reco.date);
+            document.getElementById('popupDate').textContent = formatDate(reco.date);
+            document.getElementById('popupTags').innerHTML = tags.map(tag => 
+                `<span class="content-popup-tag">${tag}</span>`
+            ).join('');
 
             const mediaContainer = document.getElementById('popupMedia');
             
-            // Détecter Google Docs/Sheets/Slides
-            const isGoogleDoc = reco.lien && (
-                reco.lien.includes('docs.google.com/document') || 
-                reco.lien.includes('docs.google.com/spreadsheets') || 
-                reco.lien.includes('docs.google.com/presentation')
-            );
-            
-            // Détecter YouTube par le lien, peu importe le type spécifié
-            const isYouTube = reco.lien && (reco.lien.includes('youtube.com/watch') || reco.lien.includes('youtu.be/'));
-            
-            if (isGoogleDoc) {
-                // Convertir le lien Google Doc en lien d'embed
-                let embedUrl = reco.lien;
-                if (reco.lien.includes('/edit')) {
-                    embedUrl = reco.lien.replace('/edit', '/preview');
-                } else if (reco.lien.includes('/view')) {
-                    embedUrl = reco.lien.replace('/view', '/preview');
-                } else if (!reco.lien.includes('/preview')) {
-                    embedUrl = reco.lien.replace(/\?.*$/, '') + '/preview';
-                }
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="width: 100%; height: 500px; border: none;"></iframe>`;
-            } else if (isYouTube) {
+            // ===== YOUTUBE =====
+            if (linkType === 'youtube') {
                 let videoId = '';
                 if (reco.lien.includes('youtu.be/')) {
-                    // Format: https://youtu.be/VIDEO_ID?si=xxx
                     const afterDomain = reco.lien.split('youtu.be/')[1];
                     if (afterDomain) {
                         videoId = afterDomain.split('?')[0].split('&')[0].split('/')[0];
                     }
                 } else if (reco.lien.includes('youtube.com/watch')) {
-                    // Format: https://www.youtube.com/watch?v=VIDEO_ID
                     try {
                         const url = new URL(reco.lien);
                         videoId = url.searchParams.get('v');
@@ -1148,25 +1189,27 @@
                         videoId = urlParams.get('v');
                     }
                 }
-                console.log('YouTube videoId:', videoId, 'from:', reco.lien);
+                console.log('YouTube videoId:', videoId);
                 if (videoId) {
                     mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
                 }
-            } else if (contentType.type === 'loom') {
-                const embedUrl = reco.lien.replace('/share/', '/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-            } else if (contentType.type === 'spotify') {
-                let embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="aspect-ratio: auto; height: 352px;" allow="encrypted-media"></iframe>`;
-            } else if (contentType.type === 'image') {
-                const imageUrl = convertGoogleDriveUrl(reco.lien);
-                mediaContainer.innerHTML = `<img src="${imageUrl}" alt="${reco.titre}">`;
-            } else if (contentType.type === 'gdrive' || contentType.type === 'audio' || contentType.type === 'video') {
-                // Pour les fichiers Google Drive (audio, vidéo, etc.)
+            }
+            // ===== GOOGLE DOCS =====
+            else if (linkType === 'googledoc') {
+                let embedUrl = reco.lien;
+                if (reco.lien.includes('/edit')) {
+                    embedUrl = reco.lien.replace(/\/edit.*$/, '/preview');
+                } else if (reco.lien.includes('/view')) {
+                    embedUrl = reco.lien.replace(/\/view.*$/, '/preview');
+                } else if (!reco.lien.includes('/preview')) {
+                    embedUrl = reco.lien.split('?')[0] + '/preview';
+                }
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="width: 100%; height: 500px; border: none;"></iframe>`;
+            }
+            // ===== GOOGLE DRIVE FILES (audio/video) =====
+            else if (linkType === 'gdrive') {
                 const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
                 if (fileId) {
-                    // Afficher l'image au-dessus du lecteur
-                    const imageUrl = convertGoogleDriveUrl(reco.image);
                     let html = '';
                     if (imageUrl) {
                         html += `<img src="${imageUrl}" alt="${reco.titre}" style="width: 100%; max-height: 300px; object-fit: cover;">`;
@@ -1174,32 +1217,41 @@
                     html += `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="width: 100%; height: 80px;" allow="autoplay"></iframe>`;
                     mediaContainer.innerHTML = html;
                 }
-            } else if (contentType.type === 'read') {
-                // Pour les articles externes, afficher l'image et un bouton pour ouvrir
-                const imageUrl = convertGoogleDriveUrl(reco.image);
+            }
+            // ===== ARTICLES EXTERNES =====
+            else if (linkType === 'article') {
                 let html = '';
                 if (imageUrl) {
                     html += `<img src="${imageUrl}" alt="${reco.titre}" style="width: 100%; max-height: 300px; object-fit: cover;">`;
                 }
                 html += `
-                    <div style="padding: 30px; text-align: center;">
+                    <div class="external-link-container">
                         <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Cet article provient d'un site externe.</p>
-                        <a href="${reco.lien}" target="_blank" style="
-                            display: inline-block;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            color: white;
-                            padding: 15px 30px;
-                            border-radius: 25px;
-                            text-decoration: none;
-                            font-weight: 700;
-                            font-size: 16px;
-                            transition: transform 0.2s;
-                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <a href="${reco.lien}" target="_blank" class="external-link-btn">
                             📖 Lire l'article
                         </a>
                     </div>
                 `;
                 mediaContainer.innerHTML = html;
+            }
+            // ===== LOOM =====
+            else if (linkType === 'loom') {
+                const embedUrl = reco.lien.replace('/share/', '/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            }
+            // ===== SPOTIFY =====
+            else if (linkType === 'spotify') {
+                let embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="aspect-ratio: auto; height: 352px;" allow="encrypted-media"></iframe>`;
+            }
+            // ===== IMAGE =====
+            else if (linkType === 'image') {
+                mediaContainer.innerHTML = `<img src="${reco.lien}" alt="${reco.titre}">`;
+            }
+            // ===== LIEN EXTERNE =====
+            else if (linkType === 'link') {
+                window.open(reco.lien, '_blank');
+                return;
             }
 
             document.getElementById('contentPopup').classList.add('visible');
@@ -1214,7 +1266,7 @@
 
         // ===== MODAL =====
         function openModal() {
-            buildMonthFilter();
+            buildFilters();
             filterModalItems();
             document.getElementById('modalOverlay').classList.add('visible');
         }
@@ -1225,99 +1277,80 @@
             }
         }
 
-        function buildMonthFilter() {
-            const select = document.getElementById('monthFilter');
+        function buildFilters() {
+            // Month filter
+            const monthSelect = document.getElementById('monthFilter');
             const months = {};
-            
             RECOS.forEach(reco => {
                 if (!reco.dateSort || reco.dateSort === '1970-01-01') return;
                 const [year, month] = reco.dateSort.split('-');
                 const key = `${year}-${month}`;
-                const date = new Date(reco.dateSort);
+                const date = new Date(parseInt(year), parseInt(month) - 1, 1);
                 const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
                 months[key] = label.charAt(0).toUpperCase() + label.slice(1);
             });
+            const sortedMonths = Object.keys(months).sort().reverse();
+            monthSelect.innerHTML = '<option value="all">Tous</option>' + 
+                sortedMonths.map(key => `<option value="${key}">${months[key]}</option>`).join('');
 
-            const sortedKeys = Object.keys(months).sort().reverse();
-            select.innerHTML = '<option value="all">Tous les mois</option>';
-            sortedKeys.forEach(key => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = months[key];
-                select.appendChild(option);
-            });
+            // Tag filter
+            const tagSelect = document.getElementById('tagFilter');
+            const allTags = new Set();
+            RECOS.forEach(reco => parseTags(reco.tags).forEach(tag => allTags.add(tag)));
+            const sortedTags = [...allTags].sort();
+            tagSelect.innerHTML = '<option value="all">Toutes</option>' + 
+                sortedTags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
         }
 
         function filterModalItems() {
             const monthFilter = document.getElementById('monthFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const tagFilter = document.getElementById('tagFilter').value;
             const container = document.getElementById('modalBody');
 
-            let filtered = RECOS;
-            if (monthFilter !== 'all') {
-                filtered = RECOS.filter(reco => {
-                    if (!reco.dateSort) return false;
+            let filtered = RECOS.filter(reco => {
+                // Month
+                if (monthFilter !== 'all') {
                     const [year, month] = reco.dateSort.split('-');
-                    return `${year}-${month}` === monthFilter;
-                });
-            }
+                    if (`${year}-${month}` !== monthFilter) return false;
+                }
+                // Type
+                if (typeFilter !== 'all' && reco.type !== typeFilter) return false;
+                // Tag
+                if (tagFilter !== 'all' && !parseTags(reco.tags).includes(tagFilter)) return false;
+                return true;
+            });
 
             document.getElementById('modalResultsCount').textContent = 
-                filtered.length + ' recommandation' + (filtered.length > 1 ? 's' : '');
+                filtered.length + ' résultat' + (filtered.length > 1 ? 's' : '');
 
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="modal-empty">
                         <div class="icon">📭</div>
-                        <p>Aucune recommandation ce mois-ci</p>
+                        <p>Aucune recommandation trouvée</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = filtered.map(reco => {
-                const contentType = getContentType(reco.lien, reco.type);
+                const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌' };
+                const tags = parseTags(reco.tags);
                 const index = RECOS.indexOf(reco);
                 return `
                     <div class="modal-item" onclick="openContent(${index}); closeModal();">
-                        <div class="modal-item-icon">${contentType.icon}</div>
+                        <div class="modal-item-icon">${typeConfig.icon}</div>
                         <div class="modal-item-info">
                             <div class="modal-item-title">${reco.titre}</div>
-                            <div class="modal-item-date">${formatDateDisplay(reco.date)}</div>
+                            <div class="modal-item-meta">
+                                <span class="modal-item-date">${formatDate(reco.date)}</span>
+                                <span>${tags.join(', ')}</span>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
-        }
-
-        // ===== FORMAT DATE FOR DISPLAY =====
-        function formatDateDisplay(dateStr) {
-            if (!dateStr) return '';
-            
-            // Si c'est déjà au format DD-MM-YYYY ou DD/MM/YYYY, le convertir pour l'affichage
-            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-            if (match) {
-                const day = parseInt(match[1]);
-                const month = parseInt(match[2]) - 1;
-                const year = parseInt(match[3]);
-                const date = new Date(year, month, day);
-                return date.toLocaleDateString('fr-FR', { 
-                    day: 'numeric', 
-                    month: 'long', 
-                    year: 'numeric' 
-                });
-            }
-            
-            // Si c'est au format YYYY-MM-DD
-            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-                const date = new Date(dateStr);
-                return date.toLocaleDateString('fr-FR', { 
-                    day: 'numeric', 
-                    month: 'long', 
-                    year: 'numeric' 
-                });
-            }
-            
-            return dateStr;
         }
 
         // ===== KEYBOARD =====
