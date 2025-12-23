@@ -984,8 +984,15 @@
             if (lien.includes('docs.google.com/document') || 
                 lien.includes('docs.google.com/spreadsheets') || 
                 lien.includes('docs.google.com/presentation')) return 'googledoc';
-            if (lien.includes('drive.google.com') && lien.includes('/file/')) return 'gdrive';
             if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return 'image';
+            
+            // Google Drive : détecter si c'est une image ou un fichier audio/video
+            if (lien.includes('drive.google.com') && lien.includes('/file/')) {
+                // Si le type est "regarder" sans YouTube/Loom, c'est probablement une image
+                if (type === 'regarder') return 'gdrive-image';
+                // Sinon c'est un fichier audio/video
+                return 'gdrive';
+            }
             
             // Si type "lire" mais pas un Google Doc, c'est un article externe
             if (type === 'lire') return 'article';
@@ -1216,6 +1223,14 @@
                     }
                     html += `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="width: 100%; height: 80px;" allow="autoplay"></iframe>`;
                     mediaContainer.innerHTML = html;
+                }
+            }
+            // ===== GOOGLE DRIVE IMAGES =====
+            else if (linkType === 'gdrive-image') {
+                const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+                if (fileId) {
+                    const directImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
+                    mediaContainer.innerHTML = `<img src="${directImageUrl}" alt="${reco.titre}" style="width: 100%; max-height: 70vh; object-fit: contain;">`;
                 }
             }
             // ===== ARTICLES EXTERNES =====
