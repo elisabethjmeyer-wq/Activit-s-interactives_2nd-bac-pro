@@ -258,6 +258,75 @@
             margin-bottom: 10px;
         }
 
+        /* ===== VIDEO POPUP ===== */
+        .video-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .video-popup-overlay.visible {
+            display: flex;
+        }
+
+        .video-popup {
+            width: 100%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-popup-header {
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .video-popup-title {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .video-popup-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .video-popup-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .video-popup-content {
+            position: relative;
+            padding-top: 56.25%; /* Ratio 16:9 */
+        }
+
+        .video-popup-content iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         /* ===== MAIN CONTAINER ===== */
         .main-container {
             max-width: 800px;
@@ -531,6 +600,19 @@
         </div>
     </div>
 
+    <!-- VIDEO POPUP -->
+    <div class="video-popup-overlay" id="videoPopup" onclick="closeVideoPopup(event)">
+        <div class="video-popup" onclick="event.stopPropagation()">
+            <div class="video-popup-header">
+                <span class="video-popup-title" id="videoPopupTitle"></span>
+                <button class="video-popup-close" onclick="closeVideoPopup()">✕</button>
+            </div>
+            <div class="video-popup-content">
+                <iframe id="videoPopupIframe" src="" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIGURATION =====
         // 🔧 REMPLACE CET ID PAR L'ID DE TON GOOGLE SHEETS
@@ -616,7 +698,7 @@
             const video = VIDEOS[0];
             document.getElementById('currentTitle').textContent = video.titre;
             document.getElementById('currentDate').textContent = formatDate(video.date);
-            document.getElementById('currentVideoContent').onclick = () => openVideo(video.lien);
+            document.getElementById('currentVideoContent').onclick = () => openVideo(video.lien, video.titre);
         }
 
         // ===== DISPLAY ARCHIVES =====
@@ -635,7 +717,7 @@
             
             section.style.display = 'block';
             container.innerHTML = recentVideos.map(video => `
-                <div class="video-item" onclick="openVideo('${video.lien}')">
+                <div class="video-item" onclick="openVideo('${video.lien}', '${video.titre.replace(/'/g, "\\'")}')">
                     <div class="video-item-icon">🎬</div>
                     <div class="video-item-info">
                         <div class="video-item-title">${video.titre}</div>
@@ -647,9 +729,38 @@
         }
 
         // ===== OPEN VIDEO =====
-        function openVideo(lien) {
-            if (lien) {
-                window.open(lien, '_blank');
+        function openVideo(lien, titre) {
+            if (!lien) return;
+            
+            // Convertir le lien Loom en lien d'embed
+            let embedUrl = lien;
+            
+            if (lien.includes('loom.com/share/')) {
+                // Transformer https://www.loom.com/share/xxx en https://www.loom.com/embed/xxx
+                embedUrl = lien.replace('/share/', '/embed/');
+            } else if (lien.includes('youtube.com/watch?v=')) {
+                // Transformer YouTube en embed
+                const videoId = lien.split('v=')[1]?.split('&')[0];
+                if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+            } else if (lien.includes('youtu.be/')) {
+                // YouTube format court
+                const videoId = lien.split('youtu.be/')[1]?.split('?')[0];
+                if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+            }
+            
+            document.getElementById('videoPopupTitle').textContent = titre || 'Vidéo';
+            document.getElementById('videoPopupIframe').src = embedUrl;
+            document.getElementById('videoPopup').classList.add('visible');
+        }
+
+        function closeVideoPopup(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('videoPopup').classList.remove('visible');
+                document.getElementById('videoPopupIframe').src = ''; // Stop la vidéo
             }
         }
 
@@ -758,7 +869,7 @@
             }
 
             container.innerHTML = filtered.map(video => `
-                <div class="modal-video-item" onclick="openVideo('${video.lien}'); closeModal();">
+                <div class="modal-video-item" onclick="openVideo('${video.lien}', '${video.titre.replace(/'/g, "\\'")}'); closeModal();">
                     <div class="modal-video-icon">🎬</div>
                     <div class="modal-video-info">
                         <div class="modal-video-title">${video.titre}</div>
@@ -770,7 +881,10 @@
 
         // Fermer avec Escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeVideoPopup();
+            }
         });
     </script>
 
