@@ -1109,16 +1109,28 @@
 
             const mediaContainer = document.getElementById('popupMedia');
             
-            if (contentType.type === 'youtube') {
+            // Détecter YouTube par le lien, peu importe le type spécifié
+            const isYouTube = reco.lien && (reco.lien.includes('youtube.com/watch') || reco.lien.includes('youtu.be/'));
+            
+            if (isYouTube) {
                 let videoId = '';
                 if (reco.lien.includes('youtu.be/')) {
                     // Format: https://youtu.be/VIDEO_ID?si=xxx
-                    videoId = reco.lien.split('youtu.be/')[1]?.split('?')[0]?.split('&')[0];
+                    const afterDomain = reco.lien.split('youtu.be/')[1];
+                    if (afterDomain) {
+                        videoId = afterDomain.split('?')[0].split('&')[0].split('/')[0];
+                    }
                 } else if (reco.lien.includes('youtube.com/watch')) {
                     // Format: https://www.youtube.com/watch?v=VIDEO_ID
-                    const urlParams = new URLSearchParams(reco.lien.split('?')[1]);
-                    videoId = urlParams.get('v');
+                    try {
+                        const url = new URL(reco.lien);
+                        videoId = url.searchParams.get('v');
+                    } catch {
+                        const urlParams = new URLSearchParams(reco.lien.split('?')[1]);
+                        videoId = urlParams.get('v');
+                    }
                 }
+                console.log('YouTube videoId:', videoId, 'from:', reco.lien);
                 if (videoId) {
                     mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
                 }
