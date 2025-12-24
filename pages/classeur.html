@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classeur modèle | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #34d399;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header-card {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .page-header-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header-card p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin-bottom: 16px;
+        }
+
+        .video-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .video-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        /* ===== VIDEO SECTION ===== */
+        .video-section {
+            display: none;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .video-section.visible {
+            display: block;
+        }
+
+        .video-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--radius);
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* ===== FLIPBOOK ===== */
+        .flipbook-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--gray-200);
+        }
+
+        .flipbook-card iframe {
+            width: 100%;
+            height: 800px;
+            border: 0;
+            display: block;
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+            .flipbook-card iframe {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
+            <a href="index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner">
+            
+            <!-- Organisation -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>🧰</span> Organisation
+                </div>
+                <a href="emploi-du-temps.html" class="sidebar-item">
+                    <span class="item-icon">📅</span>
+                    <span class="item-text">Emploi du temps</span>
+                </a>
+                <a href="classeur.html" class="sidebar-item active">
+                    <span class="item-icon">📁</span>
+                    <span class="item-text">Classeur</span>
+                </a>
+                <a href="notes.html" class="sidebar-item">
+                    <span class="item-icon">📊</span>
+                    <span class="item-text">Notes</span>
+                </a>
+            </div>
+
+            <!-- Cours -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📚</span> Cours
+                </div>
+                <a href="lecons.html" class="sidebar-item">
+                    <span class="item-icon">📖</span>
+                    <span class="item-text">Leçons</span>
+                </a>
+                <a href="methodologie.html" class="sidebar-item">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-text">Méthodologie</span>
+                </a>
+            </div>
+
+            <!-- Entraînements -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💪</span> Entraînements
+                </div>
+                <a href="entrainement-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">
+                        Connaissances
+                        <span class="item-sub">Apprendre ses leçons</span>
+                    </span>
+                </a>
+                <a href="entrainement-bex.html" class="sidebar-item">
+                    <span class="item-icon">⭐</span>
+                    <span class="item-text">
+                        BEX (lundi)
+                        <span class="item-sub">Maîtriser les savoir-faire</span>
+                    </span>
+                </a>
+                <a href="entrainement-tc.html" class="sidebar-item">
+                    <span class="item-icon">📝</span>
+                    <span class="item-text">
+                        TC (vendredi)
+                        <span class="item-sub">Préparer l'évaluation</span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Évaluations -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📝</span> Évaluations
+                </div>
+                <a href="evaluations-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">Éval. de connaissances</span>
+                </a>
+                <a href="bonus.html" class="sidebar-item">
+                    <span class="item-icon">🌟</span>
+                    <span class="item-text">Points supplémentaires</span>
+                </a>
+            </div>
+
+            <!-- Communication -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💬</span> Communication
+                </div>
+                <a href="../FAQ.html" class="sidebar-item">
+                    <span class="item-icon">❓</span>
+                    <span class="item-text">Aide / FAQ</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <span class="item-icon">🗣️</span>
+                    <span class="item-text">Espace discussion</span>
+                </a>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            
+            <!-- BREADCRUMB -->
+            <nav class="breadcrumb">
+                <a href="../index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <span class="current">📁 Classeur modèle</span>
+            </nav>
+
+            <!-- PAGE HEADER -->
+            <div class="page-header-card">
+                <h1>📂 Le classeur modèle</h1>
+                <p>Ton classeur de référence pour toute l'année. Feuillette les pages comme un vrai livre !</p>
+                <button class="video-btn" id="toggleVideoBtn">
+                    🎬 Aide vidéo
+                </button>
+            </div>
+
+            <!-- VIDEO SECTION -->
+            <div class="video-section" id="videoSection">
+                <div class="video-section-title">🎥 Comment utiliser le classeur modèle ?</div>
+                <div class="video-container">
+                    <!-- REMPLACE PAR TON LIEN LOOM -->
+                    <iframe src="https://www.loom.com/embed/VOTRE_VIDEO_ID_ICI" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- FLIPBOOK -->
+            <div class="flipbook-card">
+                <iframe 
+                    class="publuuflip" 
+                    src="https://publuu.com/flip-book/1031300/2281576/page/1?embed" 
+                    scrolling="no"
+                    allow="clipboard-write; autoplay; fullscreen"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ===== SIDEBAR TOGGLE =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            menuToggle.classList.toggle('active');
+            overlay.classList.toggle('visible');
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== VIDEO TOGGLE =====
+        const toggleVideoBtn = document.getElementById('toggleVideoBtn');
+        const videoSection = document.getElementById('videoSection');
+
+        toggleVideoBtn.addEventListener('click', function() {
+            videoSection.classList.toggle('visible');
+            toggleVideoBtn.textContent = videoSection.classList.contains('visible') 
+                ? '🎬 Masquer la vidéo' 
+                : '🎬 Aide vidéo';
+        });
+    </script>
+
+</body>
+</html>
