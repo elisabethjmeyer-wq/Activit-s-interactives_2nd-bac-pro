@@ -1227,7 +1227,7 @@
     <script>
         // ===== CONFIGURATION =====
         const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_NAME = 'RECOS';
+        const SHEET_NAME = '🎬 RECOS';
 
         // ===== DONNÉES =====
         let RECOS = [];
@@ -1263,25 +1263,44 @@
         async function loadSheetData() {
             try {
                 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+                
                 const response = await fetch(url);
                 const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
                 
-                if (!json.table || !json.table.rows) return [];
+                // Extraire le JSON de la réponse Google
+                const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?$/);
+                let json;
+                
+                if (jsonMatch && jsonMatch[1]) {
+                    json = JSON.parse(jsonMatch[1]);
+                } else {
+                    json = JSON.parse(text.substring(47, text.length - 2));
+                }
+                
+                if (!json.table || !json.table.rows || json.table.rows.length === 0) {
+                    console.error('❌ Pas de données dans la table');
+                    return false;
+                }
                 
                 RECOS = [];
                 
                 for (let i = 0; i < json.table.rows.length; i++) {
                     const row = json.table.rows[i].c;
-                    if (!row || !row[0]) continue;
+                    if (!row) continue;
                     
                     // Colonnes: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
                     const dateValue = row[0]?.f || row[0]?.v || '';
                     const titre = row[1]?.v || '';
                     
-                    // Ignorer les en-têtes
-                    if (titre.toLowerCase().includes('titre') || dateValue.toLowerCase().includes('date')) continue;
-                    if (!titre) continue;
+                    // Ignorer les en-têtes (première ligne)
+                    const dateStr = String(dateValue).toLowerCase();
+                    const titreStr = String(titre).toLowerCase();
+                    
+                    if (titreStr.includes('titre') || dateStr.includes('date') || dateStr.includes('mois')) {
+                        continue;
+                    }
+                    
+                    if (!titre || titre.trim() === '') continue;
                     
                     const reco = {
                         date: dateValue,
