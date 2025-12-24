@@ -975,7 +975,7 @@
     <script>
         // ===== CONFIGURATION =====
         const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_NAME = '📹 VIDEOS';
+        const SHEET_NAME = '📺 VIDEOS';
 
         // ===== DONNÉES =====
         let VIDEOS = [];
@@ -1004,16 +1004,9 @@
         async function loadVideosFromGoogleSheets() {
             try {
                 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
-                console.log('📡 Fetching:', url);
-                
                 const response = await fetch(url);
                 const text = await response.text();
-                
-                console.log('📄 Response length:', text.length);
-                
                 const json = JSON.parse(text.substring(47, text.length - 2));
-                
-                console.log('📊 Rows count:', json.table?.rows?.length);
                 
                 if (!json.table || !json.table.rows) return false;
                 
@@ -1021,30 +1014,19 @@
                 
                 for (let i = 0; i < json.table.rows.length; i++) {
                     const row = json.table.rows[i].c;
-                    if (!row) {
-                        console.log(`Row ${i}: null`);
-                        continue;
-                    }
+                    if (!row) continue;
                     
                     // Colonnes: A=Date, B=Titre, C=Lien
                     const dateValue = row[0]?.f || row[0]?.v || '';
                     const titre = row[1]?.v || '';
                     const lien = row[2]?.v || '';
                     
-                    console.log(`Row ${i}: Date="${dateValue}", Titre="${titre}", Lien="${lien ? lien.substring(0,50) + '...' : 'VIDE'}"`);
-                    
                     // Ignorer les en-têtes et lignes vides
                     const titreLC = String(titre).toLowerCase();
                     const dateLC = String(dateValue).toLowerCase();
                     
-                    if (titreLC.includes('titre') || dateLC.includes('date')) {
-                        console.log(`  → Ignoré (en-tête)`);
-                        continue;
-                    }
-                    if (!titre || titre.trim() === '') {
-                        console.log(`  → Ignoré (titre vide)`);
-                        continue;
-                    }
+                    if (titreLC.includes('titre') || dateLC.includes('date')) continue;
+                    if (!titre || titre.trim() === '') continue;
                     
                     VIDEOS.push({
                         date: dateValue,
@@ -1052,14 +1034,12 @@
                         titre: titre,
                         lien: lien
                     });
-                    console.log(`  → Ajouté ✅`);
                 }
                 
                 // Trier par date décroissante
                 VIDEOS.sort((a, b) => b.dateSort.localeCompare(a.dateSort));
                 
                 console.log(`✅ ${VIDEOS.length} vidéos chargées`);
-                console.log('VIDEOS:', VIDEOS);
                 return true;
                 
             } catch (error) {
