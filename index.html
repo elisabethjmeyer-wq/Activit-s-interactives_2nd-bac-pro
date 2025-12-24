@@ -820,7 +820,7 @@
 
         // Video
         async function loadVideo() {
-            const videos = await loadSheetData('VIDEOS');
+            const videos = await loadSheetData('📹 VIDEOS');
             const wrapper = document.getElementById('videoWrapper');
             
             if (videos?.length > 0) {
@@ -839,8 +839,8 @@
         // Week
         async function loadWeek() {
             const [todos, actus] = await Promise.all([
-                loadSheetData('🎯TODO'),
-                loadSheetData('ACTUS')
+                loadSheetData('🎯 TODO'),
+                loadSheetData('📋 ACTUS')
             ]);
             
             let items = [];
@@ -895,15 +895,30 @@
 
         // Reco
         async function loadReco() {
-            const recos = await loadSheetData('RECOS');
+            const recos = await loadSheetData('🎬 RECOS');
             if (recos?.length > 0) {
-                const r = recos[recos.length - 1];
+                // Filtrer les en-têtes et lignes vides
+                const validRecos = recos.filter(r => {
+                    const titre = r.Titre || r['Titre'] || '';
+                    return titre && !titre.toLowerCase().includes('titre');
+                });
+                
+                if (validRecos.length === 0) {
+                    document.getElementById('recoIcon').textContent = '💡';
+                    document.getElementById('recoType').textContent = 'Aucune';
+                    document.getElementById('recoTitle').textContent = 'Pas de recommandation';
+                    document.getElementById('recoDesc').textContent = 'Revenez bientôt !';
+                    document.getElementById('recoLink').style.display = 'none';
+                    return;
+                }
+                
+                const r = validRecos[validRecos.length - 1];
                 
                 let emoji = '🎬';
                 let typeLabel = 'Vidéo';
-                const type = (r.Type || '').toLowerCase();
+                const type = (r.Type || r['Type (ecouter, regarder, lire)'] || '').toLowerCase();
                 
-                if (type.includes('ecouter') || type.includes('podcast') || type.includes('audio')) {
+                if (type.includes('ecouter') || type.includes('écouter') || type.includes('podcast') || type.includes('audio')) {
                     emoji = '🎧';
                     typeLabel = 'Podcast';
                 } else if (type.includes('lire') || type.includes('livre') || type.includes('article')) {
@@ -919,8 +934,9 @@
                 document.getElementById('recoTitle').textContent = r.Titre || 'Recommandation';
                 document.getElementById('recoDesc').textContent = r.Description || '';
                 
-                if (r.Lien) {
-                    document.getElementById('recoLink').href = r.Lien;
+                const lien = r.Lien || r['Lien (va déterminer nature du doc -> si image mettre dans la colonne D et E en doublon)'] || '';
+                if (lien) {
+                    document.getElementById('recoLink').href = lien;
                     document.getElementById('recoLink').style.display = 'inline-flex';
                 } else {
                     document.getElementById('recoLink').style.display = 'none';
