@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Besoin d'aide ?</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* ===== TABS NAVIGATION ===== */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 8px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .tab-btn.active {
+            background: #6b7280;
+            color: white;
+        }
+
+        .tab-btn .emoji {
+            font-size: 20px;
+        }
+
+        /* ===== TAB CONTENT ===== */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 12px 18px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .search-box .icon {
+            font-size: 20px;
+            color: #888;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: #aaa;
+        }
+
+        /* ===== VIEW: CATEGORIES ===== */
+        .view-categories {
+            display: block;
+        }
+
+        .view-categories.hidden {
+            display: none;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #667eea;
+        }
+
+        .category-card .emoji {
+            font-size: 45px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .category-card h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .category-card p {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .category-card .count {
+            display: inline-block;
+            background: #6b7280;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* ===== VIEW: QUESTIONS ===== */
+        .view-questions {
+            display: none;
+        }
+
+        .view-questions.visible {
+            display: block;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* ===== CATEGORY HEADER ===== */
+        .category-header {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-header .emoji {
+            font-size: 40px;
+        }
+
+        .category-header-text h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #333;
+        }
+
+        .category-header-text p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* ===== FAQ ITEMS ===== */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: #f9f9f9;
+        }
+
+        .faq-question-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #444;
+            flex: 1;
+        }
+
+        .faq-question-text .emoji {
+            font-size: 20px;
+        }
+
+        .faq-toggle {
+            width: 30px;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .faq-toggle {
+            background: #6b7280;
+            color: white;
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 1000px;
+        }
+
+        .faq-answer-content {
+            padding: 0 18px 18px 50px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .faq-answer-content a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .faq-answer-content a:hover {
+            text-decoration: underline;
+        }
+
+        .faq-answer-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 6px;
+        }
+
+        /* ===== VIDEO EMBED ===== */
+        .faq-video {
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .faq-video iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            display: block;
+        }
+
+        /* ===== SEARCH RESULTS VIEW ===== */
+        .view-search-results {
+            display: none;
+        }
+
+        .view-search-results.visible {
+            display: block;
+        }
+
+        .search-results-header {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-results-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .clear-search {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .clear-search:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== NO RESULTS ===== */
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .no-results .icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .no-results h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .no-results p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* ===== ASK QUESTION SECTION ===== */
+        .ask-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .ask-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .ask-header .emoji {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .ask-header h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .ask-header p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* ===== QUESTION TYPE TOGGLE ===== */
+        .question-type-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .type-btn {
+            padding: 12px 25px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .type-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .type-btn.active {
+            background: #6b7280;
+            border-color: #6b7280;
+            color: white;
+        }
+
+        .type-btn .emoji {
+            font-size: 18px;
+        }
+
+        /* ===== TEXT QUESTION FORM ===== */
+        .question-form {
+            display: none;
+        }
+
+        .question-form.active {
+            display: block;
+        }
+
+        .text-input-container {
+            margin-bottom: 20px;
+        }
+
+        .text-input-container textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            color: #333;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .text-input-container textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .text-input-container textarea::placeholder {
+            color: #aaa;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* ===== AUDIO QUESTION FORM ===== */
+        .audio-recorder {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .recorder-status {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .recorder-status.recording {
+            color: #e53e3e;
+            font-weight: 700;
+        }
+
+        .record-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .record-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .record-btn.recording {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .audio-preview {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .audio-preview.visible {
+            display: block;
+        }
+
+        .audio-preview audio {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .audio-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .audio-action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .audio-action-btn.delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .audio-action-btn.delete:hover {
+            background: #fecaca;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: 800;
+            color: #e53e3e;
+            margin-bottom: 15px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ===== SUCCESS MESSAGE ===== */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+
+        .success-message .emoji {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .success-message h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .new-question-btn {
+            padding: 12px 25px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 25px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-question-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* ===== INFO BOX ===== */
+        .info-box {
+            background: #f0f4ff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-box .emoji {
+            font-size: 20px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .header {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .tabs-nav {
+                flex-direction: column;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .category-card {
+                padding: 20px 15px;
+            }
+
+            .category-card .emoji {
+                font-size: 35px;
+            }
+
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .question-type-toggle {
+                flex-direction: column;
+            }
+
+            .type-btn {
+                justify-content: center;
+            }
+
+            .faq-answer-content {
+                padding: 0 15px 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-icon">❓</div>
+        <h1>FAQ - Besoin d'aide ?</h1>
+        <p>Trouve des réponses ou pose ta question</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+
+        <!-- TABS NAVIGATION -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('faq')">
+                <span class="emoji">📚</span>
+                Consulter la FAQ
+            </button>
+            <button class="tab-btn" onclick="switchTab('ask')">
+                <span class="emoji">✋</span>
+                Poser une question
+            </button>
+        </div>
+
+        <!-- TAB: FAQ -->
+        <div class="tab-content active" id="tabFaq">
+            
+            <!-- SEARCH -->
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Rechercher une question..." oninput="handleSearch()">
+                </div>
+            </div>
+
+            <!-- VIEW: CATEGORIES -->
+            <div class="view-categories" id="viewCategories">
+                <div class="categories-grid" id="categoriesGrid">
+                    <!-- Catégories chargées ici -->
+                </div>
+            </div>
+
+            <!-- VIEW: QUESTIONS -->
+            <div class="view-questions" id="viewQuestions">
+                <button class="back-button" onclick="showCategories()">
+                    ← Retour aux catégories
+                </button>
+                <div class="category-header" id="categoryHeader">
+                    <span class="emoji" id="categoryEmoji"></span>
+                    <div class="category-header-text">
+                        <h2 id="categoryTitle"></h2>
+                        <p id="categoryCount"></p>
+                    </div>
+                </div>
+                <div class="faq-list" id="faqList"></div>
+            </div>
+
+            <!-- VIEW: SEARCH RESULTS -->
+            <div class="view-search-results" id="viewSearchResults">
+                <div class="search-results-header">
+                    <h2>🔍 Résultats de recherche</h2>
+                    <button class="clear-search" onclick="clearSearch()">✕ Effacer</button>
+                </div>
+                <div class="faq-list" id="searchResultsList"></div>
+            </div>
+
+        </div>
+
+        <!-- TAB: ASK QUESTION -->
+        <div class="tab-content" id="tabAsk">
+            <div class="ask-section">
+                
+                <!-- FORM -->
+                <div id="askForm">
+                    <div class="ask-header">
+                        <div class="emoji">🙋</div>
+                        <h2>Pose ta question</h2>
+                        <p>Tu peux écrire ou enregistrer un message audio</p>
+                    </div>
+
+                    <!-- TYPE TOGGLE -->
+                    <div class="question-type-toggle">
+                        <button class="type-btn active" onclick="switchQuestionType('text')">
+                            <span class="emoji">✍️</span>
+                            Écrire
+                        </button>
+                        <button class="type-btn" onclick="switchQuestionType('audio')">
+                            <span class="emoji">🎤</span>
+                            Enregistrer
+                        </button>
+                    </div>
+
+                    <!-- TEXT FORM -->
+                    <div class="question-form active" id="textForm">
+                        <div class="text-input-container">
+                            <textarea id="questionText" placeholder="Écris ta question ici... Sois le plus précis possible pour qu'on puisse t'aider !" maxlength="500" oninput="updateCharCount()"></textarea>
+                            <div class="char-count"><span id="charCount">0</span>/500 caractères</div>
+                        </div>
+                        <button class="submit-btn" onclick="submitTextQuestion()" id="submitTextBtn" disabled>
+                            📤 Envoyer ma question
+                        </button>
+                    </div>
+
+                    <!-- AUDIO FORM -->
+                    <div class="question-form" id="audioForm">
+                        <div class="info-box">
+                            <span class="emoji">💡</span>
+                            <p>Clique sur le micro pour commencer l'enregistrement. Tu as <strong>60 secondes maximum</strong>. Parle clairement et pose ta question !</p>
+                        </div>
+                        <div class="audio-recorder">
+                            <div class="timer" id="timer" style="display: none;">00:00</div>
+                            <div class="recorder-status" id="recorderStatus">Clique pour enregistrer</div>
+                            <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+                                🎤
+                            </button>
+                            <div class="audio-preview" id="audioPreview">
+                                <audio id="audioPlayer" controls></audio>
+                                <div class="audio-actions">
+                                    <button class="audio-action-btn delete" onclick="deleteRecording()">🗑️ Supprimer</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="submit-btn" onclick="submitAudioQuestion()" id="submitAudioBtn" disabled>
+                            📤 Envoyer ma question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUCCESS MESSAGE -->
+                <div class="success-message" id="successMessage">
+                    <div class="emoji">✅</div>
+                    <h3>Question envoyée !</h3>
+                    <p>Mme Meyer va la lire et peut-être l'ajouter à la FAQ. Merci pour ta participation !</p>
+                    <button class="new-question-btn" onclick="resetForm()">Poser une autre question</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        const SHEET_FAQ = 'FAQ_faq';
+        const SHEET_CATEGORIES = 'FAQ_categories';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcpQe0fti_LZdg6plh0ytzX7XmFEksdMWngHTSAozpt1mYZ2AThkQodRxvJcOUiFmB/exec';
+
+        // ===== DONNÉES DYNAMIQUES =====
+        let CATEGORIES_CONFIG = {};
+        let FAQ_DATA = [];
+
+        // ===== DONNÉES DE DEMO (utilisées si Google Sheet non connecté) =====
+        const DEMO_CATEGORIES = {
+            'cours': { emoji: '📚', label: 'Les cours', description: 'Accès aux leçons, méthodologie...' },
+            'evaluations': { emoji: '📝', label: 'Évaluations', description: 'Notes, BEX, compétences...' },
+            'technique': { emoji: '💻', label: 'Technique', description: 'Problèmes vidéo, connexion...' },
+            'moodle': { emoji: '🎓', label: 'Moodle', description: 'Navigation, fonctionnalités...' }
+        };
+
+        const DEMO_FAQ = [
+            {
+                question: "Comment accéder à mes cours ?",
+                answer: "Pour accéder à tes cours, clique sur <strong>\"Toutes les leçons\"</strong> dans le menu à gauche.",
+                category: "cours",
+                emoji: "📚",
+                video: ""
+            },
+            {
+                question: "Où trouver la méthodologie ?",
+                answer: "La méthodologie est disponible dans la section <strong>\"Toute la méthodologie\"</strong>.",
+                category: "cours",
+                emoji: "📖",
+                video: ""
+            },
+            {
+                question: "Comment fonctionne le BEX du lundi ?",
+                answer: "Le BEX est un exercice d'entraînement hebdomadaire. Tu as <strong>10 minutes</strong> pour le compléter.",
+                category: "evaluations",
+                emoji: "📝",
+                video: ""
+            },
+            {
+                question: "La vidéo ne se lance pas, que faire ?",
+                answer: "Essaie de rafraîchir la page (F5) ou utilise Chrome. Si le problème persiste, contacte Mme Meyer.",
+                category: "technique",
+                emoji: "🎬",
+                video: ""
+            },
+            {
+                question: "Comment naviguer dans le cours ?",
+                answer: "Utilise le menu à gauche pour naviguer. Regarde la vidéo d'aide pour une visite guidée !",
+                category: "moodle",
+                emoji: "🧭",
+                video: "https://www.loom.com/embed/example"
+            }
+        ];
+
+        let currentCategory = null;
+
+        // ===== TABS =====
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.getElementById(tab === 'faq' ? 'tabFaq' : 'tabAsk').classList.add('active');
+        }
+
+        // ===== RENDER CATEGORIES =====
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            const counts = {};
+            FAQ_DATA.forEach(item => {
+                counts[item.category] = (counts[item.category] || 0) + 1;
+            });
+
+            grid.innerHTML = Object.entries(CATEGORIES_CONFIG).map(([key, config]) => `
+                <div class="category-card" onclick="showCategory('${key}')">
+                    <span class="emoji">${config.emoji}</span>
+                    <h3>${config.label}</h3>
+                    <p>${config.description}</p>
+                    <span class="count">${counts[key] || 0} question${(counts[key] || 0) > 1 ? 's' : ''}</span>
+                </div>
+            `).join('');
+        }
+
+        // ===== SHOW CATEGORY =====
+        function showCategory(category) {
+            currentCategory = category;
+            const config = CATEGORIES_CONFIG[category];
+            
+            document.getElementById('categoryEmoji').textContent = config.emoji;
+            document.getElementById('categoryTitle').textContent = config.label;
+            
+            const questions = FAQ_DATA.filter(item => item.category === category);
+            document.getElementById('categoryCount').textContent = `${questions.length} question${questions.length > 1 ? 's' : ''}`;
+            
+            renderQuestions(questions, 'faqList');
+            
+            document.getElementById('viewCategories').classList.add('hidden');
+            document.getElementById('viewQuestions').classList.add('visible');
+            document.getElementById('viewSearchResults').classList.remove('visible');
+        }
+
+        // ===== SHOW CATEGORIES =====
+        function showCategories() {
+            currentCategory = null;
+            document.getElementById('viewCategories').classList.remove('hidden');
+            document.getElementById('viewQuestions').classList.remove('visible');
+            document.getElementById('viewSearchResults').classList.remove('visible');
+            document.getElementById('searchInput').value = '';
+        }
+
+        // ===== RENDER QUESTIONS =====
+        function renderQuestions(questions, containerId) {
+            const container = document.getElementById(containerId);
+            
+            if (questions.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <div class="icon">🤷</div>
+                        <h3>Aucune question trouvée</h3>
+                        <p>Essaie avec d'autres mots-clés ou pose ta question !</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = questions.map(item => `
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="faq-question-text">
+                            <span class="emoji">${item.emoji}</span>
+                            ${item.question}
+                        </div>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            ${item.answer}
+                            ${item.video ? `
+                                <div class="faq-video">
+                                    <iframe src="${convertVideoUrl(item.video)}" allowfullscreen></iframe>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== CONVERT VIDEO URL =====
+        function convertVideoUrl(url) {
+            if (!url) return '';
+            if (url.includes('loom.com/share/')) return url.replace('/share/', '/embed/');
+            if (url.includes('youtube.com/watch')) {
+                const videoId = url.split('v=')[1]?.split('&')[0];
+                return `https://www.youtube-nocookie.com/embed/${videoId}`;
+            }
+            if (url.includes('youtu.be/')) {
+                const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+                return `https://www.youtube-nocookie.com/embed/${videoId}`;
+            }
+            return url;
+        }
+
+        // ===== TOGGLE FAQ =====
+        function toggleFAQ(element) {
+            element.parentElement.classList.toggle('open');
+        }
+
+        // ===== SEARCH =====
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (query.length < 2) {
+                if (currentCategory) {
+                    document.getElementById('viewQuestions').classList.add('visible');
+                } else {
+                    document.getElementById('viewCategories').classList.remove('hidden');
+                }
+                document.getElementById('viewSearchResults').classList.remove('visible');
+                return;
+            }
+            
+            const results = FAQ_DATA.filter(item => 
+                item.question.toLowerCase().includes(query) || 
+                item.answer.toLowerCase().includes(query)
+            );
+            
+            document.getElementById('viewCategories').classList.add('hidden');
+            document.getElementById('viewQuestions').classList.remove('visible');
+            document.getElementById('viewSearchResults').classList.add('visible');
+            
+            renderQuestions(results, 'searchResultsList');
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            showCategories();
+        }
+
+        // ===== QUESTION TYPE TOGGLE =====
+        function switchQuestionType(type) {
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.question-form').forEach(form => form.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchQuestionType('${type}')"]`).classList.add('active');
+            document.getElementById(type === 'text' ? 'textForm' : 'audioForm').classList.add('active');
+        }
+
+        // ===== TEXT QUESTION =====
+        function updateCharCount() {
+            const text = document.getElementById('questionText').value;
+            document.getElementById('charCount').textContent = text.length;
+            document.getElementById('submitTextBtn').disabled = text.trim().length < 10;
+        }
+
+        function submitTextQuestion() {
+            const text = document.getElementById('questionText').value.trim();
+            if (text.length < 10) return;
+            
+            const btn = document.getElementById('submitTextBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Envoi en cours...';
+            
+            // Envoyer à Google Apps Script
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'texte',
+                    question: text
+                })
+            })
+            .then(() => {
+                // Afficher succès
+                document.getElementById('askForm').style.display = 'none';
+                document.getElementById('successMessage').classList.add('visible');
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'envoi. Réessaie !');
+                btn.disabled = false;
+                btn.innerHTML = '📤 Envoyer ma question';
+            });
+        }
+
+        // ===== AUDIO RECORDING =====
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioBlob = null;
+        let isRecording = false;
+        let timerInterval = null;
+        let recordingTime = 0;
+
+        async function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    document.getElementById('audioPlayer').src = audioUrl;
+                    document.getElementById('audioPreview').classList.add('visible');
+                    document.getElementById('submitAudioBtn').disabled = false;
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                recordingTime = 0;
+                
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('recordBtn').innerHTML = '⏹️';
+                document.getElementById('recorderStatus').textContent = 'Enregistrement en cours...';
+                document.getElementById('recorderStatus').classList.add('recording');
+                document.getElementById('timer').style.display = 'block';
+                
+                timerInterval = setInterval(() => {
+                    recordingTime++;
+                    const mins = Math.floor(recordingTime / 60).toString().padStart(2, '0');
+                    const secs = (recordingTime % 60).toString().padStart(2, '0');
+                    document.getElementById('timer').textContent = `${mins}:${secs}`;
+                    
+                    if (recordingTime >= 60) {
+                        stopRecording();
+                    }
+                }, 1000);
+                
+            } catch (err) {
+                alert('Impossible d\'accéder au micro. Vérifie les autorisations de ton navigateur.');
+                console.error(err);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                
+                clearInterval(timerInterval);
+                
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('recordBtn').innerHTML = '🎤';
+                document.getElementById('recorderStatus').textContent = 'Enregistrement terminé';
+                document.getElementById('recorderStatus').classList.remove('recording');
+            }
+        }
+
+        function deleteRecording() {
+            audioBlob = null;
+            document.getElementById('audioPlayer').src = '';
+            document.getElementById('audioPreview').classList.remove('visible');
+            document.getElementById('submitAudioBtn').disabled = true;
+            document.getElementById('recorderStatus').textContent = 'Clique pour enregistrer';
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('timer').textContent = '00:00';
+        }
+
+        function submitAudioQuestion() {
+            if (!audioBlob) return;
+            
+            const btn = document.getElementById('submitAudioBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Envoi en cours...';
+            
+            // Convertir l'audio en base64
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const base64Audio = reader.result;
+                
+                // Envoyer à Google Apps Script
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: 'audio',
+                        question: '[Message audio]',
+                        audioData: base64Audio
+                    })
+                })
+                .then(() => {
+                    // Afficher succès
+                    document.getElementById('askForm').style.display = 'none';
+                    document.getElementById('successMessage').classList.add('visible');
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Erreur lors de l\'envoi. Réessaie !');
+                    btn.disabled = false;
+                    btn.innerHTML = '📤 Envoyer ma question';
+                });
+            };
+            reader.readAsDataURL(audioBlob);
+        }
+
+        // ===== RESET FORM =====
+        function resetForm() {
+            document.getElementById('askForm').style.display = 'block';
+            document.getElementById('successMessage').classList.remove('visible');
+            document.getElementById('questionText').value = '';
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('submitTextBtn').disabled = true;
+            deleteRecording();
+            switchQuestionType('text');
+        }
+
+        // ===== LOAD CATEGORIES FROM GOOGLE SHEETS =====
+        async function loadCategoriesFromGoogleSheets() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_CATEGORIES)}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+                if (!jsonString || !jsonString[1]) throw new Error('Format invalide');
+                
+                const data = JSON.parse(jsonString[1]);
+                const rows = data.table.rows;
+                
+                CATEGORIES_CONFIG = {};
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row || !row[0]) continue;
+                    
+                    const nom = (row[0]?.v || '').toLowerCase().trim();
+                    const emoji = row[1]?.v || '📁';
+                    const description = row[2]?.v || '';
+                    
+                    // Ignorer les en-têtes
+                    if (nom === 'nom' || nom.includes('catégorie')) continue;
+                    
+                    if (nom) {
+                        CATEGORIES_CONFIG[nom] = {
+                            emoji: emoji,
+                            label: row[0]?.v || nom, // Garder la casse originale pour le label
+                            description: description
+                        };
+                    }
+                }
+                
+                console.log(`✅ ${Object.keys(CATEGORIES_CONFIG).length} catégories chargées`);
+                return true;
+                
+            } catch (error) {
+                console.log('Catégories: Mode démo');
+                CATEGORIES_CONFIG = DEMO_CATEGORIES;
+                return false;
+            }
+        }
+
+        // ===== LOAD FAQ FROM GOOGLE SHEETS =====
+        async function loadFaqFromGoogleSheets() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_FAQ)}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+                if (!jsonString || !jsonString[1]) throw new Error('Format invalide');
+                
+                const data = JSON.parse(jsonString[1]);
+                const rows = data.table.rows;
+                
+                FAQ_DATA = [];
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row || !row[0]) continue;
+                    
+                    const item = {
+                        question: row[0]?.v || '',
+                        answer: row[1]?.v || '',
+                        category: (row[2]?.v || '').toLowerCase().trim(),
+                        emoji: row[3]?.v || '❓',
+                        video: row[4]?.v || ''
+                    };
+                    
+                    // Ignorer les en-têtes
+                    if (item.question.toLowerCase().includes('question')) continue;
+                    
+                    if (item.question) {
+                        FAQ_DATA.push(item);
+                    }
+                }
+                
+                console.log(`✅ ${FAQ_DATA.length} questions chargées`);
+                return true;
+                
+            } catch (error) {
+                console.log('FAQ: Mode démo');
+                FAQ_DATA = DEMO_FAQ;
+                return false;
+            }
+        }
+
+        // ===== LOAD ALL DATA =====
+        async function loadAllData() {
+            // Charger les catégories d'abord
+            await loadCategoriesFromGoogleSheets();
+            
+            // Puis charger les questions
+            await loadFaqFromGoogleSheets();
+            
+            // Afficher
+            renderCategories();
+        }
+
+        // ===== INIT =====
+        loadAllData();
+    </script>
+
+</body>
+</html>
