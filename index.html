@@ -995,28 +995,7 @@
             menuToggle.classList.add('active');
         }
 
-        // ===== DATA LOADING =====
-        async function loadSheetData(sheetName) {
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                if (!json.table || !json.table.rows) return [];
-                const headers = json.table.cols.map(col => col.label || '');
-                return json.table.rows.map(row => {
-                    const obj = {};
-                    row.c.forEach((cell, i) => {
-                        if (headers[i]) obj[headers[i]] = cell ? (cell.v || '') : '';
-                    });
-                    return obj;
-                });
-            } catch (e) {
-                console.error(e);
-                return [];
-            }
-        }
-
+        // ===== HELPER FUNCTIONS =====
         function escapeHtml(t) {
             if (!t) return '';
             const d = document.createElement('div');
@@ -1026,8 +1005,16 @@
 
         function convertToEmbed(url) {
             if (!url) return null;
+            // Loom
+            if (url.includes('loom.com/share/')) {
+                return url.replace('/share/', '/embed/');
+            }
+            // YouTube
             const m = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
-            return m && m[2].length === 11 ? `https://www.youtube.com/embed/${m[2]}` : url;
+            if (m && m[2].length === 11) {
+                return `https://www.youtube-nocookie.com/embed/${m[2]}`;
+            }
+            return url;
         }
 
         function convertToImageUrl(url) {
@@ -1048,12 +1035,23 @@
 
         function formatDate(dateStr) {
             if (!dateStr) return '';
-            const match = String(dateStr).match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-            if (match) {
-                const date = new Date(parseInt(match[3]), parseInt(match[2]) - 1, parseInt(match[1]));
+            const str = String(dateStr);
+            
+            // Format DD-MM-YYYY ou DD/MM/YYYY
+            const match1 = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match1) {
+                const date = new Date(parseInt(match1[3]), parseInt(match1[2]) - 1, parseInt(match1[1]));
                 return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
             }
-            return dateStr;
+            
+            // Format YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+                const parts = str.split('-');
+                const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            
+            return str;
         }
 
         function parseTags(tagsStr) {
@@ -1075,68 +1073,101 @@
             return 'link';
         }
 
-        // Date
+        // ===== LOAD RAW SHEET DATA (by column index) =====
+        async function loadSheetRaw(sheetName) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                if (!json.table || !json.table.rows) return [];
+                return json.table.rows;
+            } catch (e) {
+                console.error('Error loading', sheetName, e);
+                return [];
+            }
+        }
+
+        // ===== UPDATE DATE =====
         function updateDate() {
             const now = new Date();
             const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
             document.getElementById('currentDate').textContent = `Sem. ${getWeekNumber(now)} • ${months[now.getMonth()]} ${now.getFullYear()}`;
         }
 
-        // Video
+        // ===== LOAD VIDEO =====
+        // Colonnes: A=Date, B=Titre, C=Lien
         async function loadVideo() {
-            const videos = await loadSheetData('📹 VIDEOS');
+            const rows = await loadSheetRaw('📹 VIDEOS');
             const wrapper = document.getElementById('videoWrapper');
             
-            if (videos?.length > 0) {
-                const validVideos = videos.filter(v => v.Lien && !String(v.Lien).toLowerCase().includes('lien'));
-                if (validVideos.length > 0) {
-                    const v = validVideos[validVideos.length - 1];
-                    const embed = convertToEmbed(v.Lien);
-                    if (embed) {
-                        wrapper.innerHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
-                        return;
-                    }
+            // Filter valid rows (skip header, empty rows)
+            const validRows = rows.filter(row => {
+                if (!row.c || !row.c[2]) return false; // Need Lien (column C)
+                const lien = row.c[2]?.v || '';
+                const titre = row.c[1]?.v || '';
+                if (!lien || lien.toLowerCase().includes('lien')) return false;
+                if (titre.toLowerCase().includes('titre')) return false;
+                return true;
+            });
+            
+            if (validRows.length > 0) {
+                // Get last video
+                const lastRow = validRows[validRows.length - 1];
+                const lien = lastRow.c[2]?.v || '';
+                const embed = convertToEmbed(lien);
+                
+                if (embed) {
+                    wrapper.innerHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
+                    return;
                 }
             }
+            
             wrapper.innerHTML = `<div class="video-placeholder"><div class="play">🎬</div><span>Aucune vidéo</span></div>`;
         }
 
-        // Week
+        // ===== LOAD WEEK (TODO + ACTUS) =====
         async function loadWeek() {
-            const [todos, actus] = await Promise.all([
-                loadSheetData('🎯 TODO'),
-                loadSheetData('📋 ACTUS')
+            const [todoRows, actusRows] = await Promise.all([
+                loadSheetRaw('🎯 TODO'),
+                loadSheetRaw('📋 ACTUS')
             ]);
             
             let items = [];
             
-            if (todos) {
-                todos.filter(t => {
-                    const visible = String(t.Visible || '').toUpperCase();
-                    return visible === 'OUI' || visible === 'TRUE' || visible === '1';
-                }).forEach(t => {
-                    items.push({
-                        priority: (t.Priorité || t.Priorite || 'normal').toLowerCase(),
-                        text: t.Texte,
-                        date: t.Date || '',
-                        link: t.Lien || '#'
-                    });
+            // TODO: Colonnes probables: A=Texte, B=Date, C=Priorité, D=Lien, E=Visible
+            todoRows.forEach(row => {
+                if (!row.c) return;
+                const visible = String(row.c[4]?.v || '').toUpperCase();
+                if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
+                
+                const texte = row.c[0]?.v || '';
+                if (!texte || texte.toLowerCase().includes('texte')) return;
+                
+                items.push({
+                    priority: (row.c[2]?.v || 'normal').toString().toLowerCase(),
+                    text: texte,
+                    date: row.c[1]?.f || row.c[1]?.v || '',
+                    link: row.c[3]?.v || '#'
                 });
-            }
+            });
             
-            if (actus) {
-                actus.filter(a => {
-                    const visible = String(a.Visible || '').toUpperCase();
-                    return visible === 'OUI' || visible === 'TRUE' || visible === '1';
-                }).forEach(a => {
-                    items.push({
-                        priority: 'info',
-                        text: a.Texte,
-                        date: '',
-                        link: '#'
-                    });
+            // ACTUS: Colonnes probables: A=Texte, B=Visible
+            actusRows.forEach(row => {
+                if (!row.c) return;
+                const visible = String(row.c[1]?.v || '').toUpperCase();
+                if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
+                
+                const texte = row.c[0]?.v || '';
+                if (!texte || texte.toLowerCase().includes('texte')) return;
+                
+                items.push({
+                    priority: 'info',
+                    text: texte,
+                    date: '',
+                    link: '#'
                 });
-            }
+            });
 
             const container = document.getElementById('weekList');
             const badge = document.getElementById('weekBadge');
@@ -1164,61 +1195,57 @@
             }
         }
 
-        // Reco
+        // ===== LOAD RECO =====
+        // Colonnes: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
         async function loadReco() {
-            const recos = await loadSheetData('🎬 RECOS');
+            const rows = await loadSheetRaw('🎬 RECOS');
             const container = document.getElementById('recoContainer');
             
-            if (!recos || recos.length === 0) {
-                container.innerHTML = `<div class="reco-empty"><div class="emoji">📭</div><p>Pas de recommandation pour le moment</p></div>`;
-                return;
-            }
-            
-            // Filter valid recos
-            const validRecos = recos.filter(r => {
-                const titre = r.Titre || '';
-                return titre && !titre.toLowerCase().includes('titre');
+            // Filter valid rows
+            const validRows = rows.filter(row => {
+                if (!row.c || !row.c[1]) return false;
+                const titre = row.c[1]?.v || '';
+                if (!titre || titre.toLowerCase().includes('titre')) return false;
+                return true;
             });
             
-            if (validRecos.length === 0) {
+            if (validRows.length === 0) {
                 container.innerHTML = `<div class="reco-empty"><div class="emoji">📭</div><p>Pas de recommandation pour le moment</p></div>`;
                 return;
             }
             
-            // Get the last one (most recent)
-            const r = validRecos[validRecos.length - 1];
-            currentReco = r;
+            // Get last reco
+            const row = validRows[validRows.length - 1];
+            
+            const reco = {
+                date: row.c[0]?.f || row.c[0]?.v || '',
+                titre: row.c[1]?.v || '',
+                description: row.c[2]?.v || '',
+                lien: row.c[3]?.v || '',
+                image: row.c[4]?.v || '',
+                type: (row.c[5]?.v || '').toLowerCase(),
+                tags: row.c[6]?.v || ''
+            };
+            
+            currentReco = reco;
             
             // Determine type
-            const typeRaw = (r.Type || r['Type (ecouter, regarder, lire)'] || '').toLowerCase();
             let emoji = '🎬';
             let typeLabel = 'À regarder';
             
-            if (typeRaw.includes('ecouter') || typeRaw.includes('écouter') || typeRaw.includes('podcast')) {
+            if (reco.type.includes('ecouter') || reco.type.includes('écouter') || reco.type.includes('podcast')) {
                 emoji = '🎧';
                 typeLabel = 'À écouter';
-            } else if (typeRaw.includes('lire') || typeRaw.includes('article') || typeRaw.includes('livre')) {
+            } else if (reco.type.includes('lire') || reco.type.includes('article')) {
                 emoji = '📖';
                 typeLabel = 'À lire';
-            } else if (typeRaw.includes('regarder') || typeRaw.includes('video') || typeRaw.includes('film')) {
-                emoji = '🎬';
-                typeLabel = 'À regarder';
             }
             
-            // Get image
-            const imageUrl = convertToImageUrl(r.Image || r['Image (importer sur drive -> share with anyone with the link -> coller ici)'] || '');
+            const imageUrl = convertToImageUrl(reco.image);
+            const tags = parseTags(reco.tags);
+            const contentType = getContentType(reco.lien, reco.type);
+            const playIcon = (contentType === 'link' || contentType === 'article') ? '↗' : '▶';
             
-            // Get other fields
-            const lien = r.Lien || r['Lien (va déterminer nature du doc -> si image mettre dans la colonne D et E en doublon)'] || '';
-            const tags = parseTags(r.Tags || r['Tags (séparer par des virgules si nécessaire)'] || '');
-            const dateStr = r.Date || r['Date (mois-jour-année)'] || '';
-            const contentType = getContentType(lien, typeRaw);
-            
-            // Play button icon
-            let playIcon = '▶';
-            if (contentType === 'link' || contentType === 'article') playIcon = '↗';
-            
-            // Build HTML
             container.innerHTML = `
                 <div class="reco-featured" onclick="openRecoPopup()">
                     <div class="reco-image">
@@ -1231,96 +1258,67 @@
                             <span class="reco-badge">⭐ Cette semaine</span>
                             <span class="reco-type-badge">${emoji} ${typeLabel}</span>
                         </div>
-                        <h3 class="reco-title">${escapeHtml(r.Titre)}</h3>
-                        <p class="reco-desc">${escapeHtml(r.Description || '')}</p>
+                        <h3 class="reco-title">${escapeHtml(reco.titre)}</h3>
+                        <p class="reco-desc">${escapeHtml(reco.description)}</p>
                         ${tags.length > 0 ? `
                             <div class="reco-tags">
                                 ${tags.map(t => `<span class="reco-tag">${escapeHtml(t)}</span>`).join('')}
                             </div>
                         ` : ''}
-                        <p class="reco-date">${formatDate(dateStr)}</p>
+                        <p class="reco-date">${formatDate(reco.date)}</p>
                     </div>
                 </div>
             `;
         }
 
-        // Open popup
+        // ===== POPUP =====
         function openRecoPopup() {
             if (!currentReco) return;
             
-            const r = currentReco;
-            const lien = r.Lien || r['Lien (va déterminer nature du doc -> si image mettre dans la colonne D et E en doublon)'] || '';
-            const typeRaw = (r.Type || r['Type (ecouter, regarder, lire)'] || '').toLowerCase();
-            const contentType = getContentType(lien, typeRaw);
-            const tags = parseTags(r.Tags || r['Tags (séparer par des virgules si nécessaire)'] || '');
-            const dateStr = r.Date || r['Date (mois-jour-année)'] || '';
-            const imageUrl = convertToImageUrl(r.Image || r['Image (importer sur drive -> share with anyone with the link -> coller ici)'] || '');
+            const reco = currentReco;
+            const contentType = getContentType(reco.lien, reco.type);
+            const tags = parseTags(reco.tags);
+            const imageUrl = convertToImageUrl(reco.image);
             
-            document.getElementById('popupTitle').textContent = r.Titre || 'Recommandation';
-            document.getElementById('popupDesc').textContent = r.Description || '';
-            document.getElementById('popupDate').textContent = formatDate(dateStr);
+            document.getElementById('popupTitle').textContent = reco.titre;
+            document.getElementById('popupDesc').textContent = reco.description;
+            document.getElementById('popupDate').textContent = formatDate(reco.date);
             document.getElementById('popupTags').innerHTML = tags.map(t => `<span class="popup-tag">${escapeHtml(t)}</span>`).join('');
             
             const mediaContainer = document.getElementById('popupMedia');
             
-            // YouTube
             if (contentType === 'youtube') {
-                let videoId = '';
-                if (lien.includes('youtu.be/')) {
-                    videoId = lien.split('youtu.be/')[1]?.split('?')[0];
-                } else {
-                    const url = new URL(lien);
-                    videoId = url.searchParams.get('v');
+                const m = reco.lien.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
+                if (m && m[2]) {
+                    mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[2]}" allowfullscreen></iframe>`;
                 }
-                if (videoId) {
-                    mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen></iframe>`;
-                }
-            }
-            // Spotify
-            else if (contentType === 'spotify') {
-                const embedUrl = lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
+            } else if (contentType === 'spotify') {
+                const embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 352px;" allow="encrypted-media"></iframe>`;
-            }
-            // Google Docs
-            else if (contentType === 'googledoc') {
-                let embedUrl = lien.replace(/\/(edit|view).*$/, '/preview');
+            } else if (contentType === 'loom') {
+                const embedUrl = reco.lien.replace('/share/', '/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            } else if (contentType === 'googledoc') {
+                let embedUrl = reco.lien.replace(/\/(edit|view).*$/, '/preview');
                 if (!embedUrl.includes('/preview')) embedUrl += '/preview';
                 mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 500px;"></iframe>`;
-            }
-            // Google Drive (audio/video)
-            else if (contentType === 'gdrive') {
-                const fileId = lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+            } else if (contentType === 'gdrive') {
+                const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
                 if (fileId) {
-                    let html = imageUrl ? `<img src="${imageUrl}" alt="${r.Titre}" style="max-height: 300px; object-fit: cover;">` : '';
+                    let html = imageUrl ? `<img src="${imageUrl}" style="max-height: 300px; object-fit: cover;">` : '';
                     html += `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="height: 80px;" allow="autoplay"></iframe>`;
                     mediaContainer.innerHTML = html;
                 }
-            }
-            // Google Drive Image
-            else if (contentType === 'gdrive-image') {
-                const fileId = lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+            } else if (contentType === 'gdrive-image') {
+                const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
                 if (fileId) {
-                    mediaContainer.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w2000" alt="${r.Titre}">`;
+                    mediaContainer.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w2000">`;
                 }
-            }
-            // Loom
-            else if (contentType === 'loom') {
-                const embedUrl = lien.replace('/share/', '/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-            }
-            // Image
-            else if (contentType === 'image') {
-                mediaContainer.innerHTML = `<img src="${lien}" alt="${r.Titre}">`;
-            }
-            // Article / External
-            else if (contentType === 'article' || contentType === 'link') {
-                let html = imageUrl ? `<img src="${imageUrl}" alt="${r.Titre}" style="max-height: 300px; object-fit: cover;">` : '';
-                html += `
-                    <div class="popup-external">
-                        <p style="color: var(--gray-500); margin-bottom: 16px;">Ce contenu provient d'un site externe.</p>
-                        <a href="${lien}" target="_blank" class="popup-external-btn">📖 Ouvrir le lien</a>
-                    </div>
-                `;
+            } else if (contentType === 'image') {
+                mediaContainer.innerHTML = `<img src="${reco.lien}">`;
+            } else {
+                let html = imageUrl ? `<img src="${imageUrl}" style="max-height: 300px; object-fit: cover;">` : '';
+                html += `<div class="popup-external"><p style="color: var(--gray-500); margin-bottom: 16px;">Ce contenu provient d'un site externe.</p><a href="${reco.lien}" target="_blank" class="popup-external-btn">📖 Ouvrir le lien</a></div>`;
                 mediaContainer.innerHTML = html;
             }
             
@@ -1334,12 +1332,11 @@
             }
         }
 
-        // Keyboard
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closePopup();
         });
 
-        // Init
+        // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
             updateDate();
             loadVideo();
