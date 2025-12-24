@@ -73,8 +73,8 @@
 
         /* Toggle Button in Header */
         .menu-toggle {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             background: var(--gray-100);
             border: none;
             border-radius: 10px;
@@ -107,10 +107,10 @@
         }
 
         .logo-icon {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -120,7 +120,7 @@
 
         .logo-text {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .logo-text span {
@@ -128,46 +128,17 @@
             font-weight: 500;
         }
 
-        .nav-categories {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--gray-100);
-            padding: 4px;
-            border-radius: 10px;
-            margin-left: auto;
-        }
-
-        .nav-cat {
-            padding: 8px 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--gray-600);
-            transition: all 0.15s;
-        }
-
-        .nav-cat:hover {
-            color: var(--gray-800);
-        }
-
-        .nav-cat.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: var(--shadow);
+        .header-spacer {
+            flex: 1;
         }
 
         .header-date {
             font-size: 13px;
             color: var(--gray-500);
             font-weight: 500;
-            margin-left: 16px;
-        }
-
-        @media (max-width: 900px) {
-            .nav-categories { display: none; }
-            .header-date { display: none; }
+            padding: 8px 14px;
+            background: var(--gray-100);
+            border-radius: 8px;
         }
 
         /* ===== SIDEBAR ===== */
@@ -181,14 +152,12 @@
             bottom: 0;
             overflow-y: auto;
             overflow-x: hidden;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s ease;
             z-index: 50;
         }
 
         .sidebar.collapsed {
             transform: translateX(-100%);
-            opacity: 0;
-            pointer-events: none;
         }
 
         .sidebar-inner {
@@ -579,6 +548,7 @@
             visibility: visible;
         }
 
+        /* ===== MOBILE ===== */
         @media (max-width: 768px) {
             .sidebar {
                 z-index: 60;
@@ -588,6 +558,9 @@
             }
             .sidebar.collapsed ~ .main {
                 margin-left: 0;
+            }
+            .header-date {
+                display: none;
             }
         }
     </style>
@@ -607,13 +580,7 @@
                 <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
             </a>
             
-            <nav class="nav-categories">
-                <a href="#organisation" class="nav-cat">Organisation</a>
-                <a href="#cours" class="nav-cat">Cours</a>
-                <a href="#entrainements" class="nav-cat">Entraînements</a>
-                <a href="#evaluations" class="nav-cat">Évaluations</a>
-                <a href="#aide" class="nav-cat">Aide</a>
-            </nav>
+            <div class="header-spacer"></div>
             
             <div class="header-date" id="currentDate">Sem. 52 • Déc 2025</div>
         </div>
@@ -624,7 +591,7 @@
         <div class="sidebar-inner">
             
             <!-- Organisation -->
-            <div class="sidebar-section" id="organisation">
+            <div class="sidebar-section">
                 <div class="sidebar-section-title">
                     <span>🧰</span> Organisation
                 </div>
@@ -643,7 +610,7 @@
             </div>
 
             <!-- Cours -->
-            <div class="sidebar-section" id="cours">
+            <div class="sidebar-section">
                 <div class="sidebar-section-title">
                     <span>📚</span> Cours
                 </div>
@@ -658,7 +625,7 @@
             </div>
 
             <!-- Entraînements -->
-            <div class="sidebar-section" id="entrainements">
+            <div class="sidebar-section">
                 <div class="sidebar-section-title">
                     <span>💪</span> Entraînements
                 </div>
@@ -686,7 +653,7 @@
             </div>
 
             <!-- Évaluations -->
-            <div class="sidebar-section" id="evaluations">
+            <div class="sidebar-section">
                 <div class="sidebar-section-title">
                     <span>📝</span> Évaluations
                 </div>
@@ -701,7 +668,7 @@
             </div>
 
             <!-- Communication -->
-            <div class="sidebar-section" id="aide">
+            <div class="sidebar-section">
                 <div class="sidebar-section-title">
                     <span>💬</span> Communication
                 </div>
@@ -801,27 +768,6 @@
             sidebar.classList.remove('collapsed');
             menuToggle.classList.add('active');
         }
-
-        // Nav category links
-        document.querySelectorAll('.nav-cat').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = link.getAttribute('href').substring(1);
-                
-                // Open sidebar if closed
-                if (sidebar.classList.contains('collapsed')) {
-                    toggleSidebar();
-                }
-                
-                // Scroll to section
-                setTimeout(() => {
-                    const section = document.getElementById(target);
-                    if (section) {
-                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 300);
-            });
-        });
 
         // ===== DATA LOADING =====
         async function loadSheetData(sheetName) {
