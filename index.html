@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon espace - 2nd Bac Pro - Mme Meyer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,32 +12,55 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc;
-            min-height: 100vh;
+        :root {
+            /* Palette réduite - Violet comme couleur principale */
+            --primary: #7c3aed;
+            --primary-light: #a78bfa;
+            --primary-dark: #5b21b6;
+            --primary-bg: #f5f3ff;
+            
+            /* Couleurs d'accent (utilisées avec parcimonie) */
+            --accent-urgent: #ef4444;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            
+            /* Neutres */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Ombres */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
-        /* ===== LAYOUT PAGE D'ACCUEIL ===== */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
+        /* ===== LAYOUT ===== */
         .dashboard {
             display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 25px;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            transition: grid-template-columns 0.3s ease;
-        }
-
-        .dashboard.sidebar-collapsed {
-            grid-template-columns: 60px 1fr;
         }
 
         @media (max-width: 900px) {
             .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .dashboard.sidebar-collapsed {
                 grid-template-columns: 1fr;
             }
             .sidebar {
@@ -46,247 +69,334 @@
             .main-content {
                 order: 1;
             }
-            .sidebar-toggle {
-                display: none;
-            }
         }
 
-        /* ===== HEADER BIENVENUE ===== */
+        /* ===== HEADER ===== */
         .header-welcome {
             grid-column: 1 / -1;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border-radius: 20px;
-            padding: 28px 32px;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(124, 58, 237, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header-welcome h1 {
-            font-size: 26px;
+        .header-welcome-text h1 {
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
-        .header-welcome p {
+        .header-welcome-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header-date {
+            text-align: right;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .header-date strong {
+            display: block;
             font-size: 15px;
-            opacity: 0.95;
+            opacity: 1;
         }
 
-        .header-welcome .highlight-cours { color: #fbbf24; }
-        .header-welcome .highlight-echeances { color: #f87171; }
-        .header-welcome .highlight-aides { color: #34d399; }
-
-        /* ===== SIDEBAR MENU ===== */
+        /* ===== SIDEBAR ===== */
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            position: relative;
+            gap: 8px;
         }
 
-        /* ===== BOUTON TOGGLE SIDEBAR ===== */
-        .sidebar-toggle {
-            position: absolute;
-            top: 0;
-            right: -15px;
-            width: 30px;
-            height: 30px;
+        /* Navigation principale - Style compact */
+        .nav-section {
             background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 50%;
-            cursor: pointer;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-700);
+            transition: all 0.15s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            color: #6b7280;
-            transition: all 0.3s ease;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+            background: var(--gray-100);
+            transition: all 0.15s ease;
         }
 
-        .sidebar-toggle:hover {
-            background: #f3f4f6;
-            border-color: #8b5cf6;
-            color: #8b5cf6;
+        .nav-item:hover .icon {
+            background: var(--primary);
+            color: white;
         }
 
-        .sidebar-toggle .arrow {
-            transition: transform 0.3s ease;
+        .nav-item.active .icon {
+            background: var(--primary);
+            color: white;
         }
 
-        .sidebar-collapsed .sidebar-toggle .arrow {
+        /* Badge pour notifications */
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--accent-urgent);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Séparateur */
+        .nav-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 4px 12px;
+        }
+
+        /* Section "Plus" repliable */
+        .nav-more-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-more-toggle:hover {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .nav-more-toggle .chevron {
+            transition: transform 0.2s ease;
+        }
+
+        .nav-more-toggle.open .chevron {
             transform: rotate(180deg);
         }
 
-        /* ===== SECTION DU MENU ===== */
-        .menu-section {
-            background: white;
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            overflow: hidden;
+        .nav-more-content {
+            display: none;
+            padding-top: 4px;
         }
 
-        .sidebar-collapsed .menu-section {
-            padding: 12px;
-        }
-
-        .menu-section-title {
-            font-weight: 800;
-            font-size: 13px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .menu-section-title .title-text {
-            transition: opacity 0.3s ease, width 0.3s ease;
-        }
-
-        .sidebar-collapsed .menu-section-title .title-text {
-            opacity: 0;
-            width: 0;
-        }
-
-        .menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: white;
-            transition: all 0.2s ease;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .menu-btn:last-child {
-            margin-bottom: 0;
-        }
-
-        .menu-btn:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .sidebar-collapsed .menu-btn:hover {
-            transform: none;
-        }
-
-        .menu-btn .emoji {
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .menu-btn .btn-text {
-            transition: opacity 0.3s ease, width 0.3s ease;
-        }
-
-        .sidebar-collapsed .menu-btn .btn-text {
-            opacity: 0;
-            width: 0;
-        }
-
-        .sidebar-collapsed .menu-btn {
-            justify-content: center;
-            padding: 12px;
-        }
-
-        /* Couleurs boutons */
-        .btn-bleu { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-        .btn-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
-        .btn-jaune { background: linear-gradient(135deg, #FBE23C 0%, #eab308 100%); color: #78350f; }
-        .btn-rouge { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        .btn-violet { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
-        .btn-vert { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .btn-gris { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
-
-        /* Tooltip pour sidebar repliée */
-        .menu-btn {
-            position: relative;
-        }
-
-        .sidebar-collapsed .menu-btn::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            left: calc(100% + 10px);
-            top: 50%;
-            transform: translateY(-50%);
-            background: #1f2937;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .sidebar-collapsed .menu-btn:hover::after {
-            opacity: 1;
-            visibility: visible;
+        .nav-more-content.open {
+            display: block;
         }
 
         /* ===== CONTENU PRINCIPAL ===== */
         .main-content {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
         }
 
-        /* ===== CARTE VIDEO SEMAINE ===== */
-        .card-video {
+        /* ===== CARTE "À FAIRE" (PRIORITAIRE) ===== */
+        .card-todo {
             background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
         }
 
-        .card-video-header {
+        .card-todo-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
 
-        .card-video-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #1f2937;
+        .card-todo-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-800);
             display: flex;
             align-items: center;
+            gap: 8px;
+        }
+
+        .card-todo-title .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-urgent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .todo-items {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .card-video-link {
-            color: #8b5cf6;
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--gray-50);
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: #f3f4f6;
-            transition: all 0.2s;
+            color: var(--gray-700);
+            transition: all 0.15s ease;
         }
 
-        .card-video-link:hover {
-            background: #e5e7eb;
+        .todo-item:hover {
+            background: var(--primary-bg);
+            transform: translateX(4px);
+        }
+
+        .todo-item .todo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .todo-item .todo-icon.urgent {
+            background: #fef2f2;
+            color: var(--accent-urgent);
+        }
+
+        .todo-item .todo-icon.warning {
+            background: #fffbeb;
+            color: var(--accent-warning);
+        }
+
+        .todo-item .todo-icon.normal {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .todo-item .todo-text {
+            flex: 1;
+        }
+
+        .todo-item .todo-text strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 2px;
+        }
+
+        .todo-item .todo-text span {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .todo-item .todo-arrow {
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        /* ===== GRILLE 2 COLONNES ===== */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1100px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== CARTE VIDÉO ===== */
+        .card-video {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: opacity 0.15s;
+        }
+
+        .card-link:hover {
+            opacity: 0.7;
         }
 
         .video-wrapper {
@@ -295,7 +405,7 @@
             height: 0;
             border-radius: 12px;
             overflow: hidden;
-            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #e0e7ff 100%);
         }
 
         .video-wrapper iframe {
@@ -313,292 +423,378 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            color: #6366f1;
+            color: var(--primary);
         }
 
-        .video-placeholder .play-icon {
-            width: 64px;
-            height: 64px;
+        .video-placeholder .play-btn {
+            width: 56px;
+            height: 56px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            font-size: 24px;
+            margin: 0 auto 10px;
+            box-shadow: var(--shadow-lg);
+            font-size: 20px;
         }
 
-        /* ===== CARTE INFOS SEMAINE ===== */
+        .video-placeholder p {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* ===== CARTE INFOS ===== */
         .card-infos {
             background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .card-infos-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #1f2937;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
         }
 
         .infos-list {
             list-style: none;
-            padding: 0;
-            margin: 0;
         }
 
         .infos-list li {
-            padding: 14px 16px;
-            background: #f9fafb;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #374151;
-            line-height: 1.6;
-            border-left: 4px solid #8b5cf6;
+            padding: 12px 0;
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.5;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
         }
 
         .infos-list li:last-child {
-            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
         }
 
-        .infos-list li .emoji {
-            margin-right: 8px;
+        .infos-list li .info-emoji {
+            font-size: 16px;
+            flex-shrink: 0;
         }
 
-        /* ===== CARTE RECOMMANDATION ===== */
+        /* ===== CARTE RECOMMANDATION (Plus discrète) ===== */
         .card-reco {
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-            border-radius: 24px;
-            padding: 28px;
+            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+            border-radius: 16px;
+            padding: 20px 24px;
             color: white;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-reco::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .card-reco-header {
+            box-shadow: var(--shadow);
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .card-reco-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .card-reco-content {
+            flex: 1;
         }
 
         .card-reco-label {
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #c084fc;
-            font-weight: bold;
-            background: rgba(192, 132, 252, 0.2);
-            padding: 6px 14px;
-            border-radius: 20px;
+            letter-spacing: 0.05em;
+            color: var(--primary-light);
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
-        .card-reco-link {
+        .card-reco-content h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-reco-content p {
+            font-size: 13px;
+            color: var(--gray-400);
+            line-height: 1.4;
+        }
+
+        .card-reco-action {
             color: white;
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            padding: 10px 16px;
             background: rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.2s;
+            border-radius: 10px;
+            transition: all 0.15s;
+            white-space: nowrap;
         }
 
-        .card-reco-link:hover {
+        .card-reco-action:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
-        .card-reco h2 {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 12px;
+        /* ===== BARRE DE PROGRESSION (BONUS) ===== */
+        .progress-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 12px;
-            position: relative;
-            z-index: 1;
+            gap: 20px;
         }
 
-        .card-reco p {
-            font-size: 15px;
-            color: #e9d5ff;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
+        .progress-info {
+            flex: 1;
         }
 
-        /* ===== INDICATEUR DE PAGE ACTIVE ===== */
-        .menu-btn.active {
-            position: relative;
+        .progress-info h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 8px;
         }
 
-        .menu-btn.active::before {
-            content: '';
-            position: absolute;
-            left: -18px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 70%;
-            background: currentColor;
-            border-radius: 0 4px 4px 0;
+        .progress-bar-container {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-stats {
+            text-align: right;
+        }
+
+        .progress-stats .percent {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .progress-stats .label {
+            font-size: 12px;
+            color: var(--gray-500);
         }
     </style>
 </head>
 <body>
-    <div class="dashboard" id="dashboard">
-        <!-- HEADER BIENVENUE -->
+    <div class="dashboard">
+        <!-- HEADER -->
         <header class="header-welcome">
-            <h1>👋 Bienvenue dans ton espace !</h1>
-            <p>Ici, tu retrouves <span class="highlight-cours">ton cours</span>, les <span class="highlight-echeances">échéances</span>, et toutes les <span class="highlight-aides">aides</span> pour travailler en autonomie.</p>
+            <div class="header-welcome-text">
+                <h1>👋 Bonjour !</h1>
+                <p>Bienvenue dans ton espace d'histoire-géo</p>
+            </div>
+            <div class="header-date">
+                <strong>Semaine 51</strong>
+                Décembre 2024
+            </div>
         </header>
 
-        <!-- SIDEBAR MENU -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
-            <!-- Bouton toggle -->
-            <button class="sidebar-toggle" id="sidebarToggle" title="Replier/Déplier le menu">
-                <span class="arrow">◀</span>
-            </button>
+            <nav class="nav-section">
+                <div class="nav-section-title">Menu principal</div>
+                
+                <a href="pages/emploi-du-temps.html" class="nav-item">
+                    <span class="icon">📅</span>
+                    Emploi du temps
+                </a>
+                
+                <a href="pages/lecons.html" class="nav-item">
+                    <span class="icon">📖</span>
+                    Mes leçons
+                </a>
+                
+                <a href="pages/methodologie.html" class="nav-item">
+                    <span class="icon">🧠</span>
+                    Méthodologie
+                </a>
 
-            <!-- Organisation (EN HAUT) -->
-            <div class="menu-section">
-                <div class="menu-section-title">🧰 <span class="title-text">Organisation</span></div>
-                <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert" data-tooltip="Emploi du temps">
-                    <span class="emoji">📅</span> <span class="btn-text">Emploi du temps</span>
+                <div class="nav-divider"></div>
+                
+                <a href="pages/connaissances.html" class="nav-item">
+                    <span class="icon">✅</span>
+                    Évaluations
+                    <span class="badge">2</span>
                 </a>
-                <a href="pages/classeur.html" class="menu-btn btn-vert" data-tooltip="Classeur numérique">
-                    <span class="emoji">📁</span> <span class="btn-text">Classeur numérique</span>
+                
+                <a href="pages/bex.html" class="nav-item">
+                    <span class="icon">⭐</span>
+                    Préparer le BEX
                 </a>
-                <a href="pages/notes.html" class="menu-btn btn-vert" data-tooltip="Mes notes">
-                    <span class="emoji">📊</span> <span class="btn-text">Mes notes</span>
+                
+                <a href="pages/tc.html" class="nav-item">
+                    <span class="icon">📝</span>
+                    Préparer le TC
                 </a>
-            </div>
 
-            <!-- Consulte tes cours -->
-            <div class="menu-section">
-                <div class="menu-section-title">📚 <span class="title-text">Consulte tes cours</span></div>
-                <a href="pages/lecons.html" class="menu-btn btn-bleu" data-tooltip="Toutes les leçons">
-                    <span class="emoji">📖</span> <span class="btn-text">Toutes les leçons</span>
-                </a>
-                <a href="pages/methodologie.html" class="menu-btn btn-orange" data-tooltip="Toute la méthodologie">
-                    <span class="emoji">🧠</span> <span class="btn-text">Toute la méthodologie</span>
-                </a>
-            </div>
+                <div class="nav-divider"></div>
 
-            <!-- Évaluations (NOUVEAU BLOC) -->
-            <div class="menu-section">
-                <div class="menu-section-title">📝 <span class="title-text">Évaluations</span></div>
-                <a href="pages/connaissances.html" class="menu-btn btn-bleu" data-tooltip="Évaluations de connaissances">
-                    <span class="emoji">✅</span> <span class="btn-text">Évaluations de connaissances</span>
-                </a>
-                <a href="pages/bonus.html" class="menu-btn btn-violet" data-tooltip="Bonus pour + de points !">
-                    <span class="emoji">🌟</span> <span class="btn-text">Bonus pour + de points !</span>
-                </a>
-            </div>
-
-            <!-- Prépare tes évaluations -->
-            <div class="menu-section">
-                <div class="menu-section-title">📊 <span class="title-text">Prépare tes évaluations...</span></div>
-                <a href="pages/bex.html" class="menu-btn btn-jaune" data-tooltip="du lundi (BEX)">
-                    <span class="emoji">⭐</span> <span class="btn-text">du lundi (BEX)</span>
-                </a>
-                <a href="pages/tc.html" class="menu-btn btn-rouge" data-tooltip="du vendredi (TC)">
-                    <span class="emoji">📝</span> <span class="btn-text">du vendredi (TC)</span>
-                </a>
-            </div>
-
-            <!-- Espace classe -->
-            <div class="menu-section">
-                <div class="menu-section-title">💬 <span class="title-text">Espace classe</span></div>
-                <a href="FAQ.html" class="menu-btn btn-gris" data-tooltip="Un problème ?">
-                    <span class="emoji">❓</span> <span class="btn-text">Un problème ?</span>
-                </a>
-                <a href="#" class="menu-btn btn-gris" data-tooltip="Entre élèves">
-                    <span class="emoji">🗣️</span> <span class="btn-text">Entre élèves</span>
-                </a>
-            </div>
+                <!-- Section "Plus" repliable -->
+                <button class="nav-more-toggle" onclick="toggleMore(this)">
+                    <span>Plus d'options</span>
+                    <span class="chevron">▼</span>
+                </button>
+                
+                <div class="nav-more-content">
+                    <a href="pages/classeur.html" class="nav-item">
+                        <span class="icon">📁</span>
+                        Classeur numérique
+                    </a>
+                    
+                    <a href="pages/notes.html" class="nav-item">
+                        <span class="icon">📊</span>
+                        Mes notes
+                    </a>
+                    
+                    <a href="pages/bonus.html" class="nav-item">
+                        <span class="icon">🌟</span>
+                        Bonus
+                    </a>
+                    
+                    <a href="FAQ.html" class="nav-item">
+                        <span class="icon">❓</span>
+                        Aide / FAQ
+                    </a>
+                    
+                    <a href="#" class="nav-item">
+                        <span class="icon">🗣️</span>
+                        Espace discussion
+                    </a>
+                </div>
+            </nav>
         </aside>
 
         <!-- CONTENU PRINCIPAL -->
         <main class="main-content">
-            <!-- Vidéo de la semaine -->
-            <section class="card-video">
-                <div class="card-video-header">
-                    <div class="card-video-title">🎬 La vidéo de la semaine</div>
-                    <a href="videos_hebdomadaires_archives.html" class="card-video-link">Voir tout →</a>
-                </div>
-                <div class="video-wrapper">
-                    <div class="video-placeholder">
-                        <div class="play-icon">▶️</div>
-                        <p>Vidéo chargée depuis Google Sheets</p>
+            
+            <!-- Progression -->
+            <div class="progress-card">
+                <div class="progress-info">
+                    <h4>📈 Ta progression cette période</h4>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 65%;"></div>
                     </div>
                 </div>
-            </section>
-
-            <!-- Infos de la semaine -->
-            <section class="card-infos">
-                <div class="card-infos-title">📋 Les infos importantes de la semaine</div>
-                <ul class="infos-list">
-                    <li><span class="emoji">📅</span> Samedi 14 décembre, rendez-vous devant le lycée à 15h00. Nous partirons à 15h15 pour nous rendre au musée Vaudou</li>
-                    <li><span class="emoji">📝</span> Le QCM d'entraînement n°5 a été ajouté. Vous pouvez le faire autant de fois que vous voulez !</li>
-                    <li><span class="emoji">⚠️</span> N'oubliez pas de rendre le TC n°3 pour vendredi prochain</li>
-                </ul>
-            </section>
-
-            <!-- Recommandation de la semaine -->
-            <section class="card-reco">
-                <div class="card-reco-header">
-                    <span class="card-reco-label">✨ La recommandation de la semaine</span>
-                    <a href="recommandations_archives.html" class="card-reco-link">Voir tout →</a>
+                <div class="progress-stats">
+                    <div class="percent">65%</div>
+                    <div class="label">3 leçons / 5</div>
                 </div>
-                <h2>🎧 Podcast "Les Grandes Traversées"</h2>
-                <p>Un podcast passionnant sur les grandes explorations maritimes du XVe siècle. Parfait pour réviser le chapitre sur les Grandes Découvertes tout en se détendant !</p>
+            </div>
+
+            <!-- À faire cette semaine -->
+            <section class="card-todo">
+                <div class="card-todo-header">
+                    <div class="card-todo-title">
+                        <span class="pulse"></span>
+                        À faire cette semaine
+                    </div>
+                </div>
+                <div class="todo-items">
+                    <a href="pages/tc.html" class="todo-item">
+                        <div class="todo-icon urgent">📝</div>
+                        <div class="todo-text">
+                            <strong>TC n°3 à rendre</strong>
+                            <span>Vendredi 20 décembre</span>
+                        </div>
+                        <span class="todo-arrow">→</span>
+                    </a>
+                    <a href="pages/bex.html" class="todo-item">
+                        <div class="todo-icon warning">⭐</div>
+                        <div class="todo-text">
+                            <strong>BEX n°5 - S'entraîner</strong>
+                            <span>Lundi 16 décembre</span>
+                        </div>
+                        <span class="todo-arrow">→</span>
+                    </a>
+                    <a href="pages/lecons.html" class="todo-item">
+                        <div class="todo-icon normal">📖</div>
+                        <div class="todo-text">
+                            <strong>Relire la leçon 4</strong>
+                            <span>Les Grandes Découvertes</span>
+                        </div>
+                        <span class="todo-arrow">→</span>
+                    </a>
+                </div>
             </section>
+
+            <!-- Grille 2 colonnes : Vidéo + Infos -->
+            <div class="two-columns">
+                <!-- Vidéo de la semaine -->
+                <section class="card-video">
+                    <div class="card-header">
+                        <div class="card-title">🎬 Vidéo de la semaine</div>
+                        <a href="videos_hebdomadaires_archives.html" class="card-link">Voir tout →</a>
+                    </div>
+                    <div class="video-wrapper">
+                        <div class="video-placeholder">
+                            <div class="play-btn">▶️</div>
+                            <p>Chargement...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Infos de la semaine -->
+                <section class="card-infos">
+                    <div class="card-header">
+                        <div class="card-title">📋 Infos de la semaine</div>
+                    </div>
+                    <ul class="infos-list">
+                        <li>
+                            <span class="info-emoji">📅</span>
+                            <span>Samedi 14 décembre, RDV devant le lycée à 15h00 pour le musée Vaudou</span>
+                        </li>
+                        <li>
+                            <span class="info-emoji">✅</span>
+                            <span>Le QCM d'entraînement n°5 est disponible !</span>
+                        </li>
+                        <li>
+                            <span class="info-emoji">⚠️</span>
+                            <span>N'oubliez pas : TC n°3 pour vendredi</span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Recommandation (plus discrète, en bandeau) -->
+            <section class="card-reco">
+                <div class="card-reco-icon">🎧</div>
+                <div class="card-reco-content">
+                    <div class="card-reco-label">Recommandation</div>
+                    <h3>Podcast "Les Grandes Traversées"</h3>
+                    <p>Les explorations maritimes du XVe siècle</p>
+                </div>
+                <a href="recommandations_archives.html" class="card-reco-action">Découvrir →</a>
+            </section>
+
         </main>
     </div>
 
     <script>
-        // ===== TOGGLE SIDEBAR =====
-        const dashboard = document.getElementById('dashboard');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-
-        sidebarToggle.addEventListener('click', () => {
-            dashboard.classList.toggle('sidebar-collapsed');
-            
-            // Sauvegarder la préférence
-            const isCollapsed = dashboard.classList.contains('sidebar-collapsed');
-            localStorage.setItem('sidebarCollapsed', isCollapsed);
-        });
-
-        // Restaurer la préférence au chargement
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedState = localStorage.getItem('sidebarCollapsed');
-            if (savedState === 'true') {
-                dashboard.classList.add('sidebar-collapsed');
-            }
-        });
+        // Toggle "Plus d'options"
+        function toggleMore(button) {
+            button.classList.toggle('open');
+            const content = button.nextElementSibling;
+            content.classList.toggle('open');
+        }
     </script>
 </body>
 </html>
