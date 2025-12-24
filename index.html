@@ -1129,41 +1129,52 @@
         // ===== LOAD WEEK (TODO + ACTUS) =====
         async function loadWeek() {
             const [todoRows, actusRows] = await Promise.all([
-                loadSheetRaw('🎯 TODO'),
-                loadSheetRaw('📋 ACTUS')
+                loadSheetRaw('🎯TODO'),
+                loadSheetRaw('📰 ACTUS')
             ]);
             
             let items = [];
             
-            // TODO: Colonnes probables: A=Texte, B=Date, C=Priorité, D=Lien, E=Visible
+            // TODO: Colonnes: A=Priorité, B=Texte, C=Date, D=Lien, E=Visible
             todoRows.forEach(row => {
                 if (!row.c) return;
+                
+                const priorite = row.c[0]?.v || '';
+                const texte = row.c[1]?.v || '';
+                const date = row.c[2]?.f || row.c[2]?.v || '';
+                const lien = row.c[3]?.v || '';
                 const visible = String(row.c[4]?.v || '').toUpperCase();
+                
+                // Ignorer en-têtes et lignes non visibles
+                if (String(priorite).toLowerCase().includes('priorit')) return;
+                if (!texte || texte.toLowerCase().includes('texte')) return;
                 if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
                 
-                const texte = row.c[0]?.v || '';
-                if (!texte || texte.toLowerCase().includes('texte')) return;
-                
                 items.push({
-                    priority: (row.c[2]?.v || 'normal').toString().toLowerCase(),
+                    priority: priorite.toString().toLowerCase(),
                     text: texte,
-                    date: row.c[1]?.f || row.c[1]?.v || '',
-                    link: row.c[3]?.v || '#'
+                    date: date,
+                    link: lien || '#'
                 });
             });
             
-            // ACTUS: Colonnes probables: A=Texte, B=Visible
+            // ACTUS: Colonnes: A=Date, B=Texte, C=Emoji, D=Visible
             actusRows.forEach(row => {
                 if (!row.c) return;
-                const visible = String(row.c[1]?.v || '').toUpperCase();
-                if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
                 
-                const texte = row.c[0]?.v || '';
+                const date = row.c[0]?.f || row.c[0]?.v || '';
+                const texte = row.c[1]?.v || '';
+                const emoji = row.c[2]?.v || '';
+                const visible = String(row.c[3]?.v || '').toUpperCase();
+                
+                // Ignorer en-têtes et lignes non visibles
+                if (String(date).toLowerCase().includes('date')) return;
                 if (!texte || texte.toLowerCase().includes('texte')) return;
+                if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
                 
                 items.push({
                     priority: 'info',
-                    text: texte,
+                    text: emoji ? `${emoji} ${texte}` : texte,
                     date: '',
                     link: '#'
                 });
