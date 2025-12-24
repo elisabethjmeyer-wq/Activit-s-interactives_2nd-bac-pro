@@ -262,6 +262,58 @@
             display: block;
         }
 
+        /* ===== RECENT QUESTIONS ===== */
+        .recent-questions {
+            text-align: left;
+            padding: 10px 0;
+        }
+
+        .recent-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .recent-item {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .recent-item:hover {
+            background: #f0f0f0;
+            border-color: #667eea;
+        }
+
+        .recent-item .emoji {
+            font-size: 20px;
+        }
+
+        .recent-item-text {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .recent-item-arrow {
+            color: #999;
+            font-size: 12px;
+        }
+
         /* ===== EMPTY & NO RESULTS ===== */
         .empty-state, .no-results {
             text-align: center;
@@ -532,8 +584,12 @@
 
             <!-- EMPTY STATE -->
             <div class="empty-state" id="emptyState">
-                <div class="icon">☝️</div>
-                <p>Tape des mots-clés pour trouver une réponse</p>
+                <div class="recent-questions" id="recentQuestions">
+                    <div class="recent-title">📌 Questions récentes</div>
+                    <div class="recent-list" id="recentList">
+                        <!-- Chargé dynamiquement -->
+                    </div>
+                </div>
             </div>
 
             <!-- RESULTS -->
@@ -626,6 +682,33 @@
             loadFaqFromGoogleSheets();
         });
 
+        // ===== DISPLAY RECENT QUESTIONS =====
+        function displayRecentQuestions() {
+            const container = document.getElementById('recentList');
+            
+            if (FAQ_DATA.length === 0) {
+                container.innerHTML = '<p style="color: #888; font-size: 14px;">Aucune question pour le moment</p>';
+                return;
+            }
+            
+            // Afficher les 5 dernières questions (les dernières ajoutées dans le sheet)
+            const recentQuestions = FAQ_DATA.slice(-5).reverse();
+            
+            container.innerHTML = recentQuestions.map(item => `
+                <div class="recent-item" onclick="showQuestionAnswer('${item.question.replace(/'/g, "\\'")}')">
+                    <span class="emoji">${item.emoji}</span>
+                    <span class="recent-item-text">${item.question}</span>
+                    <span class="recent-item-arrow">▶</span>
+                </div>
+            `).join('');
+        }
+
+        function showQuestionAnswer(question) {
+            // Remplir la recherche avec la question
+            document.getElementById('searchInput').value = question;
+            handleSearch();
+        }
+
         // ===== TABS =====
         function switchTab(tabName) {
             // Update tabs
@@ -676,6 +759,7 @@
                 }
                 
                 console.log(`✅ ${FAQ_DATA.length} questions chargées`);
+                displayRecentQuestions();
                 
             } catch (error) {
                 console.log('Erreur chargement FAQ:', error);
