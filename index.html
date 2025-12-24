@@ -9,7 +9,7 @@
         /* ===== LAYOUT PAGE D'ACCUEIL ===== */
         .dashboard {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 300px 1fr;
             gap: 25px;
             max-width: 1400px;
             margin: 0 auto;
@@ -51,24 +51,58 @@
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
+        /* ===== MENU SECTION DÉPLIABLE ===== */
         .menu-section {
             background: white;
             border-radius: 16px;
-            padding: 18px;
+            overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .menu-section-header {
+            padding: 16px 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+            user-select: none;
+        }
+
+        .menu-section-header:hover {
+            background: #f9fafb;
         }
 
         .menu-section-title {
             font-weight: 800;
             font-size: 14px;
             color: #1f2937;
-            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
+            margin: 0;
+        }
+
+        .menu-section-arrow {
+            font-size: 14px;
+            color: #9ca3af;
+            transition: transform 0.3s;
+        }
+
+        .menu-section.open .menu-section-arrow {
+            transform: rotate(180deg);
+        }
+
+        .menu-section-content {
+            display: none;
+            padding: 0 18px 18px 18px;
+        }
+
+        .menu-section.open .menu-section-content {
+            display: block;
         }
 
         .menu-btn {
@@ -99,7 +133,7 @@
         .btn-rouge { background: #ef4444; }
         .btn-violet { background: #a855f7; }
         .btn-vert { background: #089908; }
-        .btn-gris { background: #B1B3AF; }
+        .btn-gris { background: #6b7280; }
 
         /* ===== CONTENU PRINCIPAL ===== */
         .main-content {
@@ -280,34 +314,54 @@
         <!-- SIDEBAR MENU -->
         <aside class="sidebar">
             <!-- Consulte tes cours -->
-            <div class="menu-section">
-                <div class="menu-section-title">📚 Consulte tes cours</div>
-                <a href="pages/lecons.html" class="menu-btn btn-bleu">📖 Toutes les leçons</a>
-                <a href="pages/methodologie.html" class="menu-btn btn-orange">🧠 Toute la méthodologie</a>
+            <div class="menu-section open">
+                <div class="menu-section-header">
+                    <div class="menu-section-title">📚 Consulte tes cours</div>
+                    <span class="menu-section-arrow">▼</span>
+                </div>
+                <div class="menu-section-content">
+                    <a href="pages/lecons.html" class="menu-btn btn-bleu">📖 Toutes les leçons</a>
+                    <a href="pages/methodologie.html" class="menu-btn btn-orange">🧠 Toute la méthodologie</a>
+                </div>
             </div>
 
             <!-- Prépare tes évaluations -->
-            <div class="menu-section">
-                <div class="menu-section-title">📊 Prépare tes évaluations...</div>
-                <a href="pages/connaissances.html" class="menu-btn btn-bleu">✅ de connaissances (leçons)</a>
-                <a href="pages/bex.html" class="menu-btn btn-jaune">⭐ du lundi (BEX)</a>
-                <a href="pages/tc.html" class="menu-btn btn-rouge">📝 du vendredi (TC)</a>
-                <a href="pages/bonus.html" class="menu-btn btn-violet">🌟 bonus pour gagner encore plus de points !</a>
+            <div class="menu-section open">
+                <div class="menu-section-header">
+                    <div class="menu-section-title">📊 Prépare tes évaluations...</div>
+                    <span class="menu-section-arrow">▼</span>
+                </div>
+                <div class="menu-section-content">
+                    <a href="pages/connaissances.html" class="menu-btn btn-bleu">✅ de connaissances (leçons)</a>
+                    <a href="pages/bex.html" class="menu-btn btn-jaune">⭐ du lundi (BEX)</a>
+                    <a href="pages/tc.html" class="menu-btn btn-rouge">📝 du vendredi (TC)</a>
+                    <a href="pages/bonus.html" class="menu-btn btn-violet">🌟 bonus pour gagner encore plus de points !</a>
+                </div>
             </div>
 
             <!-- Organisation -->
             <div class="menu-section">
-                <div class="menu-section-title">🧰 Organisation</div>
-                <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert">📅 Emploi du temps</a>
-                <a href="pages/classeur.html" class="menu-btn btn-vert">📁 Classeur</a>
-                <a href="pages/notes.html" class="menu-btn btn-vert">📊 Ta note</a>
+                <div class="menu-section-header">
+                    <div class="menu-section-title">🧰 Organisation</div>
+                    <span class="menu-section-arrow">▼</span>
+                </div>
+                <div class="menu-section-content">
+                    <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert">📅 Emploi du temps</a>
+                    <a href="pages/classeur.html" class="menu-btn btn-vert">📁 Classeur</a>
+                    <a href="pages/notes.html" class="menu-btn btn-vert">📊 Ta note</a>
+                </div>
             </div>
 
             <!-- Espace classe -->
             <div class="menu-section">
-                <div class="menu-section-title">💬 Espace classe</div>
-                <a href="FAQ.html" class="menu-btn btn-gris">❓ Un problème ?</a>
-                <a href="https://0670062d.moodle.monbureaunumerique.fr/mod/forum/view.php?id=XXXXX" class="menu-btn btn-gris" target="_blank">🗣️ Entre élèves</a>
+                <div class="menu-section-header">
+                    <div class="menu-section-title">💬 Espace classe</div>
+                    <span class="menu-section-arrow">▼</span>
+                </div>
+                <div class="menu-section-content">
+                    <a href="FAQ.html" class="menu-btn btn-gris">❓ Un problème ?</a>
+                    <a href="https://0670062d.moodle.monbureaunumerique.fr/mod/forum/view.php?id=XXXXX" class="menu-btn btn-gris" target="_blank">🗣️ Entre élèves</a>
+                </div>
             </div>
         </aside>
 
@@ -346,6 +400,14 @@
 
     <script src="js/app.js"></script>
     <script>
+        // ===== GESTION DES MENUS DÉPLIABLES =====
+        document.querySelectorAll('.menu-section-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const section = header.parentElement;
+                section.classList.toggle('open');
+            });
+        });
+
         // ===== CHARGEMENT DES DONNÉES =====
         
         // Charger la vidéo de la semaine
