@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon espace - 2nd Bac Pro - Mme Meyer</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
         /* ===== LAYOUT PAGE D'ACCUEIL ===== */
         .dashboard {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 280px 1fr;
             gap: 25px;
             max-width: 1400px;
             margin: 0 auto;
@@ -19,6 +31,12 @@
         @media (max-width: 900px) {
             .dashboard {
                 grid-template-columns: 1fr;
+            }
+            .sidebar {
+                order: 2;
+            }
+            .main-content {
+                order: 1;
             }
         }
 
@@ -47,74 +65,45 @@
         .header-welcome .highlight-echeances { color: #f87171; }
         .header-welcome .highlight-aides { color: #34d399; }
 
-        /* ===== SIDEBAR MENU ===== */
+        /* ===== SIDEBAR MENU FIXE ===== */
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
-        /* ===== MENU SECTION DÉPLIABLE ===== */
+        /* ===== SECTION DU MENU ===== */
         .menu-section {
             background: white;
             border-radius: 16px;
-            overflow: hidden;
+            padding: 18px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .menu-section-header {
-            padding: 16px 18px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s;
-            user-select: none;
-        }
-
-        .menu-section-header:hover {
-            background: #f9fafb;
         }
 
         .menu-section-title {
             font-weight: 800;
-            font-size: 14px;
-            color: #1f2937;
+            font-size: 13px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-            margin: 0;
-        }
-
-        .menu-section-arrow {
-            font-size: 14px;
-            color: #9ca3af;
-            transition: transform 0.3s;
-        }
-
-        .menu-section.open .menu-section-arrow {
-            transform: rotate(180deg);
-        }
-
-        .menu-section-content {
-            display: none;
-            padding: 0 18px 18px 18px;
-        }
-
-        .menu-section.open .menu-section-content {
-            display: block;
         }
 
         .menu-btn {
-            display: block;
-            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
             border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
             font-size: 14px;
             margin-bottom: 8px;
             color: white;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
         }
 
         .menu-btn:last-child {
@@ -122,18 +111,22 @@
         }
 
         .menu-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-btn .emoji {
+            font-size: 16px;
         }
 
         /* Couleurs boutons */
-        .btn-bleu { background: #3b82f6; }
-        .btn-orange { background: #f97316; }
-        .btn-jaune { background: #FBE23C; color: #78350f; }
-        .btn-rouge { background: #ef4444; }
-        .btn-violet { background: #a855f7; }
-        .btn-vert { background: #089908; }
-        .btn-gris { background: #6b7280; }
+        .btn-bleu { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .btn-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .btn-jaune { background: linear-gradient(135deg, #FBE23C 0%, #eab308 100%); color: #78350f; }
+        .btn-rouge { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .btn-violet { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
+        .btn-vert { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .btn-gris { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
 
         /* ===== CONTENU PRINCIPAL ===== */
         .main-content {
@@ -171,10 +164,14 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            transition: all 0.2s;
         }
 
         .card-video-link:hover {
-            text-decoration: underline;
+            background: #e5e7eb;
         }
 
         .video-wrapper {
@@ -183,7 +180,7 @@
             height: 0;
             border-radius: 12px;
             overflow: hidden;
-            background: #f3f4f6;
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
         }
 
         .video-wrapper iframe {
@@ -193,6 +190,28 @@
             width: 100%;
             height: 100%;
             border: 0;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #6366f1;
+        }
+
+        .video-placeholder .play-icon {
+            width: 64px;
+            height: 64px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
         }
 
         /* ===== CARTE INFOS SEMAINE ===== */
@@ -220,22 +239,22 @@
         }
 
         .infos-list li {
-            padding: 12px 0;
-            border-bottom: 1px solid #f3f4f6;
+            padding: 14px 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 10px;
             font-size: 14px;
-            color: #4b5563;
+            color: #374151;
             line-height: 1.6;
+            border-left: 4px solid #8b5cf6;
         }
 
         .infos-list li:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
         }
 
-        .infos-list li::before {
-            content: "•";
-            color: #8b5cf6;
-            font-weight: bold;
-            margin-right: 10px;
+        .infos-list li .emoji {
+            margin-right: 8px;
         }
 
         /* ===== CARTE RECOMMANDATION ===== */
@@ -245,6 +264,19 @@
             padding: 28px;
             color: white;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-reco::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .card-reco-header {
@@ -252,6 +284,8 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
         }
 
         .card-reco-label {
@@ -261,7 +295,7 @@
             color: #c084fc;
             font-weight: bold;
             background: rgba(192, 132, 252, 0.2);
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
         }
 
@@ -274,6 +308,7 @@
             padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s;
         }
 
         .card-reco-link:hover {
@@ -287,19 +322,33 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .card-reco p {
             font-size: 15px;
             color: #e9d5ff;
             line-height: 1.6;
+            position: relative;
+            z-index: 1;
         }
 
-        /* ===== LOADING ===== */
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #6b7280;
+        /* ===== INDICATEUR DE PAGE ACTIVE ===== */
+        .menu-btn.active {
+            position: relative;
+        }
+
+        .menu-btn.active::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 70%;
+            background: currentColor;
+            border-radius: 0 4px 4px 0;
         }
     </style>
 </head>
@@ -311,57 +360,59 @@
             <p>Ici, tu retrouves <span class="highlight-cours">ton cours</span>, les <span class="highlight-echeances">échéances</span>, et toutes les <span class="highlight-aides">aides</span> pour travailler en autonomie.</p>
         </header>
 
-        <!-- SIDEBAR MENU -->
+        <!-- SIDEBAR MENU FIXE -->
         <aside class="sidebar">
             <!-- Consulte tes cours -->
-            <div class="menu-section open">
-                <div class="menu-section-header">
-                    <div class="menu-section-title">📚 Consulte tes cours</div>
-                    <span class="menu-section-arrow">▼</span>
-                </div>
-                <div class="menu-section-content">
-                    <a href="pages/lecons.html" class="menu-btn btn-bleu">📖 Toutes les leçons</a>
-                    <a href="pages/methodologie.html" class="menu-btn btn-orange">🧠 Toute la méthodologie</a>
-                </div>
+            <div class="menu-section">
+                <div class="menu-section-title">📚 Consulte tes cours</div>
+                <a href="pages/lecons.html" class="menu-btn btn-bleu">
+                    <span class="emoji">📖</span> Toutes les leçons
+                </a>
+                <a href="pages/methodologie.html" class="menu-btn btn-orange">
+                    <span class="emoji">🧠</span> Toute la méthodologie
+                </a>
             </div>
 
             <!-- Prépare tes évaluations -->
-            <div class="menu-section open">
-                <div class="menu-section-header">
-                    <div class="menu-section-title">📊 Prépare tes évaluations...</div>
-                    <span class="menu-section-arrow">▼</span>
-                </div>
-                <div class="menu-section-content">
-                    <a href="pages/connaissances.html" class="menu-btn btn-bleu">✅ de connaissances (leçons)</a>
-                    <a href="pages/bex.html" class="menu-btn btn-jaune">⭐ du lundi (BEX)</a>
-                    <a href="pages/tc.html" class="menu-btn btn-rouge">📝 du vendredi (TC)</a>
-                    <a href="pages/bonus.html" class="menu-btn btn-violet">🌟 bonus pour gagner encore plus de points !</a>
-                </div>
+            <div class="menu-section">
+                <div class="menu-section-title">📊 Prépare tes évaluations...</div>
+                <a href="pages/connaissances.html" class="menu-btn btn-bleu">
+                    <span class="emoji">✅</span> de connaissances (leçons)
+                </a>
+                <a href="pages/bex.html" class="menu-btn btn-jaune">
+                    <span class="emoji">⭐</span> du lundi (BEX)
+                </a>
+                <a href="pages/tc.html" class="menu-btn btn-rouge">
+                    <span class="emoji">📝</span> du vendredi (TC)
+                </a>
+                <a href="pages/bonus.html" class="menu-btn btn-violet">
+                    <span class="emoji">🌟</span> bonus pour + de points !
+                </a>
             </div>
 
             <!-- Organisation -->
             <div class="menu-section">
-                <div class="menu-section-header">
-                    <div class="menu-section-title">🧰 Organisation</div>
-                    <span class="menu-section-arrow">▼</span>
-                </div>
-                <div class="menu-section-content">
-                    <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert">📅 Emploi du temps</a>
-                    <a href="pages/classeur.html" class="menu-btn btn-vert">📁 Classeur</a>
-                    <a href="pages/notes.html" class="menu-btn btn-vert">📊 Ta note</a>
-                </div>
+                <div class="menu-section-title">🧰 Organisation</div>
+                <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert">
+                    <span class="emoji">📅</span> Emploi du temps
+                </a>
+                <a href="pages/classeur.html" class="menu-btn btn-vert">
+                    <span class="emoji">📁</span> Classeur numérique
+                </a>
+                <a href="pages/notes.html" class="menu-btn btn-vert">
+                    <span class="emoji">📊</span> Mes notes
+                </a>
             </div>
 
             <!-- Espace classe -->
             <div class="menu-section">
-                <div class="menu-section-header">
-                    <div class="menu-section-title">💬 Espace classe</div>
-                    <span class="menu-section-arrow">▼</span>
-                </div>
-                <div class="menu-section-content">
-                    <a href="FAQ.html" class="menu-btn btn-gris">❓ Un problème ?</a>
-                    <a href="https://0670062d.moodle.monbureaunumerique.fr/mod/forum/view.php?id=XXXXX" class="menu-btn btn-gris" target="_blank">🗣️ Entre élèves</a>
-                </div>
+                <div class="menu-section-title">💬 Espace classe</div>
+                <a href="FAQ.html" class="menu-btn btn-gris">
+                    <span class="emoji">❓</span> Un problème ?
+                </a>
+                <a href="#" class="menu-btn btn-gris">
+                    <span class="emoji">🗣️</span> Entre élèves
+                </a>
             </div>
         </aside>
 
@@ -373,122 +424,34 @@
                     <div class="card-video-title">🎬 La vidéo de la semaine</div>
                     <a href="videos_hebdomadaires_archives.html" class="card-video-link">Voir tout →</a>
                 </div>
-                <div class="video-wrapper" id="videoWrapper">
-                    <div class="loading">Chargement de la vidéo...</div>
+                <div class="video-wrapper">
+                    <div class="video-placeholder">
+                        <div class="play-icon">▶️</div>
+                        <p>Vidéo chargée depuis Google Sheets</p>
+                    </div>
                 </div>
             </section>
 
             <!-- Infos de la semaine -->
             <section class="card-infos">
                 <div class="card-infos-title">📋 Les infos importantes de la semaine</div>
-                <ul class="infos-list" id="infosList">
-                    <li class="loading">Chargement des infos...</li>
+                <ul class="infos-list">
+                    <li><span class="emoji">📅</span> Samedi 14 décembre, rendez-vous devant le lycée à 15h00. Nous partirons à 15h15 pour nous rendre au musée Vaudou</li>
+                    <li><span class="emoji">📝</span> Le QCM d'entraînement n°5 a été ajouté. Vous pouvez le faire autant de fois que vous voulez !</li>
+                    <li><span class="emoji">⚠️</span> N'oubliez pas de rendre le TC n°3 pour vendredi prochain</li>
                 </ul>
             </section>
 
             <!-- Recommandation de la semaine -->
             <section class="card-reco">
                 <div class="card-reco-header">
-                    <span class="card-reco-label">La recommandation de la semaine</span>
+                    <span class="card-reco-label">✨ La recommandation de la semaine</span>
                     <a href="recommandations_archives.html" class="card-reco-link">Voir tout →</a>
                 </div>
-                <h2 id="recoTitle"><span>🎧</span> Chargement...</h2>
-                <p id="recoDescription">Chargement de la recommandation...</p>
+                <h2>🎧 Podcast "Les Grandes Traversées"</h2>
+                <p>Un podcast passionnant sur les grandes explorations maritimes du XVe siècle. Parfait pour réviser le chapitre sur les Grandes Découvertes tout en se détendant !</p>
             </section>
         </main>
     </div>
-
-    <script src="js/app.js"></script>
-    <script>
-        // ===== GESTION DES MENUS DÉPLIABLES =====
-        document.querySelectorAll('.menu-section-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const section = header.parentElement;
-                section.classList.toggle('open');
-            });
-        });
-
-        // ===== CHARGEMENT DES DONNÉES =====
-        
-        // Charger la vidéo de la semaine
-        async function loadVideo() {
-            const videos = await SiteUtils.loadSheetData('VIDEOS');
-            const videoWrapper = document.getElementById('videoWrapper');
-            
-            if (videos && videos.length > 0) {
-                // Prendre la dernière vidéo (la plus récente)
-                const lastVideo = videos[videos.length - 1];
-                const embedUrl = SiteUtils.convertToEmbed(lastVideo.Lien);
-                
-                if (embedUrl) {
-                    videoWrapper.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-                } else {
-                    videoWrapper.innerHTML = '<div class="loading">Aucune vidéo disponible</div>';
-                }
-            } else {
-                videoWrapper.innerHTML = '<div class="loading">Aucune vidéo disponible</div>';
-            }
-        }
-
-        // Charger les infos de la semaine
-        async function loadInfos() {
-            const actus = await SiteUtils.loadSheetData('ACTUS');
-            const infosList = document.getElementById('infosList');
-            
-            if (actus && actus.length > 0) {
-                // Filtrer les actus visibles
-                const visibleActus = actus.filter(a => a.Visible && a.Visible.toUpperCase() === 'OUI');
-                
-                if (visibleActus.length > 0) {
-                    infosList.innerHTML = visibleActus.map(actu => 
-                        `<li>${actu.Emoji || ''} ${SiteUtils.escapeHtml(actu.Texte)}</li>`
-                    ).join('');
-                } else {
-                    infosList.innerHTML = '<li>Aucune info cette semaine. Profitez-en ! 🎉</li>';
-                }
-            } else {
-                infosList.innerHTML = '<li>Aucune info cette semaine. Profitez-en ! 🎉</li>';
-            }
-        }
-
-        // Charger la recommandation de la semaine
-        async function loadReco() {
-            const recos = await SiteUtils.loadSheetData('RECOS');
-            const recoTitle = document.getElementById('recoTitle');
-            const recoDescription = document.getElementById('recoDescription');
-            
-            if (recos && recos.length > 0) {
-                // Prendre la dernière recommandation
-                const lastReco = recos[recos.length - 1];
-                
-                // Déterminer l'emoji selon le type
-                let emoji = '🎬';
-                const type = (lastReco.Type || lastReco['Type (ecouter, regarder, lire)'] || '').toLowerCase();
-                if (type.includes('ecouter') || type.includes('écouter') || type.includes('audio')) {
-                    emoji = '🎧';
-                } else if (type.includes('lire')) {
-                    emoji = '📖';
-                } else if (type.includes('regarder') || type.includes('video')) {
-                    emoji = '🎬';
-                }
-                
-                const titre = lastReco.Titre || 'Recommandation';
-                const description = lastReco.Description || '';
-                
-                recoTitle.innerHTML = `<span>${emoji}</span> ${SiteUtils.escapeHtml(titre)}`;
-                recoDescription.textContent = description;
-            } else {
-                recoTitle.innerHTML = '<span>🎬</span> Aucune recommandation';
-                recoDescription.textContent = 'Revenez bientôt pour découvrir nos recommandations !';
-            }
-        }
-
-        // Charger tout au démarrage
-        document.addEventListener('DOMContentLoaded', () => {
-            loadVideo();
-            loadInfos();
-            loadReco();
-        });
-    </script>
 </body>
 </html>
