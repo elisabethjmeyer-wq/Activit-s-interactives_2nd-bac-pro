@@ -41,6 +41,7 @@
             --radius-lg: 16px;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         body {
@@ -71,7 +72,6 @@
             gap: 16px;
         }
 
-        /* Toggle Button in Header */
         .menu-toggle {
             width: 42px;
             height: 42px;
@@ -164,7 +164,6 @@
             padding: 16px 12px;
         }
 
-        /* Sidebar Sections */
         .sidebar-section {
             margin-bottom: 8px;
         }
@@ -260,14 +259,7 @@
             }
         }
 
-        /* ===== VIDEO CARD ===== */
-        .video-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
+        /* ===== CARDS COMMON ===== */
         .card-header {
             padding: 16px 20px;
             display: flex;
@@ -294,6 +286,14 @@
 
         .card-link:hover {
             text-decoration: underline;
+        }
+
+        /* ===== VIDEO CARD ===== */
+        .video-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
         }
 
         .video-wrapper {
@@ -441,7 +441,7 @@
             margin-bottom: 8px;
         }
 
-        /* ===== RECO CARD ===== */
+        /* ===== RECO CARD - FEATURED STYLE ===== */
         .reco-card {
             background: white;
             border-radius: var(--radius-lg);
@@ -449,90 +449,302 @@
             box-shadow: var(--shadow);
         }
 
-        .reco-header {
-            padding: 16px 20px;
+        .reco-featured {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .reco-body {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        .reco-featured:hover {
+            background: var(--gray-50);
         }
 
-        .reco-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, #e0e7ff 100%);
-            border-radius: 16px;
+        .reco-image {
+            width: 280px;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .reco-image-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.4s;
+        }
+
+        .reco-featured:hover .reco-image-bg {
+            transform: scale(1.05);
+        }
+
+        .reco-image-placeholder {
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            flex-shrink: 0;
+            font-size: 50px;
+            color: white;
         }
 
-        .reco-content {
+        .reco-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--gray-800);
+            opacity: 0.9;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .reco-featured:hover .reco-play-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .reco-info {
             flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .reco-type {
+        .reco-badges {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .reco-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-orange), #d97706);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.5px;
+        }
+
+        .reco-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-bg);
             color: var(--primary);
-            margin-bottom: 4px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .reco-title {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 800;
             color: var(--gray-800);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .reco-desc {
             font-size: 14px;
             color: var(--gray-500);
-            line-height: 1.5;
+            line-height: 1.6;
+            margin-bottom: 12px;
         }
 
-        .reco-action {
-            display: inline-flex;
-            align-items: center;
+        .reco-tags {
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .reco-tag {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .reco-date {
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        .reco-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--gray-400);
+        }
+
+        .reco-empty .emoji {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .reco-featured {
+                flex-direction: column;
+            }
+            .reco-image {
+                width: 100%;
+                min-height: 180px;
+            }
+        }
+
+        /* ===== CONTENT POPUP ===== */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .popup-overlay.visible {
+            display: flex;
+        }
+
+        .popup {
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .popup-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .popup-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .popup-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .popup-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .popup-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .popup-media {
+            background: var(--gray-100);
+        }
+
+        .popup-media iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+        }
+
+        .popup-media img {
+            width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+        }
+
+        .popup-info {
+            padding: 20px;
+        }
+
+        .popup-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .popup-tag {
+            background: var(--primary-bg);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .popup-description {
+            font-size: 15px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .popup-date {
+            font-size: 13px;
+            color: var(--gray-400);
             margin-top: 12px;
-            padding: 10px 20px;
+        }
+
+        .popup-external {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .popup-external-btn {
+            display: inline-block;
             background: var(--primary);
             color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border-radius: 10px;
-            transition: background 0.15s;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.2s;
         }
 
-        .reco-action:hover {
+        .popup-external-btn:hover {
             background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        @media (max-width: 600px) {
-            .reco-body {
-                flex-direction: column;
-                text-align: center;
-            }
-            .reco-action {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* ===== OVERLAY for mobile ===== */
+        /* ===== OVERLAY ===== */
         .overlay {
             position: fixed;
             inset: 0;
@@ -567,7 +779,7 @@
 </head>
 <body>
 
-    <!-- OVERLAY (for mobile) -->
+    <!-- OVERLAY (for mobile sidebar) -->
     <div class="overlay" id="overlay"></div>
 
     <!-- HEADER -->
@@ -723,19 +935,14 @@
 
             <!-- Recommandation -->
             <div class="reco-card">
-                <div class="reco-header">
+                <div class="card-header">
                     <div class="card-title">💡 Recommandation de la semaine</div>
                     <a href="recommandations_archives.html" class="card-link">Voir tout →</a>
                 </div>
-                <div class="reco-body">
-                    <div class="reco-icon" id="recoIcon">🎧</div>
-                    <div class="reco-content">
-                        <div class="reco-type" id="recoType">Podcast</div>
-                        <div class="reco-title" id="recoTitle">Chargement...</div>
-                        <div class="reco-desc" id="recoDesc">Chargement de la recommandation...</div>
-                        <a href="#" class="reco-action" id="recoLink" target="_blank">
-                            Découvrir →
-                        </a>
+                <div id="recoContainer">
+                    <div class="reco-empty">
+                        <div class="emoji">⏳</div>
+                        <p>Chargement...</p>
                     </div>
                 </div>
             </div>
@@ -743,9 +950,30 @@
         </div>
     </main>
 
+    <!-- POPUP -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closePopup(event)">
+        <div class="popup" onclick="event.stopPropagation()">
+            <div class="popup-header">
+                <span class="popup-title" id="popupTitle"></span>
+                <button class="popup-close" onclick="closePopup()">✕</button>
+            </div>
+            <div class="popup-body">
+                <div class="popup-media" id="popupMedia"></div>
+                <div class="popup-info">
+                    <div class="popup-tags" id="popupTags"></div>
+                    <p class="popup-description" id="popupDesc"></p>
+                    <p class="popup-date" id="popupDate"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIG =====
         const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+
+        // Current recommendation data (for popup)
+        let currentReco = null;
 
         // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
@@ -762,9 +990,7 @@
         menuToggle.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
 
-        // Restore state (default: collapsed)
-        const savedState = localStorage.getItem('sidebarOpen');
-        if (savedState === 'true') {
+        if (localStorage.getItem('sidebarOpen') === 'true') {
             sidebar.classList.remove('collapsed');
             menuToggle.classList.add('active');
         }
@@ -804,11 +1030,49 @@
             return m && m[2].length === 11 ? `https://www.youtube.com/embed/${m[2]}` : url;
         }
 
+        function convertToImageUrl(url) {
+            if (!url) return '';
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+            }
+            return url;
+        }
+
         function getWeekNumber(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
             d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
             const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const match = String(dateStr).match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const date = new Date(parseInt(match[3]), parseInt(match[2]) - 1, parseInt(match[1]));
+                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            return dateStr;
+        }
+
+        function parseTags(tagsStr) {
+            if (!tagsStr) return [];
+            return String(tagsStr).split(/[,;]/).map(t => t.trim()).filter(t => t);
+        }
+
+        function getContentType(lien, type) {
+            if (!lien) return 'link';
+            if (lien.includes('spotify.com')) return 'spotify';
+            if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) return 'youtube';
+            if (lien.includes('loom.com')) return 'loom';
+            if (lien.includes('docs.google.com')) return 'googledoc';
+            if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return 'image';
+            if (lien.includes('drive.google.com') && lien.includes('/file/')) {
+                return type === 'regarder' ? 'gdrive-image' : 'gdrive';
+            }
+            if (type === 'lire') return 'article';
+            return 'link';
         }
 
         // Date
@@ -824,16 +1088,17 @@
             const wrapper = document.getElementById('videoWrapper');
             
             if (videos?.length > 0) {
-                const v = videos[videos.length - 1];
-                const embed = convertToEmbed(v.Lien);
-                if (embed) {
-                    wrapper.innerHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
-                } else {
-                    wrapper.innerHTML = `<div class="video-placeholder"><div class="play">🎬</div><span>Aucune vidéo</span></div>`;
+                const validVideos = videos.filter(v => v.Lien && !String(v.Lien).toLowerCase().includes('lien'));
+                if (validVideos.length > 0) {
+                    const v = validVideos[validVideos.length - 1];
+                    const embed = convertToEmbed(v.Lien);
+                    if (embed) {
+                        wrapper.innerHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
+                        return;
+                    }
                 }
-            } else {
-                wrapper.innerHTML = `<div class="video-placeholder"><div class="play">🎬</div><span>Aucune vidéo</span></div>`;
             }
+            wrapper.innerHTML = `<div class="video-placeholder"><div class="play">🎬</div><span>Aucune vidéo</span></div>`;
         }
 
         // Week
@@ -846,7 +1111,10 @@
             let items = [];
             
             if (todos) {
-                todos.filter(t => t.Visible?.toString().toUpperCase() === 'OUI').forEach(t => {
+                todos.filter(t => {
+                    const visible = String(t.Visible || '').toUpperCase();
+                    return visible === 'OUI' || visible === 'TRUE' || visible === '1';
+                }).forEach(t => {
                     items.push({
                         priority: (t.Priorité || t.Priorite || 'normal').toLowerCase(),
                         text: t.Texte,
@@ -857,7 +1125,10 @@
             }
             
             if (actus) {
-                actus.filter(a => a.Visible?.toString().toUpperCase() === 'OUI').forEach(a => {
+                actus.filter(a => {
+                    const visible = String(a.Visible || '').toUpperCase();
+                    return visible === 'OUI' || visible === 'TRUE' || visible === '1';
+                }).forEach(a => {
                     items.push({
                         priority: 'info',
                         text: a.Texte,
@@ -896,59 +1167,177 @@
         // Reco
         async function loadReco() {
             const recos = await loadSheetData('🎬 RECOS');
-            if (recos?.length > 0) {
-                // Filtrer les en-têtes et lignes vides
-                const validRecos = recos.filter(r => {
-                    const titre = r.Titre || r['Titre'] || '';
-                    return titre && !titre.toLowerCase().includes('titre');
-                });
-                
-                if (validRecos.length === 0) {
-                    document.getElementById('recoIcon').textContent = '💡';
-                    document.getElementById('recoType').textContent = 'Aucune';
-                    document.getElementById('recoTitle').textContent = 'Pas de recommandation';
-                    document.getElementById('recoDesc').textContent = 'Revenez bientôt !';
-                    document.getElementById('recoLink').style.display = 'none';
-                    return;
-                }
-                
-                const r = validRecos[validRecos.length - 1];
-                
-                let emoji = '🎬';
-                let typeLabel = 'Vidéo';
-                const type = (r.Type || r['Type (ecouter, regarder, lire)'] || '').toLowerCase();
-                
-                if (type.includes('ecouter') || type.includes('écouter') || type.includes('podcast') || type.includes('audio')) {
-                    emoji = '🎧';
-                    typeLabel = 'Podcast';
-                } else if (type.includes('lire') || type.includes('livre') || type.includes('article')) {
-                    emoji = '📖';
-                    typeLabel = 'Lecture';
-                } else if (type.includes('regarder') || type.includes('video') || type.includes('film')) {
-                    emoji = '🎬';
-                    typeLabel = 'Vidéo';
-                }
-                
-                document.getElementById('recoIcon').textContent = emoji;
-                document.getElementById('recoType').textContent = typeLabel;
-                document.getElementById('recoTitle').textContent = r.Titre || 'Recommandation';
-                document.getElementById('recoDesc').textContent = r.Description || '';
-                
-                const lien = r.Lien || r['Lien (va déterminer nature du doc -> si image mettre dans la colonne D et E en doublon)'] || '';
-                if (lien) {
-                    document.getElementById('recoLink').href = lien;
-                    document.getElementById('recoLink').style.display = 'inline-flex';
+            const container = document.getElementById('recoContainer');
+            
+            if (!recos || recos.length === 0) {
+                container.innerHTML = `<div class="reco-empty"><div class="emoji">📭</div><p>Pas de recommandation pour le moment</p></div>`;
+                return;
+            }
+            
+            // Filter valid recos
+            const validRecos = recos.filter(r => {
+                const titre = r.Titre || '';
+                return titre && !titre.toLowerCase().includes('titre');
+            });
+            
+            if (validRecos.length === 0) {
+                container.innerHTML = `<div class="reco-empty"><div class="emoji">📭</div><p>Pas de recommandation pour le moment</p></div>`;
+                return;
+            }
+            
+            // Get the last one (most recent)
+            const r = validRecos[validRecos.length - 1];
+            currentReco = r;
+            
+            // Determine type
+            const typeRaw = (r.Type || r['Type (ecouter, regarder, lire)'] || '').toLowerCase();
+            let emoji = '🎬';
+            let typeLabel = 'À regarder';
+            
+            if (typeRaw.includes('ecouter') || typeRaw.includes('écouter') || typeRaw.includes('podcast')) {
+                emoji = '🎧';
+                typeLabel = 'À écouter';
+            } else if (typeRaw.includes('lire') || typeRaw.includes('article') || typeRaw.includes('livre')) {
+                emoji = '📖';
+                typeLabel = 'À lire';
+            } else if (typeRaw.includes('regarder') || typeRaw.includes('video') || typeRaw.includes('film')) {
+                emoji = '🎬';
+                typeLabel = 'À regarder';
+            }
+            
+            // Get image
+            const imageUrl = convertToImageUrl(r.Image || r['Image (importer sur drive -> share with anyone with the link -> coller ici)'] || '');
+            
+            // Get other fields
+            const lien = r.Lien || r['Lien (va déterminer nature du doc -> si image mettre dans la colonne D et E en doublon)'] || '';
+            const tags = parseTags(r.Tags || r['Tags (séparer par des virgules si nécessaire)'] || '');
+            const dateStr = r.Date || r['Date (mois-jour-année)'] || '';
+            const contentType = getContentType(lien, typeRaw);
+            
+            // Play button icon
+            let playIcon = '▶';
+            if (contentType === 'link' || contentType === 'article') playIcon = '↗';
+            
+            // Build HTML
+            container.innerHTML = `
+                <div class="reco-featured" onclick="openRecoPopup()">
+                    <div class="reco-image">
+                        ${imageUrl ? `<div class="reco-image-bg" style="background-image: url('${imageUrl}')"></div>` : ''}
+                        <div class="reco-image-placeholder" ${imageUrl ? 'style="display:none"' : ''}>${emoji}</div>
+                        <div class="reco-play-btn">${playIcon}</div>
+                    </div>
+                    <div class="reco-info">
+                        <div class="reco-badges">
+                            <span class="reco-badge">⭐ Cette semaine</span>
+                            <span class="reco-type-badge">${emoji} ${typeLabel}</span>
+                        </div>
+                        <h3 class="reco-title">${escapeHtml(r.Titre)}</h3>
+                        <p class="reco-desc">${escapeHtml(r.Description || '')}</p>
+                        ${tags.length > 0 ? `
+                            <div class="reco-tags">
+                                ${tags.map(t => `<span class="reco-tag">${escapeHtml(t)}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        <p class="reco-date">${formatDate(dateStr)}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Open popup
+        function openRecoPopup() {
+            if (!currentReco) return;
+            
+            const r = currentReco;
+            const lien = r.Lien || r['Lien (va déterminer nature du doc -> si image mettre dans la colonne D et E en doublon)'] || '';
+            const typeRaw = (r.Type || r['Type (ecouter, regarder, lire)'] || '').toLowerCase();
+            const contentType = getContentType(lien, typeRaw);
+            const tags = parseTags(r.Tags || r['Tags (séparer par des virgules si nécessaire)'] || '');
+            const dateStr = r.Date || r['Date (mois-jour-année)'] || '';
+            const imageUrl = convertToImageUrl(r.Image || r['Image (importer sur drive -> share with anyone with the link -> coller ici)'] || '');
+            
+            document.getElementById('popupTitle').textContent = r.Titre || 'Recommandation';
+            document.getElementById('popupDesc').textContent = r.Description || '';
+            document.getElementById('popupDate').textContent = formatDate(dateStr);
+            document.getElementById('popupTags').innerHTML = tags.map(t => `<span class="popup-tag">${escapeHtml(t)}</span>`).join('');
+            
+            const mediaContainer = document.getElementById('popupMedia');
+            
+            // YouTube
+            if (contentType === 'youtube') {
+                let videoId = '';
+                if (lien.includes('youtu.be/')) {
+                    videoId = lien.split('youtu.be/')[1]?.split('?')[0];
                 } else {
-                    document.getElementById('recoLink').style.display = 'none';
+                    const url = new URL(lien);
+                    videoId = url.searchParams.get('v');
                 }
-            } else {
-                document.getElementById('recoIcon').textContent = '💡';
-                document.getElementById('recoType').textContent = 'Aucune';
-                document.getElementById('recoTitle').textContent = 'Pas de recommandation';
-                document.getElementById('recoDesc').textContent = 'Revenez bientôt pour découvrir nos recommandations !';
-                document.getElementById('recoLink').style.display = 'none';
+                if (videoId) {
+                    mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen></iframe>`;
+                }
+            }
+            // Spotify
+            else if (contentType === 'spotify') {
+                const embedUrl = lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 352px;" allow="encrypted-media"></iframe>`;
+            }
+            // Google Docs
+            else if (contentType === 'googledoc') {
+                let embedUrl = lien.replace(/\/(edit|view).*$/, '/preview');
+                if (!embedUrl.includes('/preview')) embedUrl += '/preview';
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 500px;"></iframe>`;
+            }
+            // Google Drive (audio/video)
+            else if (contentType === 'gdrive') {
+                const fileId = lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+                if (fileId) {
+                    let html = imageUrl ? `<img src="${imageUrl}" alt="${r.Titre}" style="max-height: 300px; object-fit: cover;">` : '';
+                    html += `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="height: 80px;" allow="autoplay"></iframe>`;
+                    mediaContainer.innerHTML = html;
+                }
+            }
+            // Google Drive Image
+            else if (contentType === 'gdrive-image') {
+                const fileId = lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+                if (fileId) {
+                    mediaContainer.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w2000" alt="${r.Titre}">`;
+                }
+            }
+            // Loom
+            else if (contentType === 'loom') {
+                const embedUrl = lien.replace('/share/', '/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            }
+            // Image
+            else if (contentType === 'image') {
+                mediaContainer.innerHTML = `<img src="${lien}" alt="${r.Titre}">`;
+            }
+            // Article / External
+            else if (contentType === 'article' || contentType === 'link') {
+                let html = imageUrl ? `<img src="${imageUrl}" alt="${r.Titre}" style="max-height: 300px; object-fit: cover;">` : '';
+                html += `
+                    <div class="popup-external">
+                        <p style="color: var(--gray-500); margin-bottom: 16px;">Ce contenu provient d'un site externe.</p>
+                        <a href="${lien}" target="_blank" class="popup-external-btn">📖 Ouvrir le lien</a>
+                    </div>
+                `;
+                mediaContainer.innerHTML = html;
+            }
+            
+            document.getElementById('popupOverlay').classList.add('visible');
+        }
+
+        function closePopup(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('popupOverlay').classList.remove('visible');
+                document.getElementById('popupMedia').innerHTML = '';
             }
         }
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePopup();
+        });
 
         // Init
         document.addEventListener('DOMContentLoaded', () => {
