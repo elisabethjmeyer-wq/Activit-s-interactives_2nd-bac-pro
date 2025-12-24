@@ -749,13 +749,13 @@
             background: rgba(0,0,0,0.3);
             z-index: 40;
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
+            pointer-events: none;
+            transition: opacity 0.3s;
         }
 
         .overlay.visible {
             opacity: 1;
-            visibility: visible;
+            pointer-events: auto;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -1041,18 +1041,31 @@
         const overlay = document.getElementById('overlay');
 
         function toggleSidebar() {
-            sidebar.classList.toggle('collapsed');
-            menuToggle.classList.toggle('active');
-            overlay.classList.toggle('visible');
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                // Ouvrir
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                // Fermer
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+            
             localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
         }
 
         menuToggle.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
 
+        // Restaurer l'état au chargement (sans overlay)
         if (localStorage.getItem('sidebarOpen') === 'true') {
             sidebar.classList.remove('collapsed');
             menuToggle.classList.add('active');
+            // Pas d'overlay au chargement
         }
 
         // ===== INIT =====
