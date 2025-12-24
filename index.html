@@ -1126,12 +1126,9 @@
             wrapper.innerHTML = `<div class="video-placeholder"><div class="play">🎬</div><span>Aucune vidéo</span></div>`;
         }
 
-        // ===== LOAD WEEK (TODO + ACTUS) =====
+        // ===== LOAD WEEK (TODO only) =====
         async function loadWeek() {
-            const [todoRows, actusRows] = await Promise.all([
-                loadSheetRaw('🎯TODO'),
-                loadSheetRaw('📰 ACTUS')
-            ]);
+            const todoRows = await loadSheetRaw('🎯TODO');
             
             let items = [];
             
@@ -1155,28 +1152,6 @@
                     text: texte,
                     date: date,
                     link: lien || '#'
-                });
-            });
-            
-            // ACTUS: Colonnes: A=Date, B=Texte, C=Emoji, D=Visible
-            actusRows.forEach(row => {
-                if (!row.c) return;
-                
-                const date = row.c[0]?.f || row.c[0]?.v || '';
-                const texte = row.c[1]?.v || '';
-                const emoji = row.c[2]?.v || '';
-                const visible = String(row.c[3]?.v || '').toUpperCase();
-                
-                // Ignorer en-têtes et lignes non visibles
-                if (String(date).toLowerCase().includes('date')) return;
-                if (!texte || texte.toLowerCase().includes('texte')) return;
-                if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
-                
-                items.push({
-                    priority: 'info',
-                    text: emoji ? `${emoji} ${texte}` : texte,
-                    date: '',
-                    link: '#'
                 });
             });
 
