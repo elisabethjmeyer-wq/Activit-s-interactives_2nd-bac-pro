@@ -3,89 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archives - Recommandations de la semaine</title>
+    <title>Archives - Recommandations | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-red: #ef4444;
+            --accent-orange: #f59e0b;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 50%, #1e1e2e 100%);
             min-height: 100vh;
             color: #ffffff;
+            overflow-x: hidden;
         }
 
         /* ===== HEADER ===== */
         .header {
-            padding: 25px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+            background: rgba(30, 30, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
         }
 
-        .header-left {
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
-        .header-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 12px;
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
+            color: white;
+            transition: all 0.2s;
+            flex-shrink: 0;
         }
 
-        .header-text h1 {
-            font-size: 24px;
-            font-weight: 800;
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
             color: white;
         }
 
-        .header-text p {
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            margin-top: 2px;
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+        }
+
+        .header-spacer {
+            flex: 1;
         }
 
         .header-badge {
             background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
             color: white;
             padding: 10px 20px;
             border-radius: 25px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             border: 1px solid rgba(255,255,255,0.2);
         }
 
         .header-badge:hover {
             background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
         }
 
-        /* ===== MAIN CONTAINER ===== */
-        .main-container {
-            max-width: 1400px;
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(30, 30, 46, 0.98);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: rgba(255,255,255,0.1);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 400;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 30px 50px;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+        }
+
+        .breadcrumb .separator {
+            color: rgba(255,255,255,0.3);
+        }
+
+        .breadcrumb .current {
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            color: rgba(255,255,255,0.6);
+            font-size: 15px;
         }
 
         /* ===== FEATURED SECTION ===== */
@@ -98,11 +314,17 @@
             display: flex;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .featured-section:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
         }
 
         .featured-image {
             width: 45%;
-            min-height: 350px;
+            min-height: 320px;
             position: relative;
             overflow: hidden;
         }
@@ -117,6 +339,16 @@
 
         .featured-section:hover .featured-background {
             transform: scale(1.05);
+        }
+
+        .featured-no-image {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
         }
 
         .featured-play-btn {
@@ -145,7 +377,7 @@
 
         .featured-content {
             width: 55%;
-            padding: 35px;
+            padding: 32px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -155,7 +387,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
@@ -166,9 +398,9 @@
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .featured-type {
@@ -183,9 +415,9 @@
         }
 
         .featured-title {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             line-height: 1.2;
         }
 
@@ -193,19 +425,19 @@
             font-size: 15px;
             color: rgba(255,255,255,0.75);
             line-height: 1.6;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .featured-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .featured-tag {
-            background: rgba(102, 126, 234, 0.3);
-            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.3);
+            color: var(--primary-light);
             padding: 5px 12px;
             border-radius: 15px;
             font-size: 12px;
@@ -219,19 +451,19 @@
 
         /* ===== CAROUSEL SECTION ===== */
         .carousel-section {
-            margin-bottom: 35px;
+            margin-bottom: 40px;
         }
 
         .carousel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .carousel-title {
-            font-size: 20px;
-            font-weight: 800;
+            font-size: 18px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -249,23 +481,13 @@
             border: none;
             background: rgba(255,255,255,0.1);
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .carousel-nav-btn:hover {
             background: rgba(255,255,255,0.2);
-        }
-
-        .carousel-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
         }
 
         .carousel-track {
@@ -302,7 +524,7 @@
         .card-image {
             position: relative;
             aspect-ratio: 16/9;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             overflow: hidden;
         }
 
@@ -323,7 +545,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 45px;
+            font-size: 40px;
         }
 
         .card-type-badge {
@@ -364,17 +586,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             color: #1e1e2e;
         }
 
         .card-info {
-            padding: 15px;
+            padding: 16px;
         }
 
         .card-date {
             font-size: 11px;
-            color: #667eea;
+            color: var(--primary-light);
             font-weight: 600;
             margin-bottom: 6px;
         }
@@ -397,19 +619,28 @@
         }
 
         .card-tag {
-            background: rgba(102, 126, 234, 0.2);
-            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
             padding: 3px 8px;
             border-radius: 10px;
             font-size: 10px;
             font-weight: 600;
         }
 
-        /* ===== EMPTY CAROUSEL ===== */
-        .carousel-empty {
-            color: rgba(255,255,255,0.4);
-            font-size: 14px;
-            padding: 20px;
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .empty-state .icon {
+            font-size: 50px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
         }
 
         /* ===== MODAL ===== */
@@ -443,7 +674,7 @@
 
         .modal-header {
             padding: 18px 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -451,7 +682,7 @@
 
         .modal-header h2 {
             font-size: 18px;
-            font-weight: 800;
+            font-weight: 700;
         }
 
         .modal-close {
@@ -461,7 +692,7 @@
             border: none;
             background: rgba(255,255,255,0.2);
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -499,7 +730,7 @@
             padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid rgba(255,255,255,0.15);
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 600;
             color: white;
@@ -542,7 +773,7 @@
         .modal-item-icon {
             width: 42px;
             height: 42px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -574,7 +805,7 @@
         }
 
         .modal-item-date {
-            color: #667eea;
+            color: var(--primary-light);
         }
 
         .modal-empty {
@@ -606,14 +837,14 @@
 
         .content-popup {
             width: 100%;
-            max-width: 950px;
+            max-width: 900px;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
         }
 
         .content-popup-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             padding: 15px 20px;
             border-radius: 16px 16px 0 0;
             display: flex;
@@ -633,7 +864,7 @@
             border: none;
             background: rgba(255,255,255,0.2);
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -665,7 +896,7 @@
 
         .content-popup-media img {
             width: 100%;
-            max-height: 65vh;
+            max-height: 60vh;
             object-fit: contain;
         }
 
@@ -681,8 +912,8 @@
         }
 
         .content-popup-tag {
-            background: rgba(102, 126, 234, 0.3);
-            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.3);
+            color: var(--primary-light);
             padding: 5px 12px;
             border-radius: 15px;
             font-size: 12px;
@@ -701,15 +932,14 @@
             margin-top: 12px;
         }
 
-        /* ===== EXTERNAL LINK BUTTON ===== */
         .external-link-container {
-            padding: 30px;
+            padding: 40px;
             text-align: center;
         }
 
         .external-link-btn {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             padding: 15px 30px;
             border-radius: 25px;
@@ -721,98 +951,225 @@
 
         .external-link-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .header {
-                padding: 20px;
-            }
-
-            .header-text h1 {
-                font-size: 20px;
-            }
-
-            .main-container {
-                padding: 0 15px 30px;
-            }
-
+        @media (max-width: 900px) {
             .featured-section {
                 flex-direction: column;
             }
-
             .featured-image {
                 width: 100%;
                 min-height: 200px;
             }
-
             .featured-content {
                 width: 100%;
-                padding: 25px;
+                padding: 24px;
             }
-
             .featured-title {
-                font-size: 24px;
-            }
-
-            .featured-play-btn {
-                width: 60px;
-                height: 60px;
                 font-size: 22px;
             }
+        }
 
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
             .card {
                 width: 240px;
             }
-
-            .modal-filters {
-                flex-direction: column;
+            .header-badge {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- HEADER -->
-    <div class="header">
-        <div class="header-left">
-            <div class="header-icon">🎧</div>
-            <div class="header-text">
-                <h1>Recommandations de la semaine</h1>
-                <p>Archives</p>
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
+            <a href="index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+            
+            <div class="header-spacer"></div>
+            
+            <div class="header-badge" onclick="openModal()">
+                🔍 Rechercher (<span id="recoCount">0</span>)
             </div>
         </div>
-        <div class="header-badge" onclick="openModal()">
-            🔍 Rechercher (<span id="recoCount">0</span>)
-        </div>
-    </div>
+    </header>
 
-    <!-- MAIN CONTAINER -->
-    <div class="main-container">
-
-        <!-- FEATURED -->
-        <div class="featured-section" id="featuredSection" onclick="openContent(0)">
-            <div class="featured-image">
-                <div class="featured-background" id="featuredBg"></div>
-                <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
-            </div>
-            <div class="featured-content">
-                <div class="featured-badges">
-                    <span class="featured-badge">⭐ Cette semaine</span>
-                    <span class="featured-type" id="featuredType"></span>
+    <!-- SIDEBAR -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner">
+            
+            <!-- Organisation -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>🧰</span> Organisation
                 </div>
-                <h1 class="featured-title" id="featuredTitle"></h1>
-                <p class="featured-description" id="featuredDescription"></p>
-                <div class="featured-tags" id="featuredTags"></div>
-                <p class="featured-date" id="featuredDate"></p>
+                <a href="pages/emploi-du-temps.html" class="sidebar-item">
+                    <span class="item-icon">📅</span>
+                    <span class="item-text">Emploi du temps</span>
+                </a>
+                <a href="pages/classeur.html" class="sidebar-item">
+                    <span class="item-icon">📁</span>
+                    <span class="item-text">Classeur</span>
+                </a>
+                <a href="pages/notes.html" class="sidebar-item">
+                    <span class="item-icon">📊</span>
+                    <span class="item-text">Notes</span>
+                </a>
             </div>
+
+            <!-- Cours -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📚</span> Cours
+                </div>
+                <a href="pages/lecons.html" class="sidebar-item">
+                    <span class="item-icon">📖</span>
+                    <span class="item-text">Leçons</span>
+                </a>
+                <a href="pages/methodologie.html" class="sidebar-item">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-text">Méthodologie</span>
+                </a>
+            </div>
+
+            <!-- Entraînements -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💪</span> Entraînements
+                </div>
+                <a href="pages/entrainement-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">
+                        Connaissances
+                        <span class="item-sub">Apprendre ses leçons</span>
+                    </span>
+                </a>
+                <a href="pages/entrainement-bex.html" class="sidebar-item">
+                    <span class="item-icon">⭐</span>
+                    <span class="item-text">
+                        BEX (lundi)
+                        <span class="item-sub">Maîtriser les savoir-faire</span>
+                    </span>
+                </a>
+                <a href="pages/entrainement-tc.html" class="sidebar-item">
+                    <span class="item-icon">📝</span>
+                    <span class="item-text">
+                        TC (vendredi)
+                        <span class="item-sub">Préparer l'évaluation</span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Évaluations -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📝</span> Évaluations
+                </div>
+                <a href="pages/evaluations-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">Éval. de connaissances</span>
+                </a>
+                <a href="pages/bonus.html" class="sidebar-item">
+                    <span class="item-icon">🌟</span>
+                    <span class="item-text">Points supplémentaires</span>
+                </a>
+            </div>
+
+            <!-- Communication -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💬</span> Communication
+                </div>
+                <a href="FAQ.html" class="sidebar-item">
+                    <span class="item-icon">❓</span>
+                    <span class="item-text">Aide / FAQ</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <span class="item-icon">🗣️</span>
+                    <span class="item-text">Espace discussion</span>
+                </a>
+            </div>
+
         </div>
+    </aside>
 
-        <!-- CAROUSELS -->
-        <div id="carouselsContainer"></div>
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            
+            <!-- BREADCRUMB -->
+            <nav class="breadcrumb">
+                <a href="index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <span class="current">Recommandations</span>
+            </nav>
 
-    </div>
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <h1>💡 Recommandations</h1>
+                <p>Découvre toutes les recommandations de la semaine : podcasts, vidéos, articles...</p>
+            </div>
+
+            <!-- FEATURED -->
+            <div class="featured-section" id="featuredSection" style="display: none;">
+                <div class="featured-image">
+                    <div class="featured-background" id="featuredBg"></div>
+                    <div class="featured-no-image" id="featuredNoImage">💡</div>
+                    <div class="featured-play-btn" id="featuredPlayBtn">▶</div>
+                </div>
+                <div class="featured-content">
+                    <div class="featured-badges">
+                        <span class="featured-badge">⭐ Dernière recommandation</span>
+                        <span class="featured-type" id="featuredType"></span>
+                    </div>
+                    <h1 class="featured-title" id="featuredTitle"></h1>
+                    <p class="featured-description" id="featuredDescription"></p>
+                    <div class="featured-tags" id="featuredTags"></div>
+                    <p class="featured-date" id="featuredDate"></p>
+                </div>
+            </div>
+
+            <!-- CAROUSELS -->
+            <div id="carouselsContainer"></div>
+
+        </div>
+    </main>
 
     <!-- MODAL -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
@@ -869,40 +1226,67 @@
 
     <script>
         // ===== CONFIGURATION =====
-        const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_NAME = 'recommandations';
+        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        const SHEET_NAME = 'RECOS';
 
         // ===== DONNÉES =====
         let RECOS = [];
 
+        // ===== SIDEBAR TOGGLE =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            menuToggle.classList.toggle('active');
+            overlay.classList.toggle('visible');
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== TYPE CONFIG =====
+        const TYPE_CONFIG = {
+            'ecouter': { icon: '🎵', label: 'À écouter' },
+            'regarder': { icon: '🎬', label: 'À regarder' },
+            'lire': { icon: '📖', label: 'À lire' }
+        };
+
         // ===== CHARGEMENT GOOGLE SHEETS =====
-        async function loadRecosFromGoogleSheets() {
+        async function loadSheetData() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
                 const response = await fetch(url);
                 const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
                 
-                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
-                if (!jsonString || !jsonString[1]) {
-                    throw new Error('Format de réponse invalide');
-                }
-                
-                const data = JSON.parse(jsonString[1]);
-                const rows = data.table.rows;
+                if (!json.table || !json.table.rows) return [];
                 
                 RECOS = [];
                 
-                for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i].c;
-                    if (!row || !row[0] || row[0].v === null) continue;
+                for (let i = 0; i < json.table.rows.length; i++) {
+                    const row = json.table.rows[i].c;
+                    if (!row || !row[0]) continue;
                     
-                    // Extraire la date (peut être formatée ou valeur brute)
-                    let dateValue = row[0]?.f || row[0]?.v || '';
+                    // Colonnes: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
+                    const dateValue = row[0]?.f || row[0]?.v || '';
+                    const titre = row[1]?.v || '';
+                    
+                    // Ignorer les en-têtes
+                    if (titre.toLowerCase().includes('titre') || dateValue.toLowerCase().includes('date')) continue;
+                    if (!titre) continue;
                     
                     const reco = {
                         date: dateValue,
                         dateSort: parseDate(dateValue),
-                        titre: row[1]?.v || '',
+                        titre: titre,
                         description: row[2]?.v || '',
                         lien: row[3]?.v || '',
                         image: row[4]?.v || '',
@@ -910,22 +1294,11 @@
                         tags: row[6]?.v || ''
                     };
                     
-                    // Ignorer les lignes d'en-têtes (contiennent "Titre", "Date", etc.)
-                    const isHeader = reco.titre.toLowerCase().includes('titre') || 
-                                     reco.date.toLowerCase().includes('date') ||
-                                     reco.description.toLowerCase().includes('description');
-                    
-                    if (reco.titre && !isHeader) {
-                        RECOS.push(reco);
-                    }
+                    RECOS.push(reco);
                 }
                 
                 // Trier par date décroissante
-                RECOS.sort((a, b) => {
-                    if (a.dateSort > b.dateSort) return -1;
-                    if (a.dateSort < b.dateSort) return 1;
-                    return 0;
-                });
+                RECOS.sort((a, b) => b.dateSort.localeCompare(a.dateSort));
                 
                 console.log(`✅ ${RECOS.length} recommandations chargées`);
                 return true;
@@ -943,10 +1316,7 @@
             // Format DD-MM-YYYY ou DD/MM/YYYY
             const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
             if (match) {
-                const day = match[1].padStart(2, '0');
-                const month = match[2].padStart(2, '0');
-                const year = match[3];
-                return `${year}-${month}-${day}`;
+                return `${match[3]}-${match[2].padStart(2, '0')}-${match[1].padStart(2, '0')}`;
             }
             
             // Format YYYY-MM-DD
@@ -957,14 +1327,20 @@
             return '1970-01-01';
         }
 
-        // ===== TYPE CONFIG =====
-        const TYPE_CONFIG = {
-            'ecouter': { icon: '🎵', label: 'À écouter' },
-            'regarder': { icon: '🎬', label: 'À regarder' },
-            'lire': { icon: '📖', label: 'À lire' }
-        };
+        // ===== FORMAT DATE =====
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            
+            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (match) {
+                const date = new Date(parseInt(match[3]), parseInt(match[2]) - 1, parseInt(match[1]));
+                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            
+            return dateStr;
+        }
 
-        // ===== CONVERT GOOGLE DRIVE LINK TO IMAGE =====
+        // ===== CONVERT GOOGLE DRIVE LINK =====
         function convertToImageUrl(url) {
             if (!url) return '';
             
@@ -978,28 +1354,18 @@
             return url;
         }
 
-        // ===== DETECT CONTENT TYPE FROM LINK =====
-        function getContentTypeFromLink(lien, type) {
+        // ===== DETECT CONTENT TYPE =====
+        function getContentType(lien, type) {
             if (!lien) return 'link';
             
-            // Détection par le lien
             if (lien.includes('spotify.com')) return 'spotify';
             if (lien.includes('youtube.com/watch') || lien.includes('youtu.be/')) return 'youtube';
             if (lien.includes('loom.com')) return 'loom';
-            if (lien.includes('docs.google.com/document') || 
-                lien.includes('docs.google.com/spreadsheets') || 
-                lien.includes('docs.google.com/presentation')) return 'googledoc';
+            if (lien.includes('docs.google.com')) return 'googledoc';
             if (lien.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return 'image';
-            
-            // Google Drive : détecter si c'est une image ou un fichier audio/video
             if (lien.includes('drive.google.com') && lien.includes('/file/')) {
-                // Si le type est "regarder" sans YouTube/Loom, c'est probablement une image
-                if (type === 'regarder') return 'gdrive-image';
-                // Sinon c'est un fichier audio/video
-                return 'gdrive';
+                return type === 'regarder' ? 'gdrive-image' : 'gdrive';
             }
-            
-            // Si type "lire" mais pas un Google Doc, c'est un article externe
             if (type === 'lire') return 'article';
             
             return 'link';
@@ -1011,35 +1377,15 @@
             return tagsStr.split(/[,;]/).map(t => t.trim()).filter(t => t);
         }
 
-        // ===== FORMAT DATE =====
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            
-            const match = dateStr.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-            if (match) {
-                const day = parseInt(match[1]);
-                const month = parseInt(match[2]) - 1;
-                const year = parseInt(match[3]);
-                const date = new Date(year, month, day);
-                return date.toLocaleDateString('fr-FR', { 
-                    day: 'numeric', 
-                    month: 'long', 
-                    year: 'numeric' 
-                });
-            }
-            
-            return dateStr;
-        }
-
         // ===== INIT =====
         async function init() {
-            const success = await loadRecosFromGoogleSheets();
+            const success = await loadSheetData();
             
             if (!success || RECOS.length === 0) {
-                document.querySelector('.main-container').innerHTML = `
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 40px; text-align: center; color: rgba(255,255,255,0.6);">
-                        <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
-                        <p>Impossible de charger les recommandations.</p>
+                document.getElementById('carouselsContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>Aucune recommandation pour le moment</p>
                     </div>
                 `;
                 return;
@@ -1052,18 +1398,31 @@
 
         // ===== DISPLAY FEATURED =====
         function displayFeatured() {
-            if (RECOS.length === 0) {
-                document.getElementById('featuredSection').style.display = 'none';
-                return;
-            }
+            if (RECOS.length === 0) return;
 
             const reco = RECOS[0];
             const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌', label: 'Recommandation' };
             const tags = parseTags(reco.tags);
-            const linkType = getContentTypeFromLink(reco.lien, reco.type);
+            const contentType = getContentType(reco.lien, reco.type);
             const imageUrl = convertToImageUrl(reco.image);
 
-            document.getElementById('featuredBg').style.backgroundImage = imageUrl ? `url('${imageUrl}')` : 'none';
+            const featuredSection = document.getElementById('featuredSection');
+            featuredSection.style.display = 'flex';
+            featuredSection.onclick = () => openContent(0);
+
+            const bgEl = document.getElementById('featuredBg');
+            const noImageEl = document.getElementById('featuredNoImage');
+            
+            if (imageUrl) {
+                bgEl.style.backgroundImage = `url('${imageUrl}')`;
+                bgEl.style.display = 'block';
+                noImageEl.style.display = 'none';
+            } else {
+                bgEl.style.display = 'none';
+                noImageEl.style.display = 'flex';
+                noImageEl.textContent = typeConfig.icon;
+            }
+
             document.getElementById('featuredTitle').textContent = reco.titre;
             document.getElementById('featuredDescription').textContent = reco.description;
             document.getElementById('featuredDate').textContent = formatDate(reco.date);
@@ -1074,13 +1433,7 @@
             ).join('');
             
             const playBtn = document.getElementById('featuredPlayBtn');
-            if (linkType === 'link' || linkType === 'article') {
-                playBtn.textContent = '↗';
-            } else if (linkType === 'image') {
-                playBtn.textContent = '🔍';
-            } else {
-                playBtn.textContent = '▶';
-            }
+            playBtn.textContent = (contentType === 'link' || contentType === 'article') ? '↗' : '▶';
         }
 
         // ===== DISPLAY CAROUSELS =====
@@ -1111,16 +1464,14 @@
                                 <button class="carousel-nav-btn" onclick="scrollCarousel('${carouselId}', 1)">❯</button>
                             </div>
                         </div>
-                        <div class="carousel-container">
-                            <div class="carousel-track" id="${carouselId}">
-                                ${recos.map(reco => createCard(reco)).join('')}
-                            </div>
+                        <div class="carousel-track" id="${carouselId}">
+                            ${recos.map(reco => createCard(reco)).join('')}
                         </div>
                     </div>
                 `;
             }
 
-            container.innerHTML = html || '<p class="carousel-empty">Aucune recommandation pour le moment</p>';
+            container.innerHTML = html || '<div class="empty-state"><div class="icon">📭</div><p>Aucune autre recommandation</p></div>';
         }
 
         // ===== CREATE CARD =====
@@ -1128,12 +1479,10 @@
             const typeConfig = TYPE_CONFIG[reco.type] || { icon: '📌', label: 'Autre' };
             const tags = parseTags(reco.tags);
             const index = RECOS.indexOf(reco);
-            const linkType = getContentTypeFromLink(reco.lien, reco.type);
+            const contentType = getContentType(reco.lien, reco.type);
             const imageUrl = convertToImageUrl(reco.image);
             
-            let playIcon = '▶';
-            if (linkType === 'link' || linkType === 'article') playIcon = '↗';
-            else if (linkType === 'image') playIcon = '🔍';
+            const playIcon = (contentType === 'link' || contentType === 'article') ? '↗' : '▶';
 
             return `
                 <div class="card" onclick="openContent(${index})">
@@ -1162,8 +1511,7 @@
         // ===== SCROLL CAROUSEL =====
         function scrollCarousel(id, direction) {
             const track = document.getElementById(id);
-            const scrollAmount = 300;
-            track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            track.scrollBy({ left: direction * 300, behavior: 'smooth' });
         }
 
         // ===== OPEN CONTENT =====
@@ -1171,7 +1519,7 @@
             const reco = RECOS[index];
             if (!reco) return;
 
-            const linkType = getContentTypeFromLink(reco.lien, reco.type);
+            const contentType = getContentType(reco.lien, reco.type);
             const tags = parseTags(reco.tags);
             const imageUrl = convertToImageUrl(reco.image);
 
@@ -1184,115 +1532,68 @@
 
             const mediaContainer = document.getElementById('popupMedia');
             
-            // ===== YOUTUBE =====
-            if (linkType === 'youtube') {
+            // YouTube
+            if (contentType === 'youtube') {
                 let videoId = '';
                 if (reco.lien.includes('youtu.be/')) {
-                    const afterDomain = reco.lien.split('youtu.be/')[1];
-                    if (afterDomain) {
-                        videoId = afterDomain.split('?')[0].split('&')[0].split('/')[0];
-                    }
-                } else if (reco.lien.includes('youtube.com/watch')) {
-                    try {
-                        const url = new URL(reco.lien);
-                        videoId = url.searchParams.get('v');
-                    } catch {
-                        const urlParams = new URLSearchParams(reco.lien.split('?')[1]);
-                        videoId = urlParams.get('v');
-                    }
+                    videoId = reco.lien.split('youtu.be/')[1]?.split('?')[0];
+                } else {
+                    const url = new URL(reco.lien);
+                    videoId = url.searchParams.get('v');
                 }
-                console.log('YouTube videoId:', videoId);
                 if (videoId) {
-                    mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+                    mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allowfullscreen></iframe>`;
                 }
             }
-            // ===== GOOGLE DOCS =====
-            else if (linkType === 'googledoc') {
-                let embedUrl = reco.lien;
-                if (reco.lien.includes('/edit')) {
-                    embedUrl = reco.lien.replace(/\/edit.*$/, '/preview');
-                } else if (reco.lien.includes('/view')) {
-                    embedUrl = reco.lien.replace(/\/view.*$/, '/preview');
-                } else if (!reco.lien.includes('/preview')) {
-                    embedUrl = reco.lien.split('?')[0] + '/preview';
-                }
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="width: 100%; height: 500px; border: none;"></iframe>`;
+            // Spotify
+            else if (contentType === 'spotify') {
+                const embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 352px;" allow="encrypted-media"></iframe>`;
             }
-            // ===== GOOGLE DRIVE FILES (audio/video) =====
-            else if (linkType === 'gdrive') {
+            // Google Docs
+            else if (contentType === 'googledoc') {
+                let embedUrl = reco.lien.replace(/\/(edit|view).*$/, '/preview');
+                if (!embedUrl.includes('/preview')) embedUrl += '/preview';
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 500px;"></iframe>`;
+            }
+            // Google Drive (audio/video)
+            else if (contentType === 'gdrive') {
                 const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
                 if (fileId) {
-                    let html = '';
-                    if (imageUrl) {
-                        html += `<img src="${imageUrl}" alt="${reco.titre}" style="width: 100%; max-height: 300px; object-fit: cover;">`;
-                    }
-                    html += `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="width: 100%; height: 80px;" allow="autoplay"></iframe>`;
+                    let html = imageUrl ? `<img src="${imageUrl}" alt="${reco.titre}" style="max-height: 300px; object-fit: cover;">` : '';
+                    html += `<iframe src="https://drive.google.com/file/d/${fileId}/preview" style="height: 80px;" allow="autoplay"></iframe>`;
                     mediaContainer.innerHTML = html;
                 }
             }
-            // ===== GOOGLE DRIVE IMAGES =====
-            else if (linkType === 'gdrive-image') {
+            // Google Drive Image
+            else if (contentType === 'gdrive-image') {
                 const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
                 if (fileId) {
-                    const directImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
-                    const fullImageUrl = `https://drive.google.com/file/d/${fileId}/view`;
-                    mediaContainer.innerHTML = `
-                        <div style="position: relative;">
-                            <img src="${directImageUrl}" alt="${reco.titre}" style="width: 100%; max-height: 50vh; object-fit: contain;">
-                            <a href="${fullImageUrl}" target="_blank" style="
-                                position: absolute;
-                                top: 10px;
-                                right: 10px;
-                                background: rgba(0,0,0,0.7);
-                                color: white;
-                                padding: 8px 15px;
-                                border-radius: 20px;
-                                text-decoration: none;
-                                font-size: 13px;
-                                font-weight: 600;
-                                display: flex;
-                                align-items: center;
-                                gap: 6px;
-                                transition: background 0.2s;
-                            " onmouseover="this.style.background='rgba(102,126,234,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
-                                🔍 Ouvrir en grand
-                            </a>
-                        </div>
-                    `;
+                    mediaContainer.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w2000" alt="${reco.titre}">`;
                 }
             }
-            // ===== ARTICLES EXTERNES =====
-            else if (linkType === 'article') {
-                let html = '';
-                if (imageUrl) {
-                    html += `<img src="${imageUrl}" alt="${reco.titre}" style="width: 100%; max-height: 300px; object-fit: cover;">`;
-                }
+            // Loom
+            else if (contentType === 'loom') {
+                const embedUrl = reco.lien.replace('/share/', '/embed/');
+                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            }
+            // Image
+            else if (contentType === 'image') {
+                mediaContainer.innerHTML = `<img src="${reco.lien}" alt="${reco.titre}">`;
+            }
+            // Article / External
+            else if (contentType === 'article') {
+                let html = imageUrl ? `<img src="${imageUrl}" alt="${reco.titre}" style="max-height: 300px; object-fit: cover;">` : '';
                 html += `
                     <div class="external-link-container">
                         <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Cet article provient d'un site externe.</p>
-                        <a href="${reco.lien}" target="_blank" class="external-link-btn">
-                            📖 Lire l'article
-                        </a>
+                        <a href="${reco.lien}" target="_blank" class="external-link-btn">📖 Lire l'article</a>
                     </div>
                 `;
                 mediaContainer.innerHTML = html;
             }
-            // ===== LOOM =====
-            else if (linkType === 'loom') {
-                const embedUrl = reco.lien.replace('/share/', '/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-            }
-            // ===== SPOTIFY =====
-            else if (linkType === 'spotify') {
-                let embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="aspect-ratio: auto; height: 352px;" allow="encrypted-media"></iframe>`;
-            }
-            // ===== IMAGE =====
-            else if (linkType === 'image') {
-                mediaContainer.innerHTML = `<img src="${reco.lien}" alt="${reco.titre}">`;
-            }
-            // ===== LIEN EXTERNE =====
-            else if (linkType === 'link') {
+            // External Link
+            else {
                 window.open(reco.lien, '_blank');
                 return;
             }
@@ -1321,7 +1622,7 @@
         }
 
         function buildFilters() {
-            // Month filter
+            // Months
             const monthSelect = document.getElementById('monthFilter');
             const months = {};
             RECOS.forEach(reco => {
@@ -1329,20 +1630,18 @@
                 const [year, month] = reco.dateSort.split('-');
                 const key = `${year}-${month}`;
                 const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-                const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-                months[key] = label.charAt(0).toUpperCase() + label.slice(1);
+                months[key] = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
             });
             const sortedMonths = Object.keys(months).sort().reverse();
             monthSelect.innerHTML = '<option value="all">Tous</option>' + 
                 sortedMonths.map(key => `<option value="${key}">${months[key]}</option>`).join('');
 
-            // Tag filter
+            // Tags
             const tagSelect = document.getElementById('tagFilter');
             const allTags = new Set();
             RECOS.forEach(reco => parseTags(reco.tags).forEach(tag => allTags.add(tag)));
-            const sortedTags = [...allTags].sort();
             tagSelect.innerHTML = '<option value="all">Toutes</option>' + 
-                sortedTags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
+                [...allTags].sort().map(tag => `<option value="${tag}">${tag}</option>`).join('');
         }
 
         function filterModalItems() {
@@ -1352,28 +1651,19 @@
             const container = document.getElementById('modalBody');
 
             let filtered = RECOS.filter(reco => {
-                // Month
                 if (monthFilter !== 'all') {
                     const [year, month] = reco.dateSort.split('-');
                     if (`${year}-${month}` !== monthFilter) return false;
                 }
-                // Type
                 if (typeFilter !== 'all' && reco.type !== typeFilter) return false;
-                // Tag
                 if (tagFilter !== 'all' && !parseTags(reco.tags).includes(tagFilter)) return false;
                 return true;
             });
 
-            document.getElementById('modalResultsCount').textContent = 
-                filtered.length + ' résultat' + (filtered.length > 1 ? 's' : '');
+            document.getElementById('modalResultsCount').textContent = `${filtered.length} résultat${filtered.length > 1 ? 's' : ''}`;
 
             if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="modal-empty">
-                        <div class="icon">📭</div>
-                        <p>Aucune recommandation trouvée</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="modal-empty"><div class="icon">📭</div><p>Aucune recommandation trouvée</p></div>';
                 return;
             }
 
