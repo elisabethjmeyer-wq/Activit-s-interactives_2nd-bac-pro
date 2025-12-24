@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon espace - 2nd Bac Pro - Mme Meyer</title>
+    <title>Mon espace de cours - Mme Meyer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,13 +13,13 @@
         }
 
         :root {
-            /* Palette réduite - Violet comme couleur principale */
+            /* Palette principale - Violet */
             --primary: #7c3aed;
             --primary-light: #a78bfa;
             --primary-dark: #5b21b6;
             --primary-bg: #f5f3ff;
             
-            /* Couleurs d'accent (utilisées avec parcimonie) */
+            /* Couleurs d'accent */
             --accent-urgent: #ef4444;
             --accent-success: #10b981;
             --accent-warning: #f59e0b;
@@ -52,7 +52,7 @@
         /* ===== LAYOUT ===== */
         .dashboard {
             display: grid;
-            grid-template-columns: 260px 1fr;
+            grid-template-columns: 280px 1fr;
             gap: 24px;
             max-width: 1400px;
             margin: 0 auto;
@@ -111,14 +111,14 @@
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
-        /* Navigation principale - Style compact */
+        /* Section de navigation */
         .nav-section {
             background: white;
             border-radius: 16px;
-            padding: 8px;
+            padding: 16px;
             box-shadow: var(--shadow);
         }
 
@@ -128,18 +128,21 @@
             color: var(--gray-400);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            padding: 12px 12px 8px 12px;
+            padding: 0 8px 10px 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 10px 12px;
             border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--gray-700);
             transition: all 0.15s ease;
         }
@@ -149,21 +152,17 @@
             color: var(--primary);
         }
 
-        .nav-item.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-        }
-
         .nav-item .icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             background: var(--gray-100);
             transition: all 0.15s ease;
+            flex-shrink: 0;
         }
 
         .nav-item:hover .icon {
@@ -171,67 +170,21 @@
             color: white;
         }
 
-        .nav-item.active .icon {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Badge pour notifications */
-        .nav-item .badge {
-            margin-left: auto;
-            background: var(--accent-urgent);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        /* Séparateur */
-        .nav-divider {
-            height: 1px;
-            background: var(--gray-200);
-            margin: 4px 12px;
-        }
-
-        /* Section "Plus" repliable */
-        .nav-more-toggle {
+        /* Sous-texte pour les items qui en ont besoin */
+        .nav-item .nav-text {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 14px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--gray-500);
-            cursor: pointer;
-            transition: all 0.15s ease;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
+            flex-direction: column;
         }
 
-        .nav-more-toggle:hover {
-            background: var(--gray-100);
-            color: var(--gray-700);
+        .nav-item .nav-text .subtitle {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gray-400);
+            margin-top: 1px;
         }
 
-        .nav-more-toggle .chevron {
-            transition: transform 0.2s ease;
-        }
-
-        .nav-more-toggle.open .chevron {
-            transform: rotate(180deg);
-        }
-
-        .nav-more-content {
-            display: none;
-            padding-top: 4px;
-        }
-
-        .nav-more-content.open {
-            display: block;
+        .nav-item:hover .nav-text .subtitle {
+            color: var(--primary-light);
         }
 
         /* ===== CONTENU PRINCIPAL ===== */
@@ -241,7 +194,7 @@
             gap: 20px;
         }
 
-        /* ===== CARTE "À FAIRE" (PRIORITAIRE) ===== */
+        /* ===== CARTE "À FAIRE" ===== */
         .card-todo {
             background: white;
             border-radius: 16px;
@@ -346,6 +299,13 @@
         }
 
         .todo-item .todo-arrow {
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        .todo-empty {
+            text-align: center;
+            padding: 20px;
             color: var(--gray-400);
             font-size: 14px;
         }
@@ -477,7 +437,14 @@
             flex-shrink: 0;
         }
 
-        /* ===== CARTE RECOMMANDATION (Plus discrète) ===== */
+        .infos-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        /* ===== CARTE RECOMMANDATION ===== */
         .card-reco {
             background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
             border-radius: 16px;
@@ -542,55 +509,23 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* ===== BARRE DE PROGRESSION (BONUS) ===== */
-        .progress-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        @media (max-width: 700px) {
+            .card-reco {
+                flex-direction: column;
+                text-align: center;
+            }
+            .card-reco-action {
+                width: 100%;
+                text-align: center;
+            }
         }
 
-        .progress-info {
-            flex: 1;
-        }
-
-        .progress-info h4 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 8px;
-        }
-
-        .progress-bar-container {
-            height: 8px;
-            background: var(--gray-200);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-stats {
-            text-align: right;
-        }
-
-        .progress-stats .percent {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .progress-stats .label {
-            font-size: 12px;
-            color: var(--gray-500);
+        /* ===== LOADING STATE ===== */
+        .loading {
+            color: var(--gray-400);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
         }
     </style>
 </head>
@@ -599,107 +534,103 @@
         <!-- HEADER -->
         <header class="header-welcome">
             <div class="header-welcome-text">
-                <h1>👋 Bonjour !</h1>
-                <p>Bienvenue dans ton espace d'histoire-géo</p>
+                <h1>👋 Bienvenue dans ton espace de cours</h1>
+                <p>Français, Histoire, Géographie, EMC (Mme Meyer)</p>
             </div>
             <div class="header-date">
-                <strong>Semaine 51</strong>
-                Décembre 2024
+                <strong id="currentWeek">Semaine --</strong>
+                <span id="currentMonth">--- ----</span>
             </div>
         </header>
 
         <!-- SIDEBAR -->
         <aside class="sidebar">
+            <!-- BLOC 1 : Organisation -->
             <nav class="nav-section">
-                <div class="nav-section-title">Menu principal</div>
-                
+                <div class="nav-section-title">🧰 Organisation</div>
                 <a href="pages/emploi-du-temps.html" class="nav-item">
                     <span class="icon">📅</span>
                     Emploi du temps
                 </a>
-                
+                <a href="pages/classeur.html" class="nav-item">
+                    <span class="icon">📁</span>
+                    Classeur
+                </a>
+                <a href="pages/notes.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    Notes
+                </a>
+            </nav>
+
+            <!-- BLOC 2 : Cours -->
+            <nav class="nav-section">
+                <div class="nav-section-title">📚 Cours</div>
                 <a href="pages/lecons.html" class="nav-item">
                     <span class="icon">📖</span>
-                    Mes leçons
+                    Leçons
                 </a>
-                
                 <a href="pages/methodologie.html" class="nav-item">
                     <span class="icon">🧠</span>
                     Méthodologie
                 </a>
+            </nav>
 
-                <div class="nav-divider"></div>
-                
-                <a href="pages/connaissances.html" class="nav-item">
+            <!-- BLOC 3 : Entraînements -->
+            <nav class="nav-section">
+                <div class="nav-section-title">💪 Entraînements</div>
+                <a href="pages/entrainement-connaissances.html" class="nav-item">
                     <span class="icon">✅</span>
-                    Évaluations
-                    <span class="badge">2</span>
+                    <span class="nav-text">
+                        Connaissances
+                        <span class="subtitle">Apprendre ses leçons</span>
+                    </span>
                 </a>
-                
-                <a href="pages/bex.html" class="nav-item">
+                <a href="pages/entrainement-bex.html" class="nav-item">
                     <span class="icon">⭐</span>
-                    Préparer le BEX
+                    <span class="nav-text">
+                        BEX (lundi)
+                        <span class="subtitle">Maîtriser les savoir-faire</span>
+                    </span>
                 </a>
-                
-                <a href="pages/tc.html" class="nav-item">
+                <a href="pages/entrainement-tc.html" class="nav-item">
                     <span class="icon">📝</span>
-                    Préparer le TC
+                    <span class="nav-text">
+                        TC (vendredi)
+                        <span class="subtitle">Préparer l'évaluation</span>
+                    </span>
                 </a>
+            </nav>
 
-                <div class="nav-divider"></div>
+            <!-- BLOC 4 : Évaluations -->
+            <nav class="nav-section">
+                <div class="nav-section-title">📝 Évaluations</div>
+                <a href="pages/evaluations-connaissances.html" class="nav-item">
+                    <span class="icon">✅</span>
+                    Éval. de connaissances
+                </a>
+                <a href="pages/bonus.html" class="nav-item">
+                    <span class="icon">🌟</span>
+                    Points supplémentaires
+                </a>
+            </nav>
 
-                <!-- Section "Plus" repliable -->
-                <button class="nav-more-toggle" onclick="toggleMore(this)">
-                    <span>Plus d'options</span>
-                    <span class="chevron">▼</span>
-                </button>
-                
-                <div class="nav-more-content">
-                    <a href="pages/classeur.html" class="nav-item">
-                        <span class="icon">📁</span>
-                        Classeur numérique
-                    </a>
-                    
-                    <a href="pages/notes.html" class="nav-item">
-                        <span class="icon">📊</span>
-                        Mes notes
-                    </a>
-                    
-                    <a href="pages/bonus.html" class="nav-item">
-                        <span class="icon">🌟</span>
-                        Bonus
-                    </a>
-                    
-                    <a href="FAQ.html" class="nav-item">
-                        <span class="icon">❓</span>
-                        Aide / FAQ
-                    </a>
-                    
-                    <a href="#" class="nav-item">
-                        <span class="icon">🗣️</span>
-                        Espace discussion
-                    </a>
-                </div>
+            <!-- BLOC 5 : Communication -->
+            <nav class="nav-section">
+                <div class="nav-section-title">💬 Communication</div>
+                <a href="FAQ.html" class="nav-item">
+                    <span class="icon">❓</span>
+                    Aide / FAQ
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">🗣️</span>
+                    Espace discussion
+                </a>
             </nav>
         </aside>
 
         <!-- CONTENU PRINCIPAL -->
         <main class="main-content">
             
-            <!-- Progression -->
-            <div class="progress-card">
-                <div class="progress-info">
-                    <h4>📈 Ta progression cette période</h4>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 65%;"></div>
-                    </div>
-                </div>
-                <div class="progress-stats">
-                    <div class="percent">65%</div>
-                    <div class="label">3 leçons / 5</div>
-                </div>
-            </div>
-
             <!-- À faire cette semaine -->
             <section class="card-todo">
                 <div class="card-todo-header">
@@ -708,31 +639,8 @@
                         À faire cette semaine
                     </div>
                 </div>
-                <div class="todo-items">
-                    <a href="pages/tc.html" class="todo-item">
-                        <div class="todo-icon urgent">📝</div>
-                        <div class="todo-text">
-                            <strong>TC n°3 à rendre</strong>
-                            <span>Vendredi 20 décembre</span>
-                        </div>
-                        <span class="todo-arrow">→</span>
-                    </a>
-                    <a href="pages/bex.html" class="todo-item">
-                        <div class="todo-icon warning">⭐</div>
-                        <div class="todo-text">
-                            <strong>BEX n°5 - S'entraîner</strong>
-                            <span>Lundi 16 décembre</span>
-                        </div>
-                        <span class="todo-arrow">→</span>
-                    </a>
-                    <a href="pages/lecons.html" class="todo-item">
-                        <div class="todo-icon normal">📖</div>
-                        <div class="todo-text">
-                            <strong>Relire la leçon 4</strong>
-                            <span>Les Grandes Découvertes</span>
-                        </div>
-                        <span class="todo-arrow">→</span>
-                    </a>
+                <div class="todo-items" id="todoItems">
+                    <div class="loading">Chargement...</div>
                 </div>
             </section>
 
@@ -744,7 +652,7 @@
                         <div class="card-title">🎬 Vidéo de la semaine</div>
                         <a href="videos_hebdomadaires_archives.html" class="card-link">Voir tout →</a>
                     </div>
-                    <div class="video-wrapper">
+                    <div class="video-wrapper" id="videoWrapper">
                         <div class="video-placeholder">
                             <div class="play-btn">▶️</div>
                             <p>Chargement...</p>
@@ -757,30 +665,19 @@
                     <div class="card-header">
                         <div class="card-title">📋 Infos de la semaine</div>
                     </div>
-                    <ul class="infos-list">
-                        <li>
-                            <span class="info-emoji">📅</span>
-                            <span>Samedi 14 décembre, RDV devant le lycée à 15h00 pour le musée Vaudou</span>
-                        </li>
-                        <li>
-                            <span class="info-emoji">✅</span>
-                            <span>Le QCM d'entraînement n°5 est disponible !</span>
-                        </li>
-                        <li>
-                            <span class="info-emoji">⚠️</span>
-                            <span>N'oubliez pas : TC n°3 pour vendredi</span>
-                        </li>
+                    <ul class="infos-list" id="infosList">
+                        <li class="loading">Chargement...</li>
                     </ul>
                 </section>
             </div>
 
-            <!-- Recommandation (plus discrète, en bandeau) -->
-            <section class="card-reco">
-                <div class="card-reco-icon">🎧</div>
+            <!-- Recommandation -->
+            <section class="card-reco" id="recoCard">
+                <div class="card-reco-icon" id="recoIcon">🎧</div>
                 <div class="card-reco-content">
                     <div class="card-reco-label">Recommandation</div>
-                    <h3>Podcast "Les Grandes Traversées"</h3>
-                    <p>Les explorations maritimes du XVe siècle</p>
+                    <h3 id="recoTitle">Chargement...</h3>
+                    <p id="recoDescription">Chargement de la recommandation...</p>
                 </div>
                 <a href="recommandations_archives.html" class="card-reco-action">Découvrir →</a>
             </section>
@@ -789,12 +686,189 @@
     </div>
 
     <script>
-        // Toggle "Plus d'options"
-        function toggleMore(button) {
-            button.classList.toggle('open');
-            const content = button.nextElementSibling;
-            content.classList.toggle('open');
+        // ===== CONFIGURATION =====
+        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        
+        // Fonction pour charger les données d'un onglet Google Sheets
+        async function loadSheetData(sheetName) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                if (!json.table || !json.table.rows) return [];
+                
+                const headers = json.table.cols.map(col => col.label || '');
+                const rows = json.table.rows.map(row => {
+                    const obj = {};
+                    row.c.forEach((cell, i) => {
+                        if (headers[i]) {
+                            obj[headers[i]] = cell ? (cell.v || '') : '';
+                        }
+                    });
+                    return obj;
+                });
+                
+                return rows;
+            } catch (error) {
+                console.error(`Erreur chargement ${sheetName}:`, error);
+                return [];
+            }
         }
+
+        // Fonction pour convertir URL YouTube en embed
+        function convertToEmbed(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                return `https://www.youtube.com/embed/${match[2]}`;
+            }
+            return url;
+        }
+
+        // Fonction pour échapper le HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ===== AFFICHER LA DATE =====
+        function updateDate() {
+            const now = new Date();
+            const weekNumber = getWeekNumber(now);
+            const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
+                           'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            
+            document.getElementById('currentWeek').textContent = `Semaine ${weekNumber}`;
+            document.getElementById('currentMonth').textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        // ===== CHARGER LES TÂCHES À FAIRE =====
+        async function loadTodo() {
+            const todos = await loadSheetData('🎯TODO');
+            const container = document.getElementById('todoItems');
+            
+            if (todos && todos.length > 0) {
+                const visibleTodos = todos.filter(t => 
+                    t.Visible && t.Visible.toString().toUpperCase() === 'OUI'
+                );
+                
+                if (visibleTodos.length > 0) {
+                    container.innerHTML = visibleTodos.map(todo => {
+                        const priorityClass = (todo.Priorité || todo.Priorite || 'normal').toLowerCase();
+                        const icon = priorityClass === 'urgent' ? '🔴' : 
+                                    priorityClass === 'warning' ? '🟠' : '🟣';
+                        
+                        return `
+                            <a href="${todo.Lien || '#'}" class="todo-item">
+                                <div class="todo-icon ${priorityClass}">${icon}</div>
+                                <div class="todo-text">
+                                    <strong>${escapeHtml(todo.Texte)}</strong>
+                                    <span>${escapeHtml(todo.Date || '')}</span>
+                                </div>
+                                <span class="todo-arrow">→</span>
+                            </a>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<div class="todo-empty">✨ Rien à faire cette semaine, profites-en !</div>';
+                }
+            } else {
+                container.innerHTML = '<div class="todo-empty">✨ Rien à faire cette semaine, profites-en !</div>';
+            }
+        }
+
+        // ===== CHARGER LA VIDÉO =====
+        async function loadVideo() {
+            const videos = await loadSheetData('VIDEOS');
+            const wrapper = document.getElementById('videoWrapper');
+            
+            if (videos && videos.length > 0) {
+                const lastVideo = videos[videos.length - 1];
+                const embedUrl = convertToEmbed(lastVideo.Lien);
+                
+                if (embedUrl) {
+                    wrapper.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+                } else {
+                    wrapper.innerHTML = '<div class="video-placeholder"><div class="play-btn">🎬</div><p>Aucune vidéo disponible</p></div>';
+                }
+            } else {
+                wrapper.innerHTML = '<div class="video-placeholder"><div class="play-btn">🎬</div><p>Aucune vidéo disponible</p></div>';
+            }
+        }
+
+        // ===== CHARGER LES INFOS =====
+        async function loadInfos() {
+            const actus = await loadSheetData('ACTUS');
+            const list = document.getElementById('infosList');
+            
+            if (actus && actus.length > 0) {
+                const visibleActus = actus.filter(a => 
+                    a.Visible && a.Visible.toString().toUpperCase() === 'OUI'
+                );
+                
+                if (visibleActus.length > 0) {
+                    list.innerHTML = visibleActus.map(actu => `
+                        <li>
+                            <span class="info-emoji">${actu.Emoji || '📌'}</span>
+                            <span>${escapeHtml(actu.Texte)}</span>
+                        </li>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<li class="infos-empty">🎉 Aucune info cette semaine !</li>';
+                }
+            } else {
+                list.innerHTML = '<li class="infos-empty">🎉 Aucune info cette semaine !</li>';
+            }
+        }
+
+        // ===== CHARGER LA RECOMMANDATION =====
+        async function loadReco() {
+            const recos = await loadSheetData('RECOS');
+            
+            if (recos && recos.length > 0) {
+                const lastReco = recos[recos.length - 1];
+                
+                // Déterminer l'emoji selon le type
+                let emoji = '🎬';
+                const type = (lastReco.Type || '').toLowerCase();
+                if (type.includes('ecouter') || type.includes('écouter') || type.includes('audio') || type.includes('podcast')) {
+                    emoji = '🎧';
+                } else if (type.includes('lire') || type.includes('livre') || type.includes('article')) {
+                    emoji = '📖';
+                } else if (type.includes('regarder') || type.includes('video') || type.includes('film') || type.includes('série')) {
+                    emoji = '🎬';
+                }
+                
+                document.getElementById('recoIcon').textContent = emoji;
+                document.getElementById('recoTitle').textContent = lastReco.Titre || 'Recommandation';
+                document.getElementById('recoDescription').textContent = lastReco.Description || '';
+            } else {
+                document.getElementById('recoIcon').textContent = '🎬';
+                document.getElementById('recoTitle').textContent = 'Aucune recommandation';
+                document.getElementById('recoDescription').textContent = 'Revenez bientôt !';
+            }
+        }
+
+        // ===== INITIALISATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDate();
+            loadTodo();
+            loadVideo();
+            loadInfos();
+            loadReco();
+        });
     </script>
 </body>
 </html>
