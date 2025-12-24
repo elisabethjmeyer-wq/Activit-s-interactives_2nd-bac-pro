@@ -881,10 +881,11 @@
                     <div class="ask-header">
                         <div class="emoji">🙋</div>
                         <h2>Pose ta question</h2>
-                        <p>Tu peux écrire ou enregistrer un message audio</p>
+                        <p>Écris ta question et on te répondra !</p>
                     </div>
 
-                    <!-- TYPE TOGGLE -->
+                    <!-- TYPE TOGGLE (Audio désactivé pour le moment) -->
+                    <!--
                     <div class="question-type-toggle">
                         <button class="type-btn active" onclick="switchQuestionType('text')">
                             <span class="emoji">✍️</span>
@@ -895,6 +896,7 @@
                             Enregistrer
                         </button>
                     </div>
+                    -->
 
                     <!-- TEXT FORM -->
                     <div class="question-form active" id="textForm">
@@ -948,8 +950,8 @@
     <script>
         // ===== CONFIGURATION =====
         const GOOGLE_SHEETS_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_FAQ = 'FAQ_faq';
-        const SHEET_CATEGORIES = 'FAQ_categories';
+        const SHEET_FAQ = '❓ FAQ_faq';
+        const SHEET_CATEGORIES = '❓ FAQ_categories';
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcpQe0fti_LZdg6plh0ytzX7XmFEksdMWngHTSAozpt1mYZ2AThkQodRxvJcOUiFmB/exec';
 
         // ===== DONNÉES DYNAMIQUES =====
