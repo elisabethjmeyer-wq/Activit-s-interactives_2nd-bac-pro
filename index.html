@@ -35,7 +35,6 @@
             --gray-900: #111827;
             
             --sidebar-width: 260px;
-            --sidebar-collapsed: 68px;
             --header-height: 64px;
             
             --radius: 12px;
@@ -49,6 +48,7 @@
             background: var(--gray-100);
             color: var(--gray-800);
             line-height: 1.5;
+            overflow-x: hidden;
         }
 
         /* ===== HEADER ===== */
@@ -64,12 +64,38 @@
         }
 
         .header-inner {
-            max-width: 100%;
             height: 100%;
-            padding: 0 24px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 16px;
+        }
+
+        /* Toggle Button in Header */
+        .menu-toggle {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
         }
 
         .logo {
@@ -81,20 +107,20 @@
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .logo-text {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .logo-text span {
@@ -109,10 +135,11 @@
             background: var(--gray-100);
             padding: 4px;
             border-radius: 10px;
+            margin-left: auto;
         }
 
         .nav-cat {
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
@@ -135,18 +162,12 @@
             font-size: 13px;
             color: var(--gray-500);
             font-weight: 500;
+            margin-left: 16px;
         }
 
         @media (max-width: 900px) {
             .nav-categories { display: none; }
             .header-date { display: none; }
-        }
-
-        /* ===== LAYOUT ===== */
-        .layout {
-            display: flex;
-            padding-top: var(--header-height);
-            min-height: 100vh;
         }
 
         /* ===== SIDEBAR ===== */
@@ -159,47 +180,19 @@
             left: 0;
             bottom: 0;
             overflow-y: auto;
-            transition: width 0.3s ease;
+            overflow-x: hidden;
+            transition: transform 0.3s ease, opacity 0.3s ease;
             z-index: 50;
         }
 
         .sidebar.collapsed {
-            width: var(--sidebar-collapsed);
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .sidebar-inner {
             padding: 16px 12px;
-        }
-
-        /* Toggle Button */
-        .sidebar-toggle {
-            position: absolute;
-            top: 16px;
-            right: -14px;
-            width: 28px;
-            height: 28px;
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: var(--gray-500);
-            transition: all 0.2s;
-            box-shadow: var(--shadow);
-            z-index: 10;
-        }
-
-        .sidebar-toggle:hover {
-            background: var(--primary-bg);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .sidebar.collapsed .sidebar-toggle {
-            transform: rotate(180deg);
         }
 
         /* Sidebar Sections */
@@ -217,21 +210,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .sidebar-section-title .title-icon {
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .sidebar-section-title .title-text {
-            transition: opacity 0.2s;
-        }
-
-        .sidebar.collapsed .sidebar-section-title .title-text {
-            opacity: 0;
         }
 
         .sidebar-item {
@@ -245,9 +223,6 @@
             font-size: 14px;
             font-weight: 500;
             transition: all 0.15s;
-            position: relative;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
         .sidebar-item:hover {
@@ -275,7 +250,6 @@
 
         .sidebar-item .item-text {
             flex: 1;
-            transition: opacity 0.2s;
         }
 
         .sidebar-item .item-sub {
@@ -285,56 +259,36 @@
             font-weight: 400;
         }
 
-        .sidebar.collapsed .sidebar-item .item-text {
-            opacity: 0;
-        }
-
-        .sidebar.collapsed .sidebar-item {
-            justify-content: center;
-            padding: 10px 8px;
-        }
-
-        /* Tooltips */
-        .sidebar-item[data-tooltip]::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            left: calc(100% + 12px);
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--gray-800);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.15s;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .sidebar.collapsed .sidebar-item[data-tooltip]:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-
         /* ===== MAIN CONTENT ===== */
         .main {
-            flex: 1;
             margin-left: var(--sidebar-width);
             padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
             transition: margin-left 0.3s ease;
+            min-height: 100vh;
         }
 
         .sidebar.collapsed ~ .main {
-            margin-left: var(--sidebar-collapsed);
+            margin-left: 0;
         }
 
         .main-inner {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
+        }
+
+        /* ===== TOP ROW: VIDEO + WEEK ===== */
+        .top-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .top-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* ===== VIDEO CARD ===== */
@@ -342,11 +296,10 @@
             background: white;
             border-radius: var(--radius-lg);
             overflow: hidden;
-            margin-bottom: 24px;
             box-shadow: var(--shadow);
         }
 
-        .video-header {
+        .card-header {
             padding: 16px 20px;
             display: flex;
             justify-content: space-between;
@@ -354,8 +307,8 @@
             border-bottom: 1px solid var(--gray-100);
         }
 
-        .video-title {
-            font-size: 16px;
+        .card-title {
+            font-size: 15px;
             font-weight: 700;
             color: var(--gray-800);
             display: flex;
@@ -363,14 +316,14 @@
             gap: 8px;
         }
 
-        .video-link {
+        .card-link {
             font-size: 13px;
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
         }
 
-        .video-link:hover {
+        .card-link:hover {
             text-decoration: underline;
         }
 
@@ -400,15 +353,15 @@
         }
 
         .video-placeholder .play {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 12px;
+            font-size: 22px;
+            margin-bottom: 10px;
             box-shadow: var(--shadow-md);
         }
 
@@ -417,8 +370,9 @@
             background: white;
             border-radius: var(--radius-lg);
             overflow: hidden;
-            margin-bottom: 24px;
             box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
         }
 
         .week-header {
@@ -431,7 +385,7 @@
         }
 
         .week-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -447,14 +401,16 @@
         }
 
         .week-list {
+            flex: 1;
             padding: 8px;
+            overflow-y: auto;
         }
 
         .week-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
+            gap: 12px;
+            padding: 12px 14px;
             text-decoration: none;
             color: var(--gray-700);
             border-radius: 10px;
@@ -466,8 +422,8 @@
         }
 
         .week-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             flex-shrink: 0;
         }
@@ -479,24 +435,26 @@
 
         .week-content {
             flex: 1;
+            min-width: 0;
         }
 
         .week-content strong {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--gray-800);
         }
 
         .week-date {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--gray-400);
             font-weight: 500;
+            white-space: nowrap;
         }
 
         .week-arrow {
             color: var(--gray-300);
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .week-item:hover .week-arrow {
@@ -504,37 +462,48 @@
         }
 
         .week-empty {
-            padding: 40px 20px;
+            padding: 32px 20px;
             text-align: center;
             color: var(--gray-400);
         }
 
         .week-empty .emoji {
-            font-size: 40px;
-            margin-bottom: 12px;
+            font-size: 32px;
+            margin-bottom: 8px;
         }
 
         /* ===== RECO CARD ===== */
         .reco-card {
-            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+            background: white;
             border-radius: var(--radius-lg);
-            padding: 24px;
-            color: white;
+            overflow: hidden;
             box-shadow: var(--shadow);
+        }
+
+        .reco-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .reco-body {
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 20px;
         }
 
         .reco-icon {
-            width: 64px;
-            height: 64px;
-            background: rgba(255,255,255,0.1);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #e0e7ff 100%);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 40px;
             flex-shrink: 0;
         }
 
@@ -542,29 +511,34 @@
             flex: 1;
         }
 
-        .reco-label {
+        .reco-type {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--primary-light);
-            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 4px;
         }
 
         .reco-title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 4px;
+            color: var(--gray-800);
+            margin-bottom: 6px;
         }
 
         .reco-desc {
             font-size: 14px;
-            color: var(--gray-400);
+            color: var(--gray-500);
             line-height: 1.5;
         }
 
-        .reco-btn {
-            padding: 12px 24px;
+        .reco-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px 20px;
             background: var(--primary);
             color: white;
             text-decoration: none;
@@ -572,35 +546,42 @@
             font-size: 14px;
             border-radius: 10px;
             transition: background 0.15s;
-            white-space: nowrap;
         }
 
-        .reco-btn:hover {
-            background: var(--primary-light);
+        .reco-action:hover {
+            background: var(--primary-dark);
         }
 
-        @media (max-width: 700px) {
-            .reco-card {
+        @media (max-width: 600px) {
+            .reco-body {
                 flex-direction: column;
                 text-align: center;
             }
-            .reco-btn {
+            .reco-action {
                 width: 100%;
-                text-align: center;
+                justify-content: center;
             }
         }
 
-        /* ===== MOBILE ===== */
+        /* ===== OVERLAY for mobile ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
-                width: var(--sidebar-width);
-            }
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-            .sidebar.collapsed {
-                width: var(--sidebar-width);
+                z-index: 60;
             }
             .main {
                 margin-left: 0;
@@ -608,17 +589,19 @@
             .sidebar.collapsed ~ .main {
                 margin-left: 0;
             }
-            .sidebar-toggle {
-                display: none;
-            }
         }
     </style>
 </head>
 <body>
 
+    <!-- OVERLAY (for mobile) -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- HEADER -->
     <header class="header">
         <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
             <a href="#" class="logo">
                 <div class="logo-icon">📚</div>
                 <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
@@ -636,124 +619,117 @@
         </div>
     </header>
 
-    <!-- LAYOUT -->
-    <div class="layout">
-        
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebar">
-            <button class="sidebar-toggle" id="sidebarToggle" title="Replier/Déplier">◀</button>
+    <!-- SIDEBAR -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner">
             
-            <div class="sidebar-inner">
-                
-                <!-- Organisation -->
-                <div class="sidebar-section" id="organisation">
-                    <div class="sidebar-section-title">
-                        <span class="title-icon">🧰</span>
-                        <span class="title-text">Organisation</span>
-                    </div>
-                    <a href="pages/emploi-du-temps.html" class="sidebar-item" data-tooltip="Emploi du temps">
-                        <span class="item-icon">📅</span>
-                        <span class="item-text">Emploi du temps</span>
-                    </a>
-                    <a href="pages/classeur.html" class="sidebar-item" data-tooltip="Classeur">
-                        <span class="item-icon">📁</span>
-                        <span class="item-text">Classeur</span>
-                    </a>
-                    <a href="pages/notes.html" class="sidebar-item" data-tooltip="Notes">
-                        <span class="item-icon">📊</span>
-                        <span class="item-text">Notes</span>
-                    </a>
+            <!-- Organisation -->
+            <div class="sidebar-section" id="organisation">
+                <div class="sidebar-section-title">
+                    <span>🧰</span> Organisation
                 </div>
-
-                <!-- Cours -->
-                <div class="sidebar-section" id="cours">
-                    <div class="sidebar-section-title">
-                        <span class="title-icon">📚</span>
-                        <span class="title-text">Cours</span>
-                    </div>
-                    <a href="pages/lecons.html" class="sidebar-item" data-tooltip="Leçons">
-                        <span class="item-icon">📖</span>
-                        <span class="item-text">Leçons</span>
-                    </a>
-                    <a href="pages/methodologie.html" class="sidebar-item" data-tooltip="Méthodologie">
-                        <span class="item-icon">🧠</span>
-                        <span class="item-text">Méthodologie</span>
-                    </a>
-                </div>
-
-                <!-- Entraînements -->
-                <div class="sidebar-section" id="entrainements">
-                    <div class="sidebar-section-title">
-                        <span class="title-icon">💪</span>
-                        <span class="title-text">Entraînements</span>
-                    </div>
-                    <a href="pages/entrainement-connaissances.html" class="sidebar-item" data-tooltip="Connaissances">
-                        <span class="item-icon">✅</span>
-                        <span class="item-text">
-                            Connaissances
-                            <span class="item-sub">Apprendre ses leçons</span>
-                        </span>
-                    </a>
-                    <a href="pages/entrainement-bex.html" class="sidebar-item" data-tooltip="BEX (lundi)">
-                        <span class="item-icon">⭐</span>
-                        <span class="item-text">
-                            BEX (lundi)
-                            <span class="item-sub">Maîtriser les savoir-faire</span>
-                        </span>
-                    </a>
-                    <a href="pages/entrainement-tc.html" class="sidebar-item" data-tooltip="TC (vendredi)">
-                        <span class="item-icon">📝</span>
-                        <span class="item-text">
-                            TC (vendredi)
-                            <span class="item-sub">Préparer l'évaluation</span>
-                        </span>
-                    </a>
-                </div>
-
-                <!-- Évaluations -->
-                <div class="sidebar-section" id="evaluations">
-                    <div class="sidebar-section-title">
-                        <span class="title-icon">📝</span>
-                        <span class="title-text">Évaluations</span>
-                    </div>
-                    <a href="pages/evaluations-connaissances.html" class="sidebar-item" data-tooltip="Éval. de connaissances">
-                        <span class="item-icon">✅</span>
-                        <span class="item-text">Éval. de connaissances</span>
-                    </a>
-                    <a href="pages/bonus.html" class="sidebar-item" data-tooltip="Points supplémentaires">
-                        <span class="item-icon">🌟</span>
-                        <span class="item-text">Points supplémentaires</span>
-                    </a>
-                </div>
-
-                <!-- Communication -->
-                <div class="sidebar-section" id="aide">
-                    <div class="sidebar-section-title">
-                        <span class="title-icon">💬</span>
-                        <span class="title-text">Communication</span>
-                    </div>
-                    <a href="FAQ.html" class="sidebar-item" data-tooltip="Aide / FAQ">
-                        <span class="item-icon">❓</span>
-                        <span class="item-text">Aide / FAQ</span>
-                    </a>
-                    <a href="#" class="sidebar-item" data-tooltip="Espace discussion">
-                        <span class="item-icon">🗣️</span>
-                        <span class="item-text">Espace discussion</span>
-                    </a>
-                </div>
-
+                <a href="pages/emploi-du-temps.html" class="sidebar-item">
+                    <span class="item-icon">📅</span>
+                    <span class="item-text">Emploi du temps</span>
+                </a>
+                <a href="pages/classeur.html" class="sidebar-item">
+                    <span class="item-icon">📁</span>
+                    <span class="item-text">Classeur</span>
+                </a>
+                <a href="pages/notes.html" class="sidebar-item">
+                    <span class="item-icon">📊</span>
+                    <span class="item-text">Notes</span>
+                </a>
             </div>
-        </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="main">
-            <div class="main-inner">
+            <!-- Cours -->
+            <div class="sidebar-section" id="cours">
+                <div class="sidebar-section-title">
+                    <span>📚</span> Cours
+                </div>
+                <a href="pages/lecons.html" class="sidebar-item">
+                    <span class="item-icon">📖</span>
+                    <span class="item-text">Leçons</span>
+                </a>
+                <a href="pages/methodologie.html" class="sidebar-item">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-text">Méthodologie</span>
+                </a>
+            </div>
+
+            <!-- Entraînements -->
+            <div class="sidebar-section" id="entrainements">
+                <div class="sidebar-section-title">
+                    <span>💪</span> Entraînements
+                </div>
+                <a href="pages/entrainement-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">
+                        Connaissances
+                        <span class="item-sub">Apprendre ses leçons</span>
+                    </span>
+                </a>
+                <a href="pages/entrainement-bex.html" class="sidebar-item">
+                    <span class="item-icon">⭐</span>
+                    <span class="item-text">
+                        BEX (lundi)
+                        <span class="item-sub">Maîtriser les savoir-faire</span>
+                    </span>
+                </a>
+                <a href="pages/entrainement-tc.html" class="sidebar-item">
+                    <span class="item-icon">📝</span>
+                    <span class="item-text">
+                        TC (vendredi)
+                        <span class="item-sub">Préparer l'évaluation</span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Évaluations -->
+            <div class="sidebar-section" id="evaluations">
+                <div class="sidebar-section-title">
+                    <span>📝</span> Évaluations
+                </div>
+                <a href="pages/evaluations-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">Éval. de connaissances</span>
+                </a>
+                <a href="pages/bonus.html" class="sidebar-item">
+                    <span class="item-icon">🌟</span>
+                    <span class="item-text">Points supplémentaires</span>
+                </a>
+            </div>
+
+            <!-- Communication -->
+            <div class="sidebar-section" id="aide">
+                <div class="sidebar-section-title">
+                    <span>💬</span> Communication
+                </div>
+                <a href="FAQ.html" class="sidebar-item">
+                    <span class="item-icon">❓</span>
+                    <span class="item-text">Aide / FAQ</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <span class="item-icon">🗣️</span>
+                    <span class="item-text">Espace discussion</span>
+                </a>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            
+            <!-- TOP ROW: Video + This Week -->
+            <div class="top-row">
                 
                 <!-- Vidéo de la semaine -->
                 <div class="video-card">
-                    <div class="video-header">
-                        <div class="video-title">🎬 Vidéo de la semaine</div>
-                        <a href="videos_hebdomadaires_archives.html" class="video-link">Voir tout →</a>
+                    <div class="card-header">
+                        <div class="card-title">🎬 Vidéo de la semaine</div>
+                        <a href="videos_hebdomadaires_archives.html" class="card-link">Voir tout →</a>
                     </div>
                     <div class="video-wrapper" id="videoWrapper">
                         <div class="video-placeholder">
@@ -767,7 +743,7 @@
                 <div class="week-card">
                     <div class="week-header">
                         <div class="week-title">📌 Cette semaine</div>
-                        <span class="week-badge" id="weekBadge">0 tâche</span>
+                        <span class="week-badge" id="weekBadge">0</span>
                     </div>
                     <div class="week-list" id="weekList">
                         <div class="week-empty">
@@ -776,21 +752,29 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Recommandation -->
-                <div class="reco-card">
+            <!-- Recommandation -->
+            <div class="reco-card">
+                <div class="reco-header">
+                    <div class="card-title">💡 Recommandation de la semaine</div>
+                    <a href="recommandations_archives.html" class="card-link">Voir tout →</a>
+                </div>
+                <div class="reco-body">
                     <div class="reco-icon" id="recoIcon">🎧</div>
                     <div class="reco-content">
-                        <div class="reco-label">💡 Recommandation de la semaine</div>
+                        <div class="reco-type" id="recoType">Podcast</div>
                         <div class="reco-title" id="recoTitle">Chargement...</div>
-                        <div class="reco-desc" id="recoDesc">Chargement...</div>
+                        <div class="reco-desc" id="recoDesc">Chargement de la recommandation...</div>
+                        <a href="#" class="reco-action" id="recoLink" target="_blank">
+                            Découvrir →
+                        </a>
                     </div>
-                    <a href="recommandations_archives.html" class="reco-btn">Découvrir →</a>
                 </div>
-
             </div>
-        </main>
-    </div>
+
+        </div>
+    </main>
 
     <script>
         // ===== CONFIG =====
@@ -798,17 +782,46 @@
 
         // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggle');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
 
-        toggleBtn.addEventListener('click', () => {
+        function toggleSidebar() {
             sidebar.classList.toggle('collapsed');
-            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-        });
-
-        // Restore state
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            sidebar.classList.add('collapsed');
+            menuToggle.classList.toggle('active');
+            overlay.classList.toggle('visible');
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
         }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Restore state (default: collapsed)
+        const savedState = localStorage.getItem('sidebarOpen');
+        if (savedState === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // Nav category links
+        document.querySelectorAll('.nav-cat').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.getAttribute('href').substring(1);
+                
+                // Open sidebar if closed
+                if (sidebar.classList.contains('collapsed')) {
+                    toggleSidebar();
+                }
+                
+                // Scroll to section
+                setTimeout(() => {
+                    const section = document.getElementById(target);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 300);
+            });
+        });
 
         // ===== DATA LOADING =====
         async function loadSheetData(sheetName) {
@@ -911,7 +924,7 @@
             const container = document.getElementById('weekList');
             const badge = document.getElementById('weekBadge');
             
-            badge.textContent = `${items.length} tâche${items.length > 1 ? 's' : ''}`;
+            badge.textContent = items.length;
             
             if (items.length > 0) {
                 container.innerHTML = items.map(item => `
@@ -939,18 +952,39 @@
             const recos = await loadSheetData('RECOS');
             if (recos?.length > 0) {
                 const r = recos[recos.length - 1];
+                
                 let emoji = '🎬';
+                let typeLabel = 'Vidéo';
                 const type = (r.Type || '').toLowerCase();
-                if (type.includes('ecouter') || type.includes('podcast') || type.includes('audio')) emoji = '🎧';
-                else if (type.includes('lire')) emoji = '📖';
+                
+                if (type.includes('ecouter') || type.includes('podcast') || type.includes('audio')) {
+                    emoji = '🎧';
+                    typeLabel = 'Podcast';
+                } else if (type.includes('lire') || type.includes('livre') || type.includes('article')) {
+                    emoji = '📖';
+                    typeLabel = 'Lecture';
+                } else if (type.includes('regarder') || type.includes('video') || type.includes('film')) {
+                    emoji = '🎬';
+                    typeLabel = 'Vidéo';
+                }
                 
                 document.getElementById('recoIcon').textContent = emoji;
+                document.getElementById('recoType').textContent = typeLabel;
                 document.getElementById('recoTitle').textContent = r.Titre || 'Recommandation';
                 document.getElementById('recoDesc').textContent = r.Description || '';
+                
+                if (r.Lien) {
+                    document.getElementById('recoLink').href = r.Lien;
+                    document.getElementById('recoLink').style.display = 'inline-flex';
+                } else {
+                    document.getElementById('recoLink').style.display = 'none';
+                }
             } else {
                 document.getElementById('recoIcon').textContent = '💡';
-                document.getElementById('recoTitle').textContent = 'Aucune recommandation';
-                document.getElementById('recoDesc').textContent = 'Revenez bientôt !';
+                document.getElementById('recoType').textContent = 'Aucune';
+                document.getElementById('recoTitle').textContent = 'Pas de recommandation';
+                document.getElementById('recoDesc').textContent = 'Revenez bientôt pour découvrir nos recommandations !';
+                document.getElementById('recoLink').style.display = 'none';
             }
         }
 
