@@ -26,10 +26,18 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            transition: grid-template-columns 0.3s ease;
+        }
+
+        .dashboard.sidebar-collapsed {
+            grid-template-columns: 60px 1fr;
         }
 
         @media (max-width: 900px) {
             .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .dashboard.sidebar-collapsed {
                 grid-template-columns: 1fr;
             }
             .sidebar {
@@ -37,6 +45,9 @@
             }
             .main-content {
                 order: 1;
+            }
+            .sidebar-toggle {
+                display: none;
             }
         }
 
@@ -65,11 +76,47 @@
         .header-welcome .highlight-echeances { color: #f87171; }
         .header-welcome .highlight-aides { color: #34d399; }
 
-        /* ===== SIDEBAR MENU FIXE ===== */
+        /* ===== SIDEBAR MENU ===== */
         .sidebar {
             display: flex;
             flex-direction: column;
             gap: 20px;
+            position: relative;
+        }
+
+        /* ===== BOUTON TOGGLE SIDEBAR ===== */
+        .sidebar-toggle {
+            position: absolute;
+            top: 0;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-toggle:hover {
+            background: #f3f4f6;
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+        }
+
+        .sidebar-toggle .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-collapsed .sidebar-toggle .arrow {
+            transform: rotate(180deg);
         }
 
         /* ===== SECTION DU MENU ===== */
@@ -78,6 +125,12 @@
             border-radius: 16px;
             padding: 18px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .sidebar-collapsed .menu-section {
+            padding: 12px;
         }
 
         .menu-section-title {
@@ -90,6 +143,17 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .menu-section-title .title-text {
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+
+        .sidebar-collapsed .menu-section-title .title-text {
+            opacity: 0;
+            width: 0;
         }
 
         .menu-btn {
@@ -104,6 +168,8 @@
             margin-bottom: 8px;
             color: white;
             transition: all 0.2s ease;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
         .menu-btn:last-child {
@@ -115,8 +181,27 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
+        .sidebar-collapsed .menu-btn:hover {
+            transform: none;
+        }
+
         .menu-btn .emoji {
             font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .menu-btn .btn-text {
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+
+        .sidebar-collapsed .menu-btn .btn-text {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar-collapsed .menu-btn {
+            justify-content: center;
+            padding: 12px;
         }
 
         /* Couleurs boutons */
@@ -127,6 +212,36 @@
         .btn-violet { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
         .btn-vert { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .btn-gris { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+
+        /* Tooltip pour sidebar repliée */
+        .menu-btn {
+            position: relative;
+        }
+
+        .sidebar-collapsed .menu-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-collapsed .menu-btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
 
         /* ===== CONTENU PRINCIPAL ===== */
         .main-content {
@@ -353,65 +468,75 @@
     </style>
 </head>
 <body>
-    <div class="dashboard">
+    <div class="dashboard" id="dashboard">
         <!-- HEADER BIENVENUE -->
         <header class="header-welcome">
             <h1>👋 Bienvenue dans ton espace !</h1>
             <p>Ici, tu retrouves <span class="highlight-cours">ton cours</span>, les <span class="highlight-echeances">échéances</span>, et toutes les <span class="highlight-aides">aides</span> pour travailler en autonomie.</p>
         </header>
 
-        <!-- SIDEBAR MENU FIXE -->
+        <!-- SIDEBAR MENU -->
         <aside class="sidebar">
+            <!-- Bouton toggle -->
+            <button class="sidebar-toggle" id="sidebarToggle" title="Replier/Déplier le menu">
+                <span class="arrow">◀</span>
+            </button>
+
+            <!-- Organisation (EN HAUT) -->
+            <div class="menu-section">
+                <div class="menu-section-title">🧰 <span class="title-text">Organisation</span></div>
+                <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert" data-tooltip="Emploi du temps">
+                    <span class="emoji">📅</span> <span class="btn-text">Emploi du temps</span>
+                </a>
+                <a href="pages/classeur.html" class="menu-btn btn-vert" data-tooltip="Classeur numérique">
+                    <span class="emoji">📁</span> <span class="btn-text">Classeur numérique</span>
+                </a>
+                <a href="pages/notes.html" class="menu-btn btn-vert" data-tooltip="Mes notes">
+                    <span class="emoji">📊</span> <span class="btn-text">Mes notes</span>
+                </a>
+            </div>
+
             <!-- Consulte tes cours -->
             <div class="menu-section">
-                <div class="menu-section-title">📚 Consulte tes cours</div>
-                <a href="pages/lecons.html" class="menu-btn btn-bleu">
-                    <span class="emoji">📖</span> Toutes les leçons
+                <div class="menu-section-title">📚 <span class="title-text">Consulte tes cours</span></div>
+                <a href="pages/lecons.html" class="menu-btn btn-bleu" data-tooltip="Toutes les leçons">
+                    <span class="emoji">📖</span> <span class="btn-text">Toutes les leçons</span>
                 </a>
-                <a href="pages/methodologie.html" class="menu-btn btn-orange">
-                    <span class="emoji">🧠</span> Toute la méthodologie
+                <a href="pages/methodologie.html" class="menu-btn btn-orange" data-tooltip="Toute la méthodologie">
+                    <span class="emoji">🧠</span> <span class="btn-text">Toute la méthodologie</span>
+                </a>
+            </div>
+
+            <!-- Évaluations (NOUVEAU BLOC) -->
+            <div class="menu-section">
+                <div class="menu-section-title">📝 <span class="title-text">Évaluations</span></div>
+                <a href="pages/connaissances.html" class="menu-btn btn-bleu" data-tooltip="Évaluations de connaissances">
+                    <span class="emoji">✅</span> <span class="btn-text">Évaluations de connaissances</span>
+                </a>
+                <a href="pages/bonus.html" class="menu-btn btn-violet" data-tooltip="Bonus pour + de points !">
+                    <span class="emoji">🌟</span> <span class="btn-text">Bonus pour + de points !</span>
                 </a>
             </div>
 
             <!-- Prépare tes évaluations -->
             <div class="menu-section">
-                <div class="menu-section-title">📊 Prépare tes évaluations...</div>
-                <a href="pages/connaissances.html" class="menu-btn btn-bleu">
-                    <span class="emoji">✅</span> de connaissances (leçons)
+                <div class="menu-section-title">📊 <span class="title-text">Prépare tes évaluations...</span></div>
+                <a href="pages/bex.html" class="menu-btn btn-jaune" data-tooltip="du lundi (BEX)">
+                    <span class="emoji">⭐</span> <span class="btn-text">du lundi (BEX)</span>
                 </a>
-                <a href="pages/bex.html" class="menu-btn btn-jaune">
-                    <span class="emoji">⭐</span> du lundi (BEX)
-                </a>
-                <a href="pages/tc.html" class="menu-btn btn-rouge">
-                    <span class="emoji">📝</span> du vendredi (TC)
-                </a>
-                <a href="pages/bonus.html" class="menu-btn btn-violet">
-                    <span class="emoji">🌟</span> bonus pour + de points !
-                </a>
-            </div>
-
-            <!-- Organisation -->
-            <div class="menu-section">
-                <div class="menu-section-title">🧰 Organisation</div>
-                <a href="pages/emploi-du-temps.html" class="menu-btn btn-vert">
-                    <span class="emoji">📅</span> Emploi du temps
-                </a>
-                <a href="pages/classeur.html" class="menu-btn btn-vert">
-                    <span class="emoji">📁</span> Classeur numérique
-                </a>
-                <a href="pages/notes.html" class="menu-btn btn-vert">
-                    <span class="emoji">📊</span> Mes notes
+                <a href="pages/tc.html" class="menu-btn btn-rouge" data-tooltip="du vendredi (TC)">
+                    <span class="emoji">📝</span> <span class="btn-text">du vendredi (TC)</span>
                 </a>
             </div>
 
             <!-- Espace classe -->
             <div class="menu-section">
-                <div class="menu-section-title">💬 Espace classe</div>
-                <a href="FAQ.html" class="menu-btn btn-gris">
-                    <span class="emoji">❓</span> Un problème ?
+                <div class="menu-section-title">💬 <span class="title-text">Espace classe</span></div>
+                <a href="FAQ.html" class="menu-btn btn-gris" data-tooltip="Un problème ?">
+                    <span class="emoji">❓</span> <span class="btn-text">Un problème ?</span>
                 </a>
-                <a href="#" class="menu-btn btn-gris">
-                    <span class="emoji">🗣️</span> Entre élèves
+                <a href="#" class="menu-btn btn-gris" data-tooltip="Entre élèves">
+                    <span class="emoji">🗣️</span> <span class="btn-text">Entre élèves</span>
                 </a>
             </div>
         </aside>
@@ -453,5 +578,27 @@
             </section>
         </main>
     </div>
+
+    <script>
+        // ===== TOGGLE SIDEBAR =====
+        const dashboard = document.getElementById('dashboard');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        sidebarToggle.addEventListener('click', () => {
+            dashboard.classList.toggle('sidebar-collapsed');
+            
+            // Sauvegarder la préférence
+            const isCollapsed = dashboard.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        });
+
+        // Restaurer la préférence au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            if (savedState === 'true') {
+                dashboard.classList.add('sidebar-collapsed');
+            }
+        });
+    </script>
 </body>
 </html>
