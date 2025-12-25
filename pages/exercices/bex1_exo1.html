@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEX n°1 - Exercice 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            transition: all 0.3s;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .instructions strong {
+            color: #f59e0b;
+            font-size: 16px;
+        }
+
+        .instructions p {
+            color: #4b5563;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        td:first-child {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        input.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        input.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-solution {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+
+        .btn-solution:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+            color: white;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(107, 114, 128, 0.3);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #065f46;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            color: #047857;
+            font-size: 16px;
+        }
+
+        .score {
+            font-size: 32px;
+            font-weight: bold;
+            color: #065f46;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .timer-box {
+                font-size: 20px;
+                padding: 12px 16px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+
+            button {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 BEX n°1 - Exercice 1</h1>
+            <p>Se repérer dans le temps</p>
+        </div>
+
+        <div class="timer-box" id="timer">
+            ⏱️ Temps restant : 10:00
+        </div>
+
+        <div class="instructions">
+            <strong>📋 Consigne :</strong>
+            <p>Pour chaque date, trouve le siècle, la grande période historique et le personnage-repère associé à cette grande période.</p>
+        </div>
+
+        <div class="exercise-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Siècle</th>
+                        <th>Grande période historique</th>
+                        <th>Personnage-repère</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1494</td>
+                        <td><input type="text" id="siecle1" placeholder="Siècle..."></td>
+                        <td><input type="text" id="periode1" placeholder="Période..."></td>
+                        <td><input type="text" id="personnage1" placeholder="Personnage..."></td>
+                    </tr>
+                    <tr>
+                        <td>305</td>
+                        <td><input type="text" id="siecle2" placeholder="Siècle..."></td>
+                        <td><input type="text" id="periode2" placeholder="Période..."></td>
+                        <td><input type="text" id="personnage2" placeholder="Personnage..."></td>
+                    </tr>
+                    <tr>
+                        <td>1685</td>
+                        <td><input type="text" id="siecle3" placeholder="Siècle..."></td>
+                        <td><input type="text" id="periode3" placeholder="Période..."></td>
+                        <td><input type="text" id="personnage3" placeholder="Personnage..."></td>
+                    </tr>
+                    <tr>
+                        <td>1804</td>
+                        <td><input type="text" id="siecle4" placeholder="Siècle..."></td>
+                        <td><input type="text" id="periode4" placeholder="Période..."></td>
+                        <td><input type="text" id="personnage4" placeholder="Personnage..."></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="buttons">
+                <button class="btn-verify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
+                <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                <button class="btn-restart" onclick="restart()">🔄 Recommencer</button>
+            </div>
+
+            <div class="result" id="result">
+                <h3>📊 Résultat</h3>
+                <p>Tu as obtenu <span class="score" id="score">0/12</span></p>
+                <p id="message"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données de correction
+        const answers = {
+            siecle1: ['15e', '15ème', 'XVe', 'XV'],
+            periode1: ['epoque moderne', 'temps modernes', 'moderne'],
+            personnage1: ['louis 14', 'louis xiv', 'louis quatorze'],
+            
+            siecle2: ['4e', '4ème', 'IVe', 'IV'],
+            periode2: ['antiquite', 'antiquité'],
+            personnage2: ['jules cesar', 'jules césar', 'cesar', 'césar'],
+            
+            siecle3: ['17e', '17ème', 'XVIIe', 'XVII'],
+            periode3: ['epoque moderne', 'temps modernes', 'moderne'],
+            personnage3: ['louis 14', 'louis xiv', 'louis quatorze'],
+            
+            siecle4: ['19e', '19ème', 'XIXe', 'XIX'],
+            periode4: ['epoque contemporaine', 'contemporaine'],
+            personnage4: ['victor hugo', 'hugo']
+        };
+
+        // Timer
+        let timeLeft = 600; // 10 minutes en secondes
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 120 && timeLeft > 0) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('⏰ Temps écoulé ! L\'exercice va être corrigé automatiquement.');
+                    verifyAnswers();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `⏱️ Temps restant : ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function normalizeString(str) {
+            return str.toLowerCase()
+                      .trim()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z0-9\s]/g, '');
+        }
+
+        function verifyAnswers() {
+            let correctCount = 0;
+            const totalQuestions = 12;
+
+            for (let key in answers) {
+                const input = document.getElementById(key);
+                const userAnswer = normalizeString(input.value);
+                const correctAnswers = answers[key].map(a => normalizeString(a));
+
+                if (correctAnswers.includes(userAnswer)) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                }
+            }
+
+            // Afficher le résultat
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+            document.getElementById('score').textContent = `${correctCount}/${totalQuestions}`;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '🎉 Parfait ! Tu maîtrises parfaitement cette compétence !';
+            } else if (percentage >= 75) {
+                message = '👍 Très bien ! Encore quelques petites erreurs à corriger.';
+            } else if (percentage >= 50) {
+                message = '💪 Pas mal ! Continue à t\'entraîner pour progresser.';
+            } else {
+                message = '📚 Révise ton cours et recommence, tu vas y arriver !';
+            }
+            
+            document.getElementById('message').textContent = message;
+            document.getElementById('result').classList.add('show');
+
+            clearInterval(timerInterval);
+        }
+
+        function showSolution() {
+            document.getElementById('siecle1').value = '15e';
+            document.getElementById('periode1').value = 'Epoque moderne';
+            document.getElementById('personnage1').value = 'Louis 14';
+            
+            document.getElementById('siecle2').value = '4e';
+            document.getElementById('periode2').value = 'Antiquité';
+            document.getElementById('personnage2').value = 'Jules César';
+            
+            document.getElementById('siecle3').value = '17e';
+            document.getElementById('periode3').value = 'Epoque moderne';
+            document.getElementById('personnage3').value = 'Louis 14';
+            
+            document.getElementById('siecle4').value = '19e';
+            document.getElementById('periode4').value = 'Époque contemporaine';
+            document.getElementById('personnage4').value = 'Victor Hugo';
+
+            // Marquer tout en vert
+            for (let key in answers) {
+                document.getElementById(key).classList.add('correct');
+                document.getElementById(key).classList.remove('incorrect');
+            }
+
+            document.getElementById('result').classList.add('show');
+            document.getElementById('score').textContent = '12/12';
+            document.getElementById('message').textContent = '📖 Étudie bien les réponses !';
+        }
+
+        function restart() {
+            // Réinitialiser les champs
+            for (let key in answers) {
+                const input = document.getElementById(key);
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            }
+
+            // Réinitialiser le résultat
+            document.getElementById('result').classList.remove('show');
+
+            // Réinitialiser le timer
+            clearInterval(timerInterval);
+            timeLeft = 600;
+            document.getElementById('timer').classList.remove('warning');
+            updateTimerDisplay();
+            startTimer();
+        }
+
+        // Démarrer le timer au chargement de la page
+        startTimer();
+    </script>
+</body>
+</html>
