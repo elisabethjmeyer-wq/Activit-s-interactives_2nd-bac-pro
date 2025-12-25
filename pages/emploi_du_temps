@@ -441,54 +441,6 @@
             color: var(--accent-green);
         }
 
-        /* ===== LEGEND ===== */
-        .legend-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .legend-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-items {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-
-        .legend-color.blue { background: #3b82f6; }
-        .legend-color.orange { background: #f59e0b; }
-        .legend-color.green { background: #10b981; }
-        .legend-color.red { background: #ef4444; }
-
-        .legend-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gray-700);
-        }
-
         /* ===== OVERLAY ===== */
         .overlay {
             position: fixed;
@@ -525,10 +477,6 @@
             }
             .group-selector select {
                 width: 100%;
-            }
-            .legend-items {
-                flex-direction: column;
-                gap: 12px;
             }
         }
     </style>
@@ -703,29 +651,6 @@
                 <div class="calendar-footer">
                     <div class="calendar-footer-text">
                         ✨ Ce calendrier est <strong>synchronisé en temps réel</strong>. Toutes les modifications apparaissent automatiquement !
-                    </div>
-                </div>
-            </div>
-
-            <!-- LEGEND -->
-            <div class="legend-card">
-                <div class="legend-title">🎨 Légende</div>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <div class="legend-color blue"></div>
-                        <span class="legend-label">Cours</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color orange"></div>
-                        <span class="legend-label">Évaluation du lundi</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color green"></div>
-                        <span class="legend-label">Autonomie</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color red"></div>
-                        <span class="legend-label">Tâche complexe</span>
                     </div>
                 </div>
             </div>
