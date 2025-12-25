@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leçons | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            color: var(--gray-500);
+            font-size: 15px;
+        }
+
+        /* ===== INFO TIP ===== */
+        .info-tip {
+            background: var(--primary-bg);
+            border: 1px solid var(--primary-light);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-tip-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-tip-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .info-tip-text strong {
+            color: var(--primary);
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+
+        /* ===== DISCIPLINES GRID ===== */
+        .disciplines-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ===== DISCIPLINE CARD ===== */
+        .discipline-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+        }
+
+        .discipline-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .discipline-header:hover {
+            filter: brightness(1.05);
+        }
+
+        .discipline-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .discipline-icon {
+            font-size: 28px;
+        }
+
+        .discipline-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .discipline-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .discipline-arrow {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .discipline-card.open .discipline-arrow {
+            transform: rotate(180deg);
+        }
+
+        .discipline-content {
+            display: none;
+            padding: 20px 24px;
+            background: var(--gray-50);
+        }
+
+        .discipline-card.open .discipline-content {
+            display: block;
+        }
+
+        /* ===== INTRO COURSE ===== */
+        .intro-course {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1px solid #fecaca;
+            border-left: 4px solid #ef4444;
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .intro-course-icon {
+            font-size: 24px;
+        }
+
+        .intro-course-content {
+            flex: 1;
+        }
+
+        .intro-course-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 2px;
+        }
+
+        .intro-course a {
+            color: #991b1b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .intro-course a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== THEME ===== */
+        .theme-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .theme-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .theme-header {
+            padding: 14px 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-left: 4px solid var(--primary);
+            transition: background 0.2s;
+        }
+
+        .theme-header:hover {
+            background: var(--gray-50);
+        }
+
+        .theme-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .theme-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 10px;
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .theme-badge.has-available {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .theme-arrow {
+            font-size: 14px;
+            color: var(--gray-400);
+            transition: transform 0.3s;
+        }
+
+        .theme-card.open .theme-arrow {
+            transform: rotate(90deg);
+        }
+
+        .theme-content {
+            display: none;
+            padding: 12px 18px;
+            background: var(--gray-50);
+        }
+
+        .theme-card.open .theme-content {
+            display: block;
+        }
+
+        /* ===== CHAPTER ===== */
+        .chapter-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .chapter-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .chapter-item.available {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .chapter-item.locked {
+            border-left: 3px solid var(--gray-300);
+            opacity: 0.7;
+        }
+
+        .chapter-icon {
+            font-size: 18px;
+        }
+
+        .chapter-content {
+            flex: 1;
+        }
+
+        .chapter-content a {
+            color: var(--gray-800);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .chapter-content a:hover {
+            color: var(--primary);
+        }
+
+        .chapter-content .locked-text {
+            color: var(--gray-500);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .chapter-status {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .chapter-status.available {
+            color: var(--accent-green);
+        }
+
+        .chapter-status.locked {
+            color: var(--gray-400);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+            .discipline-header {
+                padding: 16px 18px;
+            }
+            .discipline-icon {
+                font-size: 24px;
+            }
+            .discipline-info h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner">
+            
+            <!-- Organisation -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>🧰</span> Organisation
+                </div>
+                <a href="emploi-du-temps.html" class="sidebar-item">
+                    <span class="item-icon">📅</span>
+                    <span class="item-text">Emploi du temps</span>
+                </a>
+                <a href="classeur.html" class="sidebar-item">
+                    <span class="item-icon">📁</span>
+                    <span class="item-text">Classeur</span>
+                </a>
+                <a href="notes.html" class="sidebar-item">
+                    <span class="item-icon">📊</span>
+                    <span class="item-text">Notes</span>
+                </a>
+            </div>
+
+            <!-- Cours -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📚</span> Cours
+                </div>
+                <a href="lecons.html" class="sidebar-item active">
+                    <span class="item-icon">📖</span>
+                    <span class="item-text">Leçons</span>
+                </a>
+                <a href="methodologie.html" class="sidebar-item">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-text">Méthodologie</span>
+                </a>
+            </div>
+
+            <!-- Entraînements -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💪</span> Entraînements
+                </div>
+                <a href="entrainement-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">
+                        Connaissances
+                        <span class="item-sub">Apprendre ses leçons</span>
+                    </span>
+                </a>
+                <a href="entrainement-bex.html" class="sidebar-item">
+                    <span class="item-icon">⭐</span>
+                    <span class="item-text">
+                        BEX (lundi)
+                        <span class="item-sub">Maîtriser les savoir-faire</span>
+                    </span>
+                </a>
+                <a href="entrainement-tc.html" class="sidebar-item">
+                    <span class="item-icon">📝</span>
+                    <span class="item-text">
+                        TC (vendredi)
+                        <span class="item-sub">Préparer l'évaluation</span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Évaluations -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📝</span> Évaluations
+                </div>
+                <a href="evaluations-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">Éval. de connaissances</span>
+                </a>
+                <a href="bonus.html" class="sidebar-item">
+                    <span class="item-icon">🌟</span>
+                    <span class="item-text">Points supplémentaires</span>
+                </a>
+            </div>
+
+            <!-- Communication -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💬</span> Communication
+                </div>
+                <a href="../FAQ.html" class="sidebar-item">
+                    <span class="item-icon">❓</span>
+                    <span class="item-text">Aide / FAQ</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <span class="item-icon">🗣️</span>
+                    <span class="item-text">Espace discussion</span>
+                </a>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            
+            <!-- BREADCRUMB -->
+            <nav class="breadcrumb">
+                <a href="../index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <span class="current">📖 Leçons</span>
+            </nav>
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <h1>📚 Toutes les leçons</h1>
+                <p>Retrouve ici l'ensemble des leçons du programme organisées par discipline</p>
+            </div>
+
+            <!-- INFO TIP -->
+            <div class="info-tip">
+                <span class="info-tip-icon">💡</span>
+                <span class="info-tip-text">
+                    <strong>Comment ça marche ?</strong> Clique sur une discipline pour voir les thèmes, puis sur un thème pour voir les chapitres. Les leçons marquées ✅ sont disponibles !
+                </span>
+            </div>
+
+            <!-- LOADING -->
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Chargement des leçons...</div>
+            </div>
+
+            <!-- DISCIPLINES -->
+            <div class="disciplines-grid" id="disciplinesGrid" style="display: none;">
+                <!-- Généré dynamiquement -->
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">📚</div>
+                <p>Aucune leçon disponible pour le moment</p>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
+        const SHEET_NAME = '📚 LECONS';
+
+        // Icônes par discipline
+        const DISCIPLINE_ICONS = {
+            'Littérature': '📚',
+            'Histoire': '📜',
+            'Géographie': '🌍',
+            'EMC': '⚖️'
+        };
+
+        // Ordre des disciplines
+        const DISCIPLINE_ORDER = ['Littérature', 'Histoire', 'Géographie', 'EMC'];
+
+        // ===== SIDEBAR TOGGLE =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+            
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== LOAD DATA =====
+        async function loadLessons() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+
+                if (!json.table || !json.table.rows) {
+                    throw new Error('No data');
+                }
+
+                // Parse data
+                const lessons = [];
+                for (let i = 0; i < json.table.rows.length; i++) {
+                    const row = json.table.rows[i].c;
+                    if (!row) continue;
+
+                    const discipline = row[0]?.v || '';
+                    const theme = row[1]?.v || '';
+                    const numTheme = row[2]?.v || 0;
+                    const chapitre = row[3]?.v || '';
+                    const titre = row[4]?.v || '';
+                    const lien = row[5]?.v || '';
+                    const statut = (row[6]?.v || '').toLowerCase();
+
+                    // Skip header row
+                    if (discipline.toLowerCase().includes('discipline')) continue;
+                    if (!discipline || !titre) continue;
+
+                    lessons.push({
+                        discipline,
+                        theme,
+                        numTheme: parseInt(numTheme) || 0,
+                        chapitre,
+                        titre,
+                        lien,
+                        statut: statut.includes('disponible') ? 'disponible' : 'à venir'
+                    });
+                }
+
+                console.log(`✅ ${lessons.length} leçons chargées`);
+                renderLessons(lessons);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // ===== RENDER LESSONS =====
+        function renderLessons(lessons) {
+            // Group by discipline
+            const byDiscipline = {};
+            lessons.forEach(lesson => {
+                if (!byDiscipline[lesson.discipline]) {
+                    byDiscipline[lesson.discipline] = [];
+                }
+                byDiscipline[lesson.discipline].push(lesson);
+            });
+
+            // Sort disciplines
+            const sortedDisciplines = DISCIPLINE_ORDER.filter(d => byDiscipline[d]);
+            // Add any other disciplines not in the order
+            Object.keys(byDiscipline).forEach(d => {
+                if (!sortedDisciplines.includes(d)) {
+                    sortedDisciplines.push(d);
+                }
+            });
+
+            const container = document.getElementById('disciplinesGrid');
+            container.innerHTML = '';
+
+            sortedDisciplines.forEach(discipline => {
+                const disciplineLessons = byDiscipline[discipline];
+                const card = createDisciplineCard(discipline, disciplineLessons);
+                container.appendChild(card);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            container.style.display = 'flex';
+        }
+
+        // ===== CREATE DISCIPLINE CARD =====
+        function createDisciplineCard(discipline, lessons) {
+            const card = document.createElement('div');
+            card.className = 'discipline-card';
+
+            const icon = DISCIPLINE_ICONS[discipline] || '📖';
+            const availableCount = lessons.filter(l => l.statut === 'disponible').length;
+            const totalCount = lessons.length;
+
+            // Group by theme
+            const byTheme = {};
+            const introLessons = [];
+            
+            lessons.forEach(lesson => {
+                if (lesson.numTheme === 0) {
+                    introLessons.push(lesson);
+                } else {
+                    const themeKey = `${lesson.numTheme}-${lesson.theme}`;
+                    if (!byTheme[themeKey]) {
+                        byTheme[themeKey] = {
+                            name: lesson.theme,
+                            numTheme: lesson.numTheme,
+                            lessons: []
+                        };
+                    }
+                    byTheme[themeKey].lessons.push(lesson);
+                }
+            });
+
+            // Sort themes
+            const sortedThemes = Object.values(byTheme).sort((a, b) => a.numTheme - b.numTheme);
+
+            card.innerHTML = `
+                <div class="discipline-header" onclick="toggleDiscipline(this)">
+                    <div class="discipline-header-left">
+                        <span class="discipline-icon">${icon}</span>
+                        <div class="discipline-info">
+                            <h3>${discipline}</h3>
+                            <span class="discipline-badge">${availableCount}/${totalCount} leçons disponibles</span>
+                        </div>
+                    </div>
+                    <span class="discipline-arrow">▼</span>
+                </div>
+                <div class="discipline-content">
+                    ${introLessons.map(lesson => createIntroHTML(lesson)).join('')}
+                    ${sortedThemes.map(theme => createThemeHTML(theme, discipline)).join('')}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // ===== CREATE INTRO HTML =====
+        function createIntroHTML(lesson) {
+            if (lesson.statut !== 'disponible' || !lesson.lien) {
+                return '';
+            }
+            return `
+                <div class="intro-course">
+                    <span class="intro-course-icon">📌</span>
+                    <div class="intro-course-content">
+                        <div class="intro-course-label">Cours introductif</div>
+                        <a href="${lesson.lien}" target="_blank">${lesson.titre}</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== CREATE THEME HTML =====
+        function createThemeHTML(theme, discipline) {
+            const themeId = `theme-${discipline.replace(/\s/g, '')}-${theme.numTheme}`;
+            const availableCount = theme.lessons.filter(l => l.statut === 'disponible').length;
+            const totalCount = theme.lessons.length;
+            const hasAvailable = availableCount > 0;
+
+            // Sort lessons by chapter
+            theme.lessons.sort((a, b) => {
+                const numA = parseInt(a.chapitre.replace(/\D/g, '')) || 0;
+                const numB = parseInt(b.chapitre.replace(/\D/g, '')) || 0;
+                return numA - numB;
+            });
+
+            return `
+                <div class="theme-card" id="${themeId}">
+                    <div class="theme-header" onclick="toggleTheme('${themeId}')">
+                        <div class="theme-info">
+                            <h4>Thème ${theme.numTheme} : ${theme.name}</h4>
+                            <span class="theme-badge ${hasAvailable ? 'has-available' : ''}">${availableCount}/${totalCount} chapitres</span>
+                        </div>
+                        <span class="theme-arrow">▶</span>
+                    </div>
+                    <div class="theme-content">
+                        ${theme.lessons.map(lesson => createChapterHTML(lesson)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== CREATE CHAPTER HTML =====
+        function createChapterHTML(lesson) {
+            const isAvailable = lesson.statut === 'disponible';
+            const icon = isAvailable ? '✅' : '🔒';
+            const statusClass = isAvailable ? 'available' : 'locked';
+            const statusText = isAvailable ? 'Disponible' : 'À venir';
+
+            const content = isAvailable && lesson.lien
+                ? `<a href="${lesson.lien}" target="_blank">${lesson.chapitre} : ${lesson.titre}</a>`
+                : `<span class="locked-text">${lesson.chapitre} : ${lesson.titre}</span>`;
+
+            return `
+                <div class="chapter-item ${statusClass}">
+                    <span class="chapter-icon">${icon}</span>
+                    <div class="chapter-content">
+                        ${content}
+                        <div class="chapter-status ${statusClass}">${statusText}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== TOGGLE FUNCTIONS =====
+        function toggleDiscipline(header) {
+            const card = header.closest('.discipline-card');
+            card.classList.toggle('open');
+        }
+
+        function toggleTheme(themeId) {
+            const card = document.getElementById(themeId);
+            card.classList.toggle('open');
+        }
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', loadLessons);
+    </script>
+
+</body>
+</html>
