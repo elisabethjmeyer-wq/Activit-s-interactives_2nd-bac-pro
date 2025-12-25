@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEX n°2 - Exercice 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            transition: all 0.3s;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .instructions strong {
+            color: #f59e0b;
+            font-size: 16px;
+        }
+
+        .instructions p {
+            color: #4b5563;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+            border: 3px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #e0f2fe;
+        }
+
+        .map-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Balises numérotées */
+        .marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s;
+            border: 3px solid white;
+        }
+
+        .marker:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.6);
+        }
+
+        .marker.correct {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .marker.incorrect {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Positionnement des balises - en pourcentage */
+        #marker-1 { top: 35%; left: 12%; }  /* Amérique */
+        #marker-2 { top: 22%; left: 50%; }  /* Europe */
+        #marker-3 { top: 50%; left: 49%; }  /* Afrique */
+        #marker-4 { top: 28%; left: 73%; }  /* Asie */
+        #marker-5 { top: 68%; left: 83%; }  /* Océanie */
+        #marker-6 { top: 92%; left: 50%; }  /* Antarctique */
+
+        /* Modal popup */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h2 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .modal-content .continent-number {
+            color: #3b82f6;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-validate {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+
+        .btn-validate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .btn-cancel:hover {
+            background: #d1d5db;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-solution {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+
+        .btn-solution:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+            color: white;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(107, 114, 128, 0.3);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #065f46;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            color: #047857;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .timer-box {
+                font-size: 20px;
+                padding: 12px 16px;
+            }
+
+            .marker {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+
+            button {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ BEX n°2 - Exercice 1</h1>
+            <p>Se repérer à l'échelle mondiale - Les 6 continents</p>
+        </div>
+
+        <div class="timer-box" id="timer">
+            ⏱️ Temps restant : 10:00
+        </div>
+
+        <div class="instructions">
+            <strong>📋 Consigne :</strong>
+            <p>Clique sur chaque numéro bleu pour identifier le continent correspondant.</p>
+        </div>
+
+        <div class="exercise-card">
+            <div class="map-container">
+                <!-- Image du planisphère simplifié en SVG -->
+                <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#e0f2fe;">
+                    <!-- Océans (fond) -->
+                    <rect width="1000" height="500" fill="#e0f2fe"/>
+                    
+                    <!-- Amérique du Nord -->
+                    <path d="M50,80 Q100,60 150,70 Q200,50 250,80 Q280,100 270,150 Q260,200 220,230 Q180,250 140,240 Q100,230 80,200 Q60,170 50,130 Q45,100 50,80" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+                    
+                    <!-- Amérique du Sud -->
+                    <path d="M180,260 Q220,250 240,280 Q260,320 250,380 Q230,430 200,450 Q160,460 140,430 Q120,380 130,330 Q140,280 180,260" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+                    
+                    <!-- Europe -->
+                    <path d="M420,70 Q480,50 530,70 Q560,90 550,130 Q530,160 490,170 Q450,175 420,160 Q400,140 410,110 Q415,80 420,70" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+                    
+                    <!-- Afrique -->
+                    <path d="M420,180 Q480,170 520,200 Q550,240 540,300 Q520,360 480,400 Q440,420 400,400 Q370,370 380,320 Q390,260 420,180" fill="#fdba74" stroke="#f97316" stroke-width="2"/>
+                    
+                    <!-- Asie -->
+                    <path d="M560,60 Q650,40 750,70 Q830,100 850,160 Q860,220 820,260 Q760,300 680,290 Q600,280 560,240 Q530,200 540,140 Q550,90 560,60" fill="#f9a8d4" stroke="#ec4899" stroke-width="2"/>
+                    
+                    <!-- Océanie -->
+                    <path d="M780,320 Q830,310 870,340 Q900,370 890,410 Q870,440 830,450 Q790,455 760,430 Q740,400 750,360 Q760,330 780,320" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="2"/>
+                    
+                    <!-- Antarctique -->
+                    <path d="M300,470 Q500,455 700,470 Q720,480 700,490 Q500,500 300,490 Q280,480 300,470" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+                </svg>
+                
+                <!-- Balises numérotées cliquables -->
+                <div id="marker-1" class="marker" onclick="askContinent(1, 'amerique', 'Amérique')">1</div>
+                <div id="marker-2" class="marker" onclick="askContinent(2, 'europe', 'Europe')">2</div>
+                <div id="marker-3" class="marker" onclick="askContinent(3, 'afrique', 'Afrique')">3</div>
+                <div id="marker-4" class="marker" onclick="askContinent(4, 'asie', 'Asie')">4</div>
+                <div id="marker-5" class="marker" onclick="askContinent(5, 'oceanie', 'Océanie')">5</div>
+                <div id="marker-6" class="marker" onclick="askContinent(6, 'antarctique', 'Antarctique')">6</div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-verify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
+                <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                <button class="btn-restart" onclick="restart()">🔄 Recommencer</button>
+            </div>
+
+            <div class="result" id="result">
+                <h3>📊 Résultat final</h3>
+                <p id="resultMessage"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour saisir le nom -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>🗺️ Quel est ce continent ?</h2>
+            <p class="continent-number">Continent n°<span id="continentNumber"></span></p>
+            <input type="text" id="continentInput" placeholder="Écris le nom du continent..." autocomplete="off">
+            <div class="modal-buttons">
+                <button class="btn-validate" onclick="validateAnswer()">✓ Valider</button>
+                <button class="btn-cancel" onclick="closeModal()">✕ Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentContinent = '';
+        let currentAnswer = '';
+        let currentNumber = 0;
+        let userAnswers = {};
+        let timeLeft = 600;
+        let timerInterval;
+
+        const correctAnswers = {
+            'amerique': ['amerique', 'amérique'],
+            'europe': ['europe'],
+            'afrique': ['afrique'],
+            'asie': ['asie'],
+            'oceanie': ['oceanie', 'océanie'],
+            'antarctique': ['antarctique']
+        };
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 120 && timeLeft > 0) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    verifyAnswers();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `⏱️ Temps restant : ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function askContinent(number, continentId, continentName) {
+            currentNumber = number;
+            currentContinent = continentId;
+            currentAnswer = continentName;
+            
+            document.getElementById('continentNumber').textContent = number;
+            
+            const previousAnswer = userAnswers[continentId] ? userAnswers[continentId].answer : '';
+            document.getElementById('continentInput').value = previousAnswer;
+            
+            document.getElementById('modal').classList.add('show');
+            document.getElementById('continentInput').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function normalizeString(str) {
+            return str.toLowerCase()
+                      .trim()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z]/g, '');
+        }
+
+        function validateAnswer() {
+            const userInput = document.getElementById('continentInput').value;
+            
+            if (userInput.trim() === '') {
+                closeModal();
+                return;
+            }
+            
+            const normalizedInput = normalizeString(userInput);
+            const correct = correctAnswers[currentContinent].map(a => normalizeString(a));
+            const isCorrect = correct.includes(normalizedInput);
+
+            userAnswers[currentContinent] = {
+                answer: userInput,
+                isCorrect: isCorrect,
+                number: currentNumber
+            };
+
+            const marker = document.getElementById('marker-' + currentNumber);
+            marker.style.background = 'linear-gradient(135deg, #8b5cf6, #a78bfa)';
+            
+            closeModal();
+        }
+
+        function verifyAnswers() {
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            
+            for (let continentId in userAnswers) {
+                const data = userAnswers[continentId];
+                const marker = document.getElementById('marker-' + data.number);
+                
+                if (data.isCorrect) {
+                    marker.style.background = '#d1fae5';
+                    marker.style.border = '3px solid #10b981';
+                    marker.style.color = '#065f46';
+                    correctCount++;
+                } else {
+                    marker.style.background = '#fee2e2';
+                    marker.style.border = '3px solid #ef4444';
+                    marker.style.color = '#991b1b';
+                }
+                
+                marker.textContent = data.answer;
+                marker.style.width = 'auto';
+                marker.style.minWidth = '100px';
+                marker.style.padding = '8px 12px';
+                marker.style.borderRadius = '12px';
+                marker.style.fontSize = '14px';
+                marker.style.fontWeight = '600';
+                marker.style.cursor = 'default';
+                marker.style.boxShadow = 'none';
+                marker.onclick = null;
+            }
+            
+            const totalAnswered = Object.keys(userAnswers).length;
+            const percentage = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
+            
+            let message = '';
+            if (totalAnswered === 0) {
+                message = '❌ Tu n\'as répondu à aucune question. Clique sur les numéros pour identifier les continents !';
+            } else if (percentage === 100 && totalAnswered === 6) {
+                message = `🎉 Parfait ! Tu as identifié les 6 continents correctement ! Score : ${correctCount}/6`;
+            } else if (percentage >= 75) {
+                message = `👍 Très bien ! Tu as trouvé ${correctCount}/${totalAnswered} continents correctement.`;
+            } else if (percentage >= 50) {
+                message = `💪 Pas mal ! Tu as trouvé ${correctCount}/${totalAnswered} continents. Continue à t'entraîner !`;
+            } else {
+                message = `📚 Tu as trouvé ${correctCount}/${totalAnswered} continents. Révise ta carte et recommence !`;
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('result').classList.add('show');
+        }
+
+        function showSolution() {
+            const continents = [
+                {id: 'amerique', num: 1, name: 'Amérique'},
+                {id: 'europe', num: 2, name: 'Europe'},
+                {id: 'afrique', num: 3, name: 'Afrique'},
+                {id: 'asie', num: 4, name: 'Asie'},
+                {id: 'oceanie', num: 5, name: 'Océanie'},
+                {id: 'antarctique', num: 6, name: 'Antarctique'}
+            ];
+            
+            continents.forEach(c => {
+                const marker = document.getElementById('marker-' + c.num);
+                
+                marker.style.background = '#d1fae5';
+                marker.style.border = '3px solid #10b981';
+                marker.style.color = '#065f46';
+                
+                marker.textContent = c.name;
+                marker.style.width = 'auto';
+                marker.style.minWidth = '100px';
+                marker.style.padding = '8px 12px';
+                marker.style.borderRadius = '12px';
+                marker.style.fontSize = '14px';
+                marker.style.fontWeight = '600';
+                marker.style.cursor = 'default';
+                marker.style.boxShadow = 'none';
+                marker.onclick = null;
+                
+                userAnswers[c.id] = {
+                    answer: c.name,
+                    isCorrect: true,
+                    number: c.num
+                };
+            });
+
+            clearInterval(timerInterval);
+            
+            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet. Étudie bien les emplacements !';
+            document.getElementById('result').classList.add('show');
+        }
+
+        function restart() {
+            userAnswers = {};
+            
+            const continentData = [
+                {num: 1, id: 'amerique', name: 'Amérique'},
+                {num: 2, id: 'europe', name: 'Europe'},
+                {num: 3, id: 'afrique', name: 'Afrique'},
+                {num: 4, id: 'asie', name: 'Asie'},
+                {num: 5, id: 'oceanie', name: 'Océanie'},
+                {num: 6, id: 'antarctique', name: 'Antarctique'}
+            ];
+            
+            for (let i = 1; i <= 6; i++) {
+                const marker = document.getElementById('marker-' + i);
+                marker.classList.remove('correct', 'incorrect');
+                marker.textContent = i;
+                marker.style.width = '40px';
+                marker.style.minWidth = '40px';
+                marker.style.height = '40px';
+                marker.style.padding = '0';
+                marker.style.borderRadius = '50%';
+                marker.style.fontSize = '20px';
+                marker.style.cursor = 'pointer';
+                marker.style.background = 'linear-gradient(135deg, #3b82f6, #60a5fa)';
+                marker.style.border = '3px solid white';
+                marker.style.color = 'white';
+                marker.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                
+                const continent = continentData.find(c => c.num === i);
+                marker.onclick = function() { askContinent(continent.num, continent.id, continent.name); };
+            }
+
+            document.getElementById('result').classList.remove('show');
+
+            clearInterval(timerInterval);
+            timeLeft = 600;
+            document.getElementById('timer').classList.remove('warning');
+            updateTimerDisplay();
+            startTimer();
+        }
+
+        document.getElementById('continentInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validateAnswer();
+            }
+        });
+
+        startTimer();
+    </script>
+</body>
+</html>
