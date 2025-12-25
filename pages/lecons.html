@@ -859,28 +859,42 @@
 
                     const discipline = row[0]?.v || '';
                     const theme = row[1]?.v || '';
-                    const numTheme = row[2]?.v || 0;
+                    const numTheme = row[2]?.v ?? 0;
                     const chapitre = row[3]?.v || '';
                     const titre = row[4]?.v || '';
                     const lien = row[5]?.v || '';
-                    const statut = (row[6]?.v || '').toLowerCase();
+                    const statut = String(row[6]?.v || '').toLowerCase();
 
                     // Skip header row
-                    if (discipline.toLowerCase().includes('discipline')) continue;
+                    if (String(discipline).toLowerCase().includes('discipline')) continue;
                     if (!discipline || !titre) continue;
 
+                    // Format chapitre - accepte numéro ou texte
+                    let chapitreText = String(chapitre);
+                    if (!isNaN(chapitre) && chapitre !== '') {
+                        chapitreText = `Chapitre ${chapitre}`;
+                    }
+
                     lessons.push({
-                        discipline,
-                        theme,
+                        discipline: String(discipline).trim(),
+                        theme: String(theme).trim(),
                         numTheme: parseInt(numTheme) || 0,
-                        chapitre,
-                        titre,
-                        lien,
+                        chapitre: chapitreText,
+                        chapitreNum: parseInt(String(chapitre).replace(/\D/g, '')) || 0,
+                        titre: String(titre).trim(),
+                        lien: String(lien).trim(),
                         statut: statut.includes('disponible') ? 'disponible' : 'à venir'
                     });
                 }
 
-                console.log(`✅ ${lessons.length} leçons chargées`);
+                console.log('📚 Leçons chargées:', lessons);
+                
+                if (lessons.length === 0) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
                 renderLessons(lessons);
 
             } catch (error) {
@@ -998,12 +1012,8 @@
             const totalCount = theme.lessons.length;
             const hasAvailable = availableCount > 0;
 
-            // Sort lessons by chapter
-            theme.lessons.sort((a, b) => {
-                const numA = parseInt(a.chapitre.replace(/\D/g, '')) || 0;
-                const numB = parseInt(b.chapitre.replace(/\D/g, '')) || 0;
-                return numA - numB;
-            });
+            // Sort lessons by chapter number
+            theme.lessons.sort((a, b) => a.chapitreNum - b.chapitreNum);
 
             return `
                 <div class="theme-card" id="${themeId}">
