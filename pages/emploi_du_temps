@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emploi du temps | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            color: var(--gray-500);
+            font-size: 15px;
+        }
+
+        /* ===== GROUP SELECTOR ===== */
+        .group-selector {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .group-selector label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .group-selector select {
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-800);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 200px;
+        }
+
+        .group-selector select:hover {
+            border-color: var(--primary-light);
+        }
+
+        .group-selector select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .group-badge {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-green-light);
+            color: var(--accent-green);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .group-badge.visible {
+            display: inline-flex;
+        }
+
+        /* ===== CALENDAR CARD ===== */
+        .calendar-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+
+        .calendar-header {
+            padding: 16px 20px;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calendar-header-icon {
+            font-size: 20px;
+        }
+
+        .calendar-header-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .calendar-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: var(--gray-50);
+        }
+
+        .calendar-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: none;
+        }
+
+        .calendar-container iframe.visible {
+            display: block;
+        }
+
+        .calendar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .calendar-placeholder.hidden {
+            display: none;
+        }
+
+        .calendar-placeholder-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+
+        .calendar-placeholder-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 8px;
+        }
+
+        .calendar-placeholder-text {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .calendar-footer {
+            padding: 14px 20px;
+            background: var(--accent-green-light);
+            border-top: 1px solid var(--accent-green);
+        }
+
+        .calendar-footer-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calendar-footer-text strong {
+            color: var(--accent-green);
+        }
+
+        /* ===== LEGEND ===== */
+        .legend-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .legend-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-color.blue { background: #3b82f6; }
+        .legend-color.orange { background: #f59e0b; }
+        .legend-color.green { background: #10b981; }
+        .legend-color.red { background: #ef4444; }
+
+        .legend-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+            .calendar-container {
+                height: 450px;
+            }
+            .group-selector {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .group-selector select {
+                width: 100%;
+            }
+            .legend-items {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner">
+            
+            <!-- Organisation -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>🧰</span> Organisation
+                </div>
+                <a href="emploi-du-temps.html" class="sidebar-item active">
+                    <span class="item-icon">📅</span>
+                    <span class="item-text">Emploi du temps</span>
+                </a>
+                <a href="classeur.html" class="sidebar-item">
+                    <span class="item-icon">📁</span>
+                    <span class="item-text">Classeur</span>
+                </a>
+                <a href="notes.html" class="sidebar-item">
+                    <span class="item-icon">📊</span>
+                    <span class="item-text">Notes</span>
+                </a>
+            </div>
+
+            <!-- Cours -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📚</span> Cours
+                </div>
+                <a href="lecons.html" class="sidebar-item">
+                    <span class="item-icon">📖</span>
+                    <span class="item-text">Leçons</span>
+                </a>
+                <a href="methodologie.html" class="sidebar-item">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-text">Méthodologie</span>
+                </a>
+            </div>
+
+            <!-- Entraînements -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💪</span> Entraînements
+                </div>
+                <a href="entrainement-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">
+                        Connaissances
+                        <span class="item-sub">Apprendre ses leçons</span>
+                    </span>
+                </a>
+                <a href="entrainement-bex.html" class="sidebar-item">
+                    <span class="item-icon">⭐</span>
+                    <span class="item-text">
+                        BEX (lundi)
+                        <span class="item-sub">Maîtriser les savoir-faire</span>
+                    </span>
+                </a>
+                <a href="entrainement-tc.html" class="sidebar-item">
+                    <span class="item-icon">📝</span>
+                    <span class="item-text">
+                        TC (vendredi)
+                        <span class="item-sub">Préparer l'évaluation</span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Évaluations -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>📝</span> Évaluations
+                </div>
+                <a href="evaluations-connaissances.html" class="sidebar-item">
+                    <span class="item-icon">✅</span>
+                    <span class="item-text">Éval. de connaissances</span>
+                </a>
+                <a href="bonus.html" class="sidebar-item">
+                    <span class="item-icon">🌟</span>
+                    <span class="item-text">Points supplémentaires</span>
+                </a>
+            </div>
+
+            <!-- Communication -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <span>💬</span> Communication
+                </div>
+                <a href="../FAQ.html" class="sidebar-item">
+                    <span class="item-icon">❓</span>
+                    <span class="item-text">Aide / FAQ</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <span class="item-icon">🗣️</span>
+                    <span class="item-text">Espace discussion</span>
+                </a>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            
+            <!-- BREADCRUMB -->
+            <nav class="breadcrumb">
+                <a href="../index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <span class="current">📅 Emploi du temps</span>
+            </nav>
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <h1>🗓️ Ton emploi du temps</h1>
+                <p>Retrouve toutes les dates importantes, les échéances et ton planning de travail synchronisé en temps réel.</p>
+            </div>
+
+            <!-- GROUP SELECTOR -->
+            <div class="group-selector">
+                <label for="groupSelect">
+                    👥 Sélectionne ton groupe :
+                </label>
+                <select id="groupSelect">
+                    <option value="">-- Choisis ton groupe --</option>
+                    <option value="8c8e7b1e63cb8cfd8d4b6dd315b274d71982d4ea988d1b7a7bf52e4f15f5bf41@group.calendar.google.com">2MHR1A</option>
+                    <option value="4f87ca4c50287902b768e02ae39946dfc4094f76fed8b22d2076b42447e2105b@group.calendar.google.com">2MHR1B</option>
+                </select>
+                <div class="group-badge" id="groupBadge">
+                    ✓ Groupe enregistré
+                </div>
+            </div>
+
+            <!-- CALENDAR CARD -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <span class="calendar-header-icon">📅</span>
+                    <span class="calendar-header-text">Calendrier synchronisé</span>
+                </div>
+                
+                <div class="calendar-container">
+                    <iframe id="calendarIframe" sandbox="allow-scripts allow-same-origin"></iframe>
+                    
+                    <div class="calendar-placeholder" id="calendarPlaceholder">
+                        <div>
+                            <div class="calendar-placeholder-icon">📅</div>
+                            <div class="calendar-placeholder-title">Sélectionne ton groupe ci-dessus</div>
+                            <div class="calendar-placeholder-text">Ton emploi du temps s'affichera automatiquement</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calendar-footer">
+                    <div class="calendar-footer-text">
+                        ✨ Ce calendrier est <strong>synchronisé en temps réel</strong>. Toutes les modifications apparaissent automatiquement !
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEGEND -->
+            <div class="legend-card">
+                <div class="legend-title">🎨 Légende</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color blue"></div>
+                        <span class="legend-label">Cours</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color orange"></div>
+                        <span class="legend-label">Évaluation du lundi</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color green"></div>
+                        <span class="legend-label">Autonomie</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color red"></div>
+                        <span class="legend-label">Tâche complexe</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ===== SIDEBAR TOGGLE =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+            
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== CALENDAR =====
+        const groupSelect = document.getElementById('groupSelect');
+        const calendarIframe = document.getElementById('calendarIframe');
+        const calendarPlaceholder = document.getElementById('calendarPlaceholder');
+        const groupBadge = document.getElementById('groupBadge');
+        const STORAGE_KEY = 'studentGroup';
+
+        function updateCalendar(calendarId) {
+            if (!calendarId) {
+                calendarIframe.src = '';
+                calendarIframe.classList.remove('visible');
+                calendarPlaceholder.classList.remove('hidden');
+                groupBadge.classList.remove('visible');
+                return;
+            }
+
+            const calendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calendarId)}&ctz=Europe%2FBerlin&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0&showTz=0&wkst=2`;
+
+            setTimeout(() => {
+                calendarIframe.src = calendarUrl;
+                calendarIframe.classList.add('visible');
+                calendarPlaceholder.classList.add('hidden');
+                groupBadge.classList.add('visible');
+            }, 150);
+        }
+
+        // Charger le groupe sauvegardé
+        const savedGroup = localStorage.getItem(STORAGE_KEY);
+        if (savedGroup) {
+            groupSelect.value = savedGroup;
+            updateCalendar(savedGroup);
+        }
+
+        // Écouter les changements
+        groupSelect.addEventListener('change', function() {
+            const selectedGroup = this.value;
+            
+            if (selectedGroup) {
+                localStorage.setItem(STORAGE_KEY, selectedGroup);
+                updateCalendar(selectedGroup);
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+                updateCalendar('');
+            }
+        });
+    </script>
+
+</body>
+</html>
