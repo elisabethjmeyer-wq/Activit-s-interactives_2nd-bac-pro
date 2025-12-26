@@ -3,429 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BEX n°2 - Exercice 1</title>
+    <title>BEX n°2 - Exercice 1 | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6366f1; --primary-light: #818cf8; --primary-dark: #4f46e5; --primary-bg: #eef2ff;
+            --accent-yellow: #f59e0b; --accent-green: #10b981; --accent-green-light: #d1fae5;
+            --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-400: #9ca3af;
+            --gray-500: #6b7280; --gray-600: #4b5563; --gray-800: #1f2937; --gray-900: #111827;
+            --sidebar-width: 260px; --header-height: 64px; --radius: 12px; --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .header { background: white; border-bottom: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); z-index: 100; }
+        .header-inner { height: 100%; padding: 0 20px; display: flex; align-items: center; gap: 16px; }
+        .menu-toggle { width: 42px; height: 42px; background: var(--gray-100); border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gray-600); transition: all 0.2s; }
+        .menu-toggle:hover { background: var(--primary-bg); color: var(--primary); }
+        .menu-toggle.active { background: var(--primary); color: white; }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; color: var(--gray-900); text-decoration: none; }
+        .logo-icon { width: 38px; height: 38px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
 
-        .header {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
+        .sidebar { position: fixed; top: var(--header-height); left: 0; width: var(--sidebar-width); height: calc(100vh - var(--header-height)); background: white; border-right: 1px solid var(--gray-200); padding: 20px 12px; overflow-y: auto; z-index: 90; transition: transform 0.3s ease; }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: var(--gray-600); text-decoration: none; font-weight: 500; transition: all 0.2s; }
+        .nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
+        .nav-item.active { background: var(--primary-bg); color: var(--primary); }
+        .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+        .nav-section-title { font-size: 11px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; padding: 20px 16px 8px; }
 
-        .header h1 {
-            font-size: 28px;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
+        .overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 80; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; }
+        .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
 
-        .header p {
-            color: #6b7280;
-            font-size: 16px;
-        }
+        .main-content { margin-top: var(--header-height); padding: 24px; min-height: calc(100vh - var(--header-height)); }
+        .page-container { max-width: 1000px; margin: 0 auto; }
 
-        .timer-box {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            color: white;
-            border-radius: 12px;
-            padding: 16px 24px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-            transition: all 0.3s;
-        }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 14px; flex-wrap: wrap; }
+        .breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
+        .breadcrumb a:hover { color: white; }
+        .breadcrumb span { color: rgba(255,255,255,0.5); }
+        .breadcrumb .current { color: white; font-weight: 500; }
 
-        .timer-box.warning {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            animation: pulse 1s infinite;
-        }
+        .exercise-header { background: white; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-lg); }
+        .exercise-header h1 { font-size: 24px; color: var(--gray-800); margin-bottom: 4px; }
+        .exercise-header p { color: var(--gray-500); }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
+        .timer-box { background: linear-gradient(135deg, var(--accent-yellow), #fbbf24); color: white; border-radius: var(--radius); padding: 16px; margin-bottom: 20px; text-align: center; font-size: 22px; font-weight: bold; }
+        .timer-box.warning { background: linear-gradient(135deg, #ef4444, #dc2626); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-        .instructions {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-left: 4px solid #f59e0b;
-        }
+        .instructions { background: white; border-radius: var(--radius); padding: 20px; margin-bottom: 20px; border-left: 4px solid var(--accent-yellow); }
+        .instructions strong { color: var(--accent-yellow); }
+        .instructions p { color: var(--gray-600); margin-top: 8px; }
 
-        .instructions strong {
-            color: #f59e0b;
-            font-size: 16px;
-        }
+        .exercise-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-lg); }
 
-        .instructions p {
-            color: #4b5563;
-            margin-top: 8px;
-            line-height: 1.6;
-        }
+        .map-container { position: relative; width: 100%; margin-bottom: 24px; border: 3px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; }
+        .map-container svg { width: 100%; height: auto; display: block; }
 
-        .exercise-card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
-        }
+        .marker { position: absolute; width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); transition: all 0.3s; border: 3px solid white; }
+        .marker:hover { transform: scale(1.15); }
 
-        .map-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 30px;
-            border: 3px solid #e5e7eb;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #e0f2fe;
-        }
+        #marker-1 { top: 35%; left: 12%; }
+        #marker-2 { top: 22%; left: 50%; }
+        #marker-3 { top: 50%; left: 49%; }
+        #marker-4 { top: 28%; left: 73%; }
+        #marker-5 { top: 68%; left: 83%; }
+        #marker-6 { top: 92%; left: 50%; }
 
-        .map-container img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); }
+        .modal.show { display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: white; border-radius: 20px; padding: 40px; max-width: 500px; width: 90%; }
+        .modal-content h2 { color: var(--gray-800); margin-bottom: 10px; }
+        .modal-content input { width: 100%; padding: 16px; border: 2px solid var(--gray-200); border-radius: 12px; font-size: 18px; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 12px; }
+        .modal-buttons button { flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .btn-validate { background: linear-gradient(135deg, var(--accent-green), #34d399); color: white; }
+        .btn-cancel { background: var(--gray-200); color: var(--gray-800); }
 
-        /* Balises numérotées */
-        .marker {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-            transition: all 0.3s;
-            border: 3px solid white;
-        }
+        .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+        button { flex: 1; min-width: 150px; padding: 14px; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-verify { background: linear-gradient(135deg, var(--accent-green), #34d399); color: white; }
+        .btn-solution { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+        .btn-restart { background: linear-gradient(135deg, var(--gray-500), var(--gray-400)); color: white; }
 
-        .marker:hover {
-            transform: scale(1.15);
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.6);
-        }
-
-        .marker.correct {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        }
-
-        .marker.incorrect {
-            background: linear-gradient(135deg, #ef4444, #f87171);
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        /* Positionnement des balises - en pourcentage */
-        #marker-1 { top: 35%; left: 12%; }  /* Amérique */
-        #marker-2 { top: 22%; left: 50%; }  /* Europe */
-        #marker-3 { top: 50%; left: 49%; }  /* Afrique */
-        #marker-4 { top: 28%; left: 73%; }  /* Asie */
-        #marker-5 { top: 68%; left: 83%; }  /* Océanie */
-        #marker-6 { top: 92%; left: 50%; }  /* Antarctique */
-
-        /* Modal popup */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal.show {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-content h2 {
-            color: #1f2937;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-
-        .modal-content .continent-number {
-            color: #3b82f6;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 18px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .modal-content input:focus {
-            outline: none;
-            border-color: #10b981;
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-validate {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white;
-        }
-
-        .btn-validate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-cancel {
-            background: #e5e7eb;
-            color: #1f2937;
-        }
-
-        .btn-cancel:hover {
-            background: #d1d5db;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            flex: 1;
-            min-width: 150px;
-            padding: 14px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .btn-verify {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white;
-        }
-
-        .btn-verify:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-solution {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            color: white;
-        }
-
-        .btn-solution:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-restart {
-            background: linear-gradient(135deg, #6b7280, #9ca3af);
-            color: white;
-        }
-
-        .btn-restart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(107, 114, 128, 0.3);
-        }
-
-        .result {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-        }
-
-        .result h3 {
-            color: #065f46;
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .result p {
-            color: #047857;
-            font-size: 16px;
-        }
+        .result { background: var(--accent-green-light); border: 2px solid var(--accent-green); border-radius: var(--radius); padding: 20px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .result h3 { color: #065f46; margin-bottom: 8px; }
+        .result p { color: #047857; }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .timer-box {
-                font-size: 20px;
-                padding: 12px 16px;
-            }
-
-            .marker {
-                width: 35px;
-                height: 35px;
-                font-size: 18px;
-            }
-
-            button {
-                min-width: 100%;
-            }
+            .marker { width: 35px; height: 35px; font-size: 16px; }
+            button { min-width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🗺️ BEX n°2 - Exercice 1</h1>
-            <p>Se repérer à l'échelle mondiale - Les 6 continents</p>
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <a href="../index.html" class="logo"><div class="logo-icon">📚</div><span>Espace cours</span></a>
         </div>
+    </header>
 
-        <div class="timer-box" id="timer">
-            ⏱️ Temps restant : 10:00
-        </div>
+    <aside class="sidebar collapsed" id="sidebar">
+        <nav class="sidebar-nav">
+            <a href="../index.html" class="nav-item"><span class="nav-icon">🏠</span>Tableau de bord</a>
+            <div class="nav-section-title">Ressources</div>
+            <a href="../lecons.html" class="nav-item"><span class="nav-icon">📖</span>Leçons</a>
+            <a href="../classeur.html" class="nav-item"><span class="nav-icon">📁</span>Classeur numérique</a>
+            <a href="../videos_hebdomadaires_archives.html" class="nav-item"><span class="nav-icon">🎬</span>Archives vidéos</a>
+            <div class="nav-section-title">Entraînement</div>
+            <a href="../entrainement-bex.html" class="nav-item active"><span class="nav-icon">⭐</span>Entraînement BEX</a>
+            <div class="nav-section-title">Outils</div>
+            <a href="../FAQ.html" class="nav-item"><span class="nav-icon">❓</span>FAQ</a>
+            <a href="../emploi-du-temps.html" class="nav-item"><span class="nav-icon">📅</span>Emploi du temps</a>
+        </nav>
+    </aside>
 
-        <div class="instructions">
-            <strong>📋 Consigne :</strong>
-            <p>Clique sur chaque numéro bleu pour identifier le continent correspondant.</p>
-        </div>
+    <div class="overlay" id="overlay"></div>
 
-        <div class="exercise-card">
-            <div class="map-container">
-                <!-- Image du planisphère simplifié en SVG -->
-                <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#e0f2fe;">
-                    <!-- Océans (fond) -->
-                    <rect width="1000" height="500" fill="#e0f2fe"/>
-                    
-                    <!-- Amérique du Nord -->
-                    <path d="M50,80 Q100,60 150,70 Q200,50 250,80 Q280,100 270,150 Q260,200 220,230 Q180,250 140,240 Q100,230 80,200 Q60,170 50,130 Q45,100 50,80" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
-                    
-                    <!-- Amérique du Sud -->
-                    <path d="M180,260 Q220,250 240,280 Q260,320 250,380 Q230,430 200,450 Q160,460 140,430 Q120,380 130,330 Q140,280 180,260" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
-                    
-                    <!-- Europe -->
-                    <path d="M420,70 Q480,50 530,70 Q560,90 550,130 Q530,160 490,170 Q450,175 420,160 Q400,140 410,110 Q415,80 420,70" fill="#fde047" stroke="#eab308" stroke-width="2"/>
-                    
-                    <!-- Afrique -->
-                    <path d="M420,180 Q480,170 520,200 Q550,240 540,300 Q520,360 480,400 Q440,420 400,400 Q370,370 380,320 Q390,260 420,180" fill="#fdba74" stroke="#f97316" stroke-width="2"/>
-                    
-                    <!-- Asie -->
-                    <path d="M560,60 Q650,40 750,70 Q830,100 850,160 Q860,220 820,260 Q760,300 680,290 Q600,280 560,240 Q530,200 540,140 Q550,90 560,60" fill="#f9a8d4" stroke="#ec4899" stroke-width="2"/>
-                    
-                    <!-- Océanie -->
-                    <path d="M780,320 Q830,310 870,340 Q900,370 890,410 Q870,440 830,450 Q790,455 760,430 Q740,400 750,360 Q760,330 780,320" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="2"/>
-                    
-                    <!-- Antarctique -->
-                    <path d="M300,470 Q500,455 700,470 Q720,480 700,490 Q500,500 300,490 Q280,480 300,470" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
-                </svg>
-                
-                <!-- Balises numérotées cliquables -->
-                <div id="marker-1" class="marker" onclick="askContinent(1, 'amerique', 'Amérique')">1</div>
-                <div id="marker-2" class="marker" onclick="askContinent(2, 'europe', 'Europe')">2</div>
-                <div id="marker-3" class="marker" onclick="askContinent(3, 'afrique', 'Afrique')">3</div>
-                <div id="marker-4" class="marker" onclick="askContinent(4, 'asie', 'Asie')">4</div>
-                <div id="marker-5" class="marker" onclick="askContinent(5, 'oceanie', 'Océanie')">5</div>
-                <div id="marker-6" class="marker" onclick="askContinent(6, 'antarctique', 'Antarctique')">6</div>
+    <main class="main-content">
+        <div class="page-container">
+            <nav class="breadcrumb">
+                <a href="../index.html">🏠 Accueil</a><span>›</span>
+                <a href="../entrainement-bex.html">Entraînement BEX</a><span>›</span>
+                <span class="current">BEX n°2 - Exercice 1</span>
+            </nav>
+
+            <div class="exercise-header">
+                <h1>🗺️ BEX n°2 - Exercice 1</h1>
+                <p>Se repérer à l'échelle mondiale - Les 6 continents</p>
             </div>
 
-            <div class="buttons">
-                <button class="btn-verify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
-                <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
-                <button class="btn-restart" onclick="restart()">🔄 Recommencer</button>
+            <div class="timer-box" id="timer">⏱️ Temps restant : 10:00</div>
+
+            <div class="instructions">
+                <strong>📋 Consigne :</strong>
+                <p>Clique sur chaque numéro bleu pour identifier le continent correspondant.</p>
             </div>
 
-            <div class="result" id="result">
-                <h3>📊 Résultat final</h3>
-                <p id="resultMessage"></p>
+            <div class="exercise-card">
+                <div class="map-container">
+                    <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="1000" height="500" fill="#e0f2fe"/>
+                        <path d="M50,80 Q100,60 150,70 Q200,50 250,80 Q280,100 270,150 Q260,200 220,230 Q180,250 140,240 Q100,230 80,200 Q60,170 50,130 Q45,100 50,80" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+                        <path d="M180,260 Q220,250 240,280 Q260,320 250,380 Q230,430 200,450 Q160,460 140,430 Q120,380 130,330 Q140,280 180,260" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+                        <path d="M420,70 Q480,50 530,70 Q560,90 550,130 Q530,160 490,170 Q450,175 420,160 Q400,140 410,110 Q415,80 420,70" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+                        <path d="M420,180 Q480,170 520,200 Q550,240 540,300 Q520,360 480,400 Q440,420 400,400 Q370,370 380,320 Q390,260 420,180" fill="#fdba74" stroke="#f97316" stroke-width="2"/>
+                        <path d="M560,60 Q650,40 750,70 Q830,100 850,160 Q860,220 820,260 Q760,300 680,290 Q600,280 560,240 Q530,200 540,140 Q550,90 560,60" fill="#f9a8d4" stroke="#ec4899" stroke-width="2"/>
+                        <path d="M780,320 Q830,310 870,340 Q900,370 890,410 Q870,440 830,450 Q790,455 760,430 Q740,400 750,360 Q760,330 780,320" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="2"/>
+                        <path d="M300,470 Q500,455 700,470 Q720,480 700,490 Q500,500 300,490 Q280,480 300,470" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+                    </svg>
+                    <div id="marker-1" class="marker" onclick="askContinent(1, 'amerique', 'Amérique')">1</div>
+                    <div id="marker-2" class="marker" onclick="askContinent(2, 'europe', 'Europe')">2</div>
+                    <div id="marker-3" class="marker" onclick="askContinent(3, 'afrique', 'Afrique')">3</div>
+                    <div id="marker-4" class="marker" onclick="askContinent(4, 'asie', 'Asie')">4</div>
+                    <div id="marker-5" class="marker" onclick="askContinent(5, 'oceanie', 'Océanie')">5</div>
+                    <div id="marker-6" class="marker" onclick="askContinent(6, 'antarctique', 'Antarctique')">6</div>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn-verify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
+                    <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                    <button class="btn-restart" onclick="restart()">🔄 Recommencer</button>
+                </div>
+
+                <div class="result" id="result">
+                    <h3>📊 Résultat</h3>
+                    <p id="resultMessage"></p>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Modal pour saisir le nom -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <h2>🗺️ Quel est ce continent ?</h2>
-            <p class="continent-number">Continent n°<span id="continentNumber"></span></p>
+            <p>Continent n°<span id="continentNumber"></span></p>
             <input type="text" id="continentInput" placeholder="Écris le nom du continent..." autocomplete="off">
             <div class="modal-buttons">
                 <button class="btn-validate" onclick="validateAnswer()">✓ Valider</button>
@@ -435,235 +194,105 @@
     </div>
 
     <script>
-        let currentContinent = '';
-        let currentAnswer = '';
-        let currentNumber = 0;
-        let userAnswers = {};
-        let timeLeft = 600;
-        let timerInterval;
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
 
-        const correctAnswers = {
-            'amerique': ['amerique', 'amérique'],
-            'europe': ['europe'],
-            'afrique': ['afrique'],
-            'asie': ['asie'],
-            'oceanie': ['oceanie', 'océanie'],
-            'antarctique': ['antarctique']
-        };
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            if (isCollapsed) { sidebar.classList.remove('collapsed'); menuToggle.classList.add('active'); overlay.classList.add('visible'); }
+            else { sidebar.classList.add('collapsed'); menuToggle.classList.remove('active'); overlay.classList.remove('visible'); }
+        }
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        let currentContinent = '', currentNumber = 0, userAnswers = {}, timeLeft = 600, timerInterval;
+        const correctAnswers = { 'amerique': ['amerique', 'amérique'], 'europe': ['europe'], 'afrique': ['afrique'], 'asie': ['asie'], 'oceanie': ['oceanie', 'océanie'], 'antarctique': ['antarctique'] };
 
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
-                updateTimerDisplay();
-
-                if (timeLeft <= 120 && timeLeft > 0) {
-                    document.getElementById('timer').classList.add('warning');
-                }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    verifyAnswers();
-                }
+                const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+                document.getElementById('timer').textContent = `⏱️ Temps restant : ${m}:${s.toString().padStart(2, '0')}`;
+                if (timeLeft <= 120) document.getElementById('timer').classList.add('warning');
+                if (timeLeft <= 0) { clearInterval(timerInterval); verifyAnswers(); }
             }, 1000);
         }
 
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `⏱️ Temps restant : ${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function askContinent(number, continentId, continentName) {
-            currentNumber = number;
-            currentContinent = continentId;
-            currentAnswer = continentName;
-            
-            document.getElementById('continentNumber').textContent = number;
-            
-            const previousAnswer = userAnswers[continentId] ? userAnswers[continentId].answer : '';
-            document.getElementById('continentInput').value = previousAnswer;
-            
+        function askContinent(num, id, name) {
+            currentNumber = num; currentContinent = id;
+            document.getElementById('continentNumber').textContent = num;
+            document.getElementById('continentInput').value = userAnswers[id]?.answer || '';
             document.getElementById('modal').classList.add('show');
             document.getElementById('continentInput').focus();
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('show');
-        }
+        function closeModal() { document.getElementById('modal').classList.remove('show'); }
 
-        function normalizeString(str) {
-            return str.toLowerCase()
-                      .trim()
-                      .normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                      .replace(/[^a-z]/g, '');
-        }
+        function normalizeString(str) { return str.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, ''); }
 
         function validateAnswer() {
-            const userInput = document.getElementById('continentInput').value;
-            
-            if (userInput.trim() === '') {
-                closeModal();
-                return;
-            }
-            
-            const normalizedInput = normalizeString(userInput);
+            const input = document.getElementById('continentInput').value;
+            if (!input.trim()) { closeModal(); return; }
+            const normalized = normalizeString(input);
             const correct = correctAnswers[currentContinent].map(a => normalizeString(a));
-            const isCorrect = correct.includes(normalizedInput);
-
-            userAnswers[currentContinent] = {
-                answer: userInput,
-                isCorrect: isCorrect,
-                number: currentNumber
-            };
-
-            const marker = document.getElementById('marker-' + currentNumber);
-            marker.style.background = 'linear-gradient(135deg, #8b5cf6, #a78bfa)';
-            
+            userAnswers[currentContinent] = { answer: input, isCorrect: correct.includes(normalized), number: currentNumber };
+            document.getElementById('marker-' + currentNumber).style.background = 'linear-gradient(135deg, #8b5cf6, #a78bfa)';
             closeModal();
         }
 
         function verifyAnswers() {
             clearInterval(timerInterval);
-            
             let correctCount = 0;
-            
-            for (let continentId in userAnswers) {
-                const data = userAnswers[continentId];
+            for (let id in userAnswers) {
+                const data = userAnswers[id];
                 const marker = document.getElementById('marker-' + data.number);
-                
-                if (data.isCorrect) {
-                    marker.style.background = '#d1fae5';
-                    marker.style.border = '3px solid #10b981';
-                    marker.style.color = '#065f46';
-                    correctCount++;
-                } else {
-                    marker.style.background = '#fee2e2';
-                    marker.style.border = '3px solid #ef4444';
-                    marker.style.color = '#991b1b';
-                }
-                
+                marker.style.background = data.isCorrect ? '#d1fae5' : '#fee2e2';
+                marker.style.border = data.isCorrect ? '3px solid #10b981' : '3px solid #ef4444';
+                marker.style.color = data.isCorrect ? '#065f46' : '#991b1b';
                 marker.textContent = data.answer;
-                marker.style.width = 'auto';
-                marker.style.minWidth = '100px';
-                marker.style.padding = '8px 12px';
-                marker.style.borderRadius = '12px';
-                marker.style.fontSize = '14px';
-                marker.style.fontWeight = '600';
-                marker.style.cursor = 'default';
-                marker.style.boxShadow = 'none';
-                marker.onclick = null;
+                marker.style.width = 'auto'; marker.style.minWidth = '80px'; marker.style.padding = '8px 12px';
+                marker.style.borderRadius = '12px'; marker.style.fontSize = '13px'; marker.onclick = null;
+                if (data.isCorrect) correctCount++;
             }
-            
-            const totalAnswered = Object.keys(userAnswers).length;
-            const percentage = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
-            
-            let message = '';
-            if (totalAnswered === 0) {
-                message = '❌ Tu n\'as répondu à aucune question. Clique sur les numéros pour identifier les continents !';
-            } else if (percentage === 100 && totalAnswered === 6) {
-                message = `🎉 Parfait ! Tu as identifié les 6 continents correctement ! Score : ${correctCount}/6`;
-            } else if (percentage >= 75) {
-                message = `👍 Très bien ! Tu as trouvé ${correctCount}/${totalAnswered} continents correctement.`;
-            } else if (percentage >= 50) {
-                message = `💪 Pas mal ! Tu as trouvé ${correctCount}/${totalAnswered} continents. Continue à t'entraîner !`;
-            } else {
-                message = `📚 Tu as trouvé ${correctCount}/${totalAnswered} continents. Révise ta carte et recommence !`;
-            }
-            
-            document.getElementById('resultMessage').textContent = message;
+            const total = Object.keys(userAnswers).length;
+            let msg = total === 0 ? '❌ Clique sur les numéros pour identifier les continents !' :
+                      correctCount === 6 ? `🎉 Parfait ! 6/6 continents identifiés !` :
+                      `Tu as trouvé ${correctCount}/${total} continents.`;
+            document.getElementById('resultMessage').textContent = msg;
             document.getElementById('result').classList.add('show');
         }
 
         function showSolution() {
-            const continents = [
-                {id: 'amerique', num: 1, name: 'Amérique'},
-                {id: 'europe', num: 2, name: 'Europe'},
-                {id: 'afrique', num: 3, name: 'Afrique'},
-                {id: 'asie', num: 4, name: 'Asie'},
-                {id: 'oceanie', num: 5, name: 'Océanie'},
-                {id: 'antarctique', num: 6, name: 'Antarctique'}
-            ];
-            
+            const continents = [{id:'amerique',num:1,name:'Amérique'},{id:'europe',num:2,name:'Europe'},{id:'afrique',num:3,name:'Afrique'},{id:'asie',num:4,name:'Asie'},{id:'oceanie',num:5,name:'Océanie'},{id:'antarctique',num:6,name:'Antarctique'}];
             continents.forEach(c => {
                 const marker = document.getElementById('marker-' + c.num);
-                
-                marker.style.background = '#d1fae5';
-                marker.style.border = '3px solid #10b981';
-                marker.style.color = '#065f46';
-                
-                marker.textContent = c.name;
-                marker.style.width = 'auto';
-                marker.style.minWidth = '100px';
-                marker.style.padding = '8px 12px';
-                marker.style.borderRadius = '12px';
-                marker.style.fontSize = '14px';
-                marker.style.fontWeight = '600';
-                marker.style.cursor = 'default';
-                marker.style.boxShadow = 'none';
-                marker.onclick = null;
-                
-                userAnswers[c.id] = {
-                    answer: c.name,
-                    isCorrect: true,
-                    number: c.num
-                };
+                marker.style.background = '#d1fae5'; marker.style.border = '3px solid #10b981'; marker.style.color = '#065f46';
+                marker.textContent = c.name; marker.style.width = 'auto'; marker.style.minWidth = '80px';
+                marker.style.padding = '8px 12px'; marker.style.borderRadius = '12px'; marker.style.fontSize = '13px'; marker.onclick = null;
+                userAnswers[c.id] = { answer: c.name, isCorrect: true, number: c.num };
             });
-
             clearInterval(timerInterval);
-            
-            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet. Étudie bien les emplacements !';
+            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé !';
             document.getElementById('result').classList.add('show');
         }
 
         function restart() {
             userAnswers = {};
-            
-            const continentData = [
-                {num: 1, id: 'amerique', name: 'Amérique'},
-                {num: 2, id: 'europe', name: 'Europe'},
-                {num: 3, id: 'afrique', name: 'Afrique'},
-                {num: 4, id: 'asie', name: 'Asie'},
-                {num: 5, id: 'oceanie', name: 'Océanie'},
-                {num: 6, id: 'antarctique', name: 'Antarctique'}
-            ];
-            
-            for (let i = 1; i <= 6; i++) {
-                const marker = document.getElementById('marker-' + i);
-                marker.classList.remove('correct', 'incorrect');
-                marker.textContent = i;
-                marker.style.width = '40px';
-                marker.style.minWidth = '40px';
-                marker.style.height = '40px';
-                marker.style.padding = '0';
-                marker.style.borderRadius = '50%';
-                marker.style.fontSize = '20px';
-                marker.style.cursor = 'pointer';
-                marker.style.background = 'linear-gradient(135deg, #3b82f6, #60a5fa)';
-                marker.style.border = '3px solid white';
-                marker.style.color = 'white';
-                marker.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-                
-                const continent = continentData.find(c => c.num === i);
-                marker.onclick = function() { askContinent(continent.num, continent.id, continent.name); };
-            }
-
+            [{num:1,id:'amerique',name:'Amérique'},{num:2,id:'europe',name:'Europe'},{num:3,id:'afrique',name:'Afrique'},{num:4,id:'asie',name:'Asie'},{num:5,id:'oceanie',name:'Océanie'},{num:6,id:'antarctique',name:'Antarctique'}].forEach(c => {
+                const marker = document.getElementById('marker-' + c.num);
+                marker.textContent = c.num; marker.style = '';
+                marker.className = 'marker';
+                marker.onclick = () => askContinent(c.num, c.id, c.name);
+            });
             document.getElementById('result').classList.remove('show');
-
-            clearInterval(timerInterval);
-            timeLeft = 600;
+            clearInterval(timerInterval); timeLeft = 600;
             document.getElementById('timer').classList.remove('warning');
-            updateTimerDisplay();
+            document.getElementById('timer').textContent = '⏱️ Temps restant : 10:00';
             startTimer();
         }
 
-        document.getElementById('continentInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                validateAnswer();
-            }
-        });
-
+        document.getElementById('continentInput').addEventListener('keypress', e => { if (e.key === 'Enter') validateAnswer(); });
         startTimer();
     </script>
 </body>
