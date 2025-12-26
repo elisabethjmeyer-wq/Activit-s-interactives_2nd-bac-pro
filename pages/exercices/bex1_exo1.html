@@ -12,7 +12,7 @@
             --accent-yellow: #f59e0b; --accent-green: #10b981; --accent-green-light: #d1fae5;
             --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-400: #9ca3af;
             --gray-500: #6b7280; --gray-600: #4b5563; --gray-800: #1f2937; --gray-900: #111827;
-            --sidebar-width: 260px; --header-height: 64px;
+            --sidebar-width: 280px; --header-height: 64px;
             --radius: 12px; --radius-lg: 16px;
             --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
@@ -46,22 +46,27 @@
         .sidebar {
             position: fixed; top: var(--header-height); left: 0; width: var(--sidebar-width);
             height: calc(100vh - var(--header-height)); background: white;
-            border-right: 1px solid var(--gray-200); padding: 20px 12px;
+            border-right: 1px solid var(--gray-200); padding: 16px 12px;
             overflow-y: auto; z-index: 90; transform: translateX(-100%); transition: transform 0.3s ease;
         }
         .sidebar.open { transform: translateX(0); }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
         .nav-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
             border-radius: 10px; color: var(--gray-600); text-decoration: none; font-weight: 500;
+            font-size: 14px; transition: all 0.2s;
         }
         .nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
         .nav-item.active { background: var(--primary-bg); color: var(--primary); }
+        .nav-item.disabled { opacity: 0.5; cursor: not-allowed; }
+        .nav-item.disabled:hover { background: transparent; color: var(--gray-600); }
         .nav-icon { font-size: 18px; width: 24px; text-align: center; }
         .nav-section-title {
             font-size: 11px; font-weight: 600; color: var(--gray-400);
-            text-transform: uppercase; letter-spacing: 0.5px; padding: 20px 16px 8px;
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 16px 14px 6px;
+            display: flex; align-items: center; gap: 6px;
         }
+        .nav-subtitle { font-size: 11px; color: var(--gray-400); margin-left: 36px; margin-top: -4px; }
         .overlay {
             position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.3); z-index: 80; opacity: 0; visibility: hidden;
@@ -156,20 +161,41 @@
 
     <aside class="sidebar" id="sidebar">
         <nav class="sidebar-nav">
-            <a href="../../index.html" class="nav-item"><span class="nav-icon">🏠</span>Tableau de bord</a>
-            
+            <!-- ORGANISATION -->
             <div class="nav-section-title">📁 Organisation</div>
             <a href="../emploi-du-temps.html" class="nav-item"><span class="nav-icon">📅</span>Emploi du temps</a>
             <a href="../classeur.html" class="nav-item"><span class="nav-icon">📁</span>Classeur</a>
+            <a href="#" class="nav-item disabled"><span class="nav-icon">📊</span>Notes</a>
             
+            <!-- COURS -->
             <div class="nav-section-title">📚 Cours</div>
             <a href="../lecons.html" class="nav-item"><span class="nav-icon">📖</span>Leçons</a>
+            <a href="#" class="nav-item disabled"><span class="nav-icon">🎯</span>Méthodologie</a>
             
+            <!-- ENTRAÎNEMENTS -->
             <div class="nav-section-title">💪 Entraînements</div>
-            <a href="../entrainement-bex.html" class="nav-item active"><span class="nav-icon">⭐</span>BEX (lundi)</a>
+            <a href="#" class="nav-item disabled">
+                <span class="nav-icon">✅</span>Connaissances
+            </a>
+            <div class="nav-subtitle">Apprendre ses leçons</div>
+            <a href="../entrainement-bex.html" class="nav-item active">
+                <span class="nav-icon">⭐</span>BEX (lundi)
+            </a>
+            <div class="nav-subtitle">Maîtriser les savoir-faire</div>
+            <a href="#" class="nav-item disabled">
+                <span class="nav-icon">📝</span>TC (vendredi)
+            </a>
+            <div class="nav-subtitle">Préparer l'évaluation</div>
             
+            <!-- ÉVALUATIONS -->
+            <div class="nav-section-title">📊 Évaluations</div>
+            <a href="#" class="nav-item disabled"><span class="nav-icon">✅</span>Éval. de connaissances</a>
+            <a href="#" class="nav-item disabled"><span class="nav-icon">🌟</span>Points supplémentaires</a>
+            
+            <!-- COMMUNICATION -->
             <div class="nav-section-title">💬 Communication</div>
             <a href="../../FAQ.html" class="nav-item"><span class="nav-icon">❓</span>Aide / FAQ</a>
+            <a href="#" class="nav-item disabled"><span class="nav-icon">💬</span>Espace discussion</a>
         </nav>
     </aside>
 
@@ -265,6 +291,11 @@
             sidebar.classList.remove('open');
             menuToggle.classList.remove('active');
             overlay.classList.remove('visible');
+        });
+
+        // Empêcher clic sur liens désactivés
+        document.querySelectorAll('.nav-item.disabled').forEach(item => {
+            item.addEventListener('click', (e) => e.preventDefault());
         });
 
         const answers = {
