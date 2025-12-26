@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronologie | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-orange: #f59e0b;
+            --accent-orange-light: #fef3c7;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* Header */
+        .exercise-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-lg);
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .exercise-header.mode-dates {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+        }
+
+        .exercise-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-title p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .timer-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 18px;
+            border-radius: var(--radius);
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-badge.warning {
+            background: var(--accent-red);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error-state {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .error-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Exercise Card */
+        .exercise-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Hint box */
+        .hint-box {
+            background: var(--accent-orange-light);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .hint-box .icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .hint-box .text {
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .hint-box .text strong {
+            color: var(--gray-800);
+        }
+
+        /* Frise Container */
+        .frise-container {
+            position: relative;
+            padding: 60px 20px 40px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .frise-line {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary), var(--primary-light));
+            border-radius: 3px;
+            transform: translateY(-50%);
+        }
+
+        .frise-line.mode-dates {
+            background: linear-gradient(90deg, #34d399, #10b981, #34d399);
+        }
+
+        .frise-points {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            min-width: 100%;
+            gap: 10px;
+        }
+
+        .frise-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        /* Date affichée */
+        .frise-date {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: var(--shadow-md);
+            white-space: nowrap;
+        }
+
+        .frise-date.mode-dates {
+            background: var(--accent-green);
+        }
+
+        /* Point central */
+        .frise-dot {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border: 5px solid var(--primary);
+            border-radius: 50%;
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .frise-dot.mode-dates {
+            border-color: var(--accent-green);
+        }
+
+        /* Input événement */
+        .event-input-container {
+            width: 100%;
+            max-width: 180px;
+        }
+
+        .event-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-family: inherit;
+            text-align: center;
+            transition: all 0.2s;
+            min-height: 80px;
+            resize: none;
+            line-height: 1.4;
+        }
+
+        .event-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .event-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .event-input.correct {
+            border-color: var(--accent-green);
+            background: var(--accent-green-light);
+        }
+
+        .event-input.incorrect {
+            border-color: var(--accent-red);
+            background: var(--accent-red-light);
+        }
+
+        /* Input date */
+        .date-input {
+            width: 100px;
+            padding: 10px 14px;
+            border: 2px solid var(--gray-200);
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .date-input::placeholder {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        .date-input.correct {
+            border-color: var(--accent-green);
+            background: var(--accent-green-light);
+        }
+
+        .date-input.incorrect {
+            border-color: var(--accent-red);
+            background: var(--accent-red-light);
+        }
+
+        /* Événement fixe */
+        .frise-event-fixed {
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            max-width: 180px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-700);
+            line-height: 1.4;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Correction */
+        .correction-box {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            max-width: 180px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .correction-box.correct {
+            background: var(--accent-green-light);
+            border: 2px solid var(--accent-green);
+        }
+
+        .correction-box.incorrect {
+            background: var(--accent-red-light);
+            border: 2px solid var(--accent-red);
+        }
+
+        .correction-label {
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .correction-label.correct {
+            color: var(--accent-green);
+        }
+
+        .correction-label.incorrect {
+            color: var(--accent-red);
+        }
+
+        .correction-answer {
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .correction-expected {
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--gray-300);
+        }
+
+        /* Boutons */
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary.mode-dates {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            color: white;
+        }
+
+        /* Score */
+        .score-container {
+            text-align: center;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .score-container.visible {
+            display: block;
+        }
+
+        .score-title {
+            font-size: 16px;
+            color: var(--gray-600);
+            margin-bottom: 8px;
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--gray-800);
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .score-badge.success {
+            background: var(--accent-green-light);
+            color: var(--accent-green);
+        }
+
+        .score-badge.warning {
+            background: var(--accent-orange-light);
+            color: var(--accent-orange);
+        }
+
+        .score-badge.fail {
+            background: var(--accent-red-light);
+            color: var(--accent-red);
+        }
+
+        /* Navigation */
+        .nav-exercices {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.prev {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--gray-200);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-btn.menu {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .nav-info {
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body {
+                padding: 16px;
+            }
+
+            .exercise-header {
+                padding: 20px;
+            }
+
+            .exercise-title h1 {
+                font-size: 20px;
+            }
+
+            .frise-container {
+                padding: 30px 10px;
+            }
+
+            .frise-points {
+                flex-direction: column;
+                gap: 40px;
+                align-items: stretch;
+            }
+
+            .frise-line {
+                width: 6px;
+                height: calc(100% - 60px);
+                top: 30px;
+                left: 50px;
+                transform: none;
+            }
+
+            .frise-point {
+                flex-direction: row;
+                gap: 16px;
+                max-width: none;
+            }
+
+            .frise-date, .date-input {
+                min-width: 90px;
+                text-align: center;
+            }
+
+            .event-input-container, .frise-event-fixed, .correction-box {
+                flex: 1;
+                max-width: none;
+            }
+
+            .event-input {
+                min-height: 60px;
+                text-align: left;
+            }
+
+            .nav-exercices {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+            <span class="separator">›</span>
+            <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-connaissances.html">Connaissances</a>
+            <span class="separator">›</span>
+            <span class="current">Chronologie</span>
+        </nav>
+
+        <!-- Header (généré par JS) -->
+        <div class="exercise-header" id="exerciseHeader">
+            <div class="exercise-title">
+                <h1>⏱️ <span id="exerciseTitle">Chargement...</span></h1>
+                <p id="exerciseSubtitle">Frise chronologique</p>
+            </div>
+            <div class="exercise-meta">
+                <div class="timer-badge" id="timer">
+                    ⏱️ --:--
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Chargement de l'exercice...</p>
+        </div>
+
+        <!-- Error -->
+        <div class="error-state" id="errorState">
+            <div class="icon">😕</div>
+            <h3>Exercice introuvable</h3>
+            <p>Cet exercice n'existe pas ou n'est pas encore disponible.</p>
+            <div class="buttons" style="margin-top: 20px;">
+                <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-connaissances.html" class="btn btn-primary">← Retour au menu</a>
+            </div>
+        </div>
+
+        <!-- Exercise Content -->
+        <div class="exercise-card" id="exerciseCard" style="display: none;">
+            
+            <div class="hint-box" id="hintBox">
+                <span class="icon">💡</span>
+                <div class="text" id="hintText">
+                    <!-- Rempli par JS selon le mode -->
+                </div>
+            </div>
+
+            <!-- Score (affiché après vérification) -->
+            <div class="score-container" id="scoreContainer">
+                <div class="score-title">Ton score</div>
+                <div class="score-value" id="scoreValue">0/0</div>
+                <div class="score-badge" id="scoreBadge">0%</div>
+            </div>
+
+            <!-- Frise -->
+            <div class="frise-container">
+                <div class="frise-line" id="friseLine"></div>
+                <div class="frise-points" id="frisePoints">
+                    <!-- Généré par JS -->
+                </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="buttons" id="actionButtons">
+                <button class="btn btn-secondary" onclick="resetExercise()">🔄 Effacer tout</button>
+                <button class="btn btn-primary" id="btnVerify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-exercices" id="navExercices" style="display: none;">
+            <a href="#" class="nav-btn prev" id="navPrev">← Exercice précédent</a>
+            <div class="nav-info" id="navInfo">Exercice 1 / 1</div>
+            <a href="#" class="nav-btn next" id="navNext">Exercice suivant →</a>
+        </nav>
+    </div>
+
+    <script>
+        // ===== CONFIG =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
+        const SHEET_NAME = 'Q_CHRONOLOGIE';
+
+        // Variables globales
+        let exerciseData = null;
+        let mode = 'evenements';
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let isVerified = false;
+
+        // ===== GET URL PARAMS =====
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get('id') || 'C1',
+                time: parseInt(params.get('time')) || 5  // minutes
+            };
+        }
+
+        // ===== LOAD DATA =====
+        async function loadExercise() {
+            const params = getUrlParams();
+            
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const json = JSON.parse(text.substring(jsonStart, jsonEnd));
+
+                if (!json.table || !json.table.rows) {
+                    throw new Error('No data');
+                }
+
+                // Parser les données
+                const elements = [];
+                let exerciseTitle = '';
+                let exerciseMode = 'evenements';
+
+                for (let row of json.table.rows) {
+                    if (!row.c) continue;
+
+                    const id = String(row.c[0]?.v || '').trim();
+                    const lecon = String(row.c[1]?.v || '').trim();
+                    const titre = String(row.c[2]?.v || '').trim();
+                    const rowMode = String(row.c[3]?.v || '').trim().toLowerCase();
+                    const date = String(row.c[4]?.v || '').trim();
+                    const evenement = String(row.c[5]?.v || '').trim();
+                    const statut = String(row.c[6]?.v || '').trim().toLowerCase();
+
+                    // Skip header
+                    if (id.toLowerCase().includes('identifiant')) continue;
+
+                    // Filtrer par ID
+                    if (id === params.id && statut.includes('disponible')) {
+                        if (!exerciseTitle && titre) {
+                            exerciseTitle = titre;
+                        }
+                        if (rowMode) {
+                            exerciseMode = rowMode;
+                        }
+                        elements.push({ date, evenement });
+                    }
+                }
+
+                if (elements.length === 0) {
+                    throw new Error('Exercise not found');
+                }
+
+                // Trier par date
+                elements.sort((a, b) => {
+                    const dateA = parseInt(a.date) || 0;
+                    const dateB = parseInt(b.date) || 0;
+                    return dateA - dateB;
+                });
+
+                exerciseData = {
+                    id: params.id,
+                    title: exerciseTitle,
+                    mode: exerciseMode,
+                    elements: elements,
+                    time: params.time
+                };
+
+                mode = exerciseMode;
+                renderExercise();
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+            }
+        }
+
+        // ===== RENDER EXERCISE =====
+        function renderExercise() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('exerciseCard').style.display = 'block';
+            document.getElementById('navExercices').style.display = 'flex';
+
+            // Header
+            document.getElementById('exerciseTitle').textContent = exerciseData.title;
+            
+            if (mode === 'dates') {
+                document.getElementById('exerciseHeader').classList.add('mode-dates');
+                document.getElementById('exerciseSubtitle').textContent = 'Retrouve la date de chaque événement';
+                document.getElementById('hintText').innerHTML = '<strong>Astuce :</strong> Tape l\'année correspondant à chaque événement (ex: 1492).';
+                document.getElementById('friseLine').classList.add('mode-dates');
+                document.getElementById('btnVerify').classList.add('mode-dates');
+            } else {
+                document.getElementById('exerciseSubtitle').textContent = 'Retrouve l\'événement correspondant à chaque date';
+                document.getElementById('hintText').innerHTML = '<strong>Astuce :</strong> Pas besoin d\'écrire la phrase exacte. L\'important c\'est d\'identifier l\'événement principal (ex: "Colomb Antilles" sera accepté).';
+            }
+
+            // Frise
+            const frisePoints = document.getElementById('frisePoints');
+            frisePoints.innerHTML = '';
+
+            exerciseData.elements.forEach((el, index) => {
+                const point = document.createElement('div');
+                point.className = 'frise-point';
+
+                if (mode === 'dates') {
+                    // Mode dates : événement fixe, date à taper
+                    point.innerHTML = `
+                        <input type="text" class="date-input" id="input-${index}" placeholder="????" maxlength="4" data-answer="${el.date}">
+                        <div class="frise-dot mode-dates"></div>
+                        <div class="frise-event-fixed">${el.evenement}</div>
+                    `;
+                } else {
+                    // Mode événements : date fixe, événement à taper
+                    point.innerHTML = `
+                        <div class="frise-date">${el.date}</div>
+                        <div class="frise-dot"></div>
+                        <div class="event-input-container">
+                            <textarea class="event-input" id="input-${index}" placeholder="Quel événement ?" data-answer="${el.evenement}"></textarea>
+                        </div>
+                    `;
+                }
+
+                frisePoints.appendChild(point);
+            });
+
+            // Timer
+            startTimer(exerciseData.time * 60);
+
+            // Navigation
+            updateNavigation();
+        }
+
+        // ===== TIMER =====
+        function startTimer(seconds) {
+            timeRemaining = seconds;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 60) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    verifyAnswers();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer').innerHTML = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // ===== VERIFY ANSWERS =====
+        function verifyAnswers() {
+            if (isVerified) return;
+            isVerified = true;
+
+            clearInterval(timerInterval);
+
+            let correct = 0;
+            const total = exerciseData.elements.length;
+
+            exerciseData.elements.forEach((el, index) => {
+                const input = document.getElementById(`input-${index}`);
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswer = (mode === 'dates' ? el.date : el.evenement).toLowerCase();
+
+                // Normaliser les réponses (enlever accents, etc.)
+                const normalizedUser = normalizeString(userAnswer);
+                const normalizedCorrect = normalizeString(correctAnswer);
+
+                // Vérification souple pour les événements
+                let isCorrect = false;
+                if (mode === 'dates') {
+                    isCorrect = normalizedUser === normalizedCorrect;
+                } else {
+                    // Pour les événements, on vérifie si les mots clés sont présents
+                    isCorrect = checkEventMatch(normalizedUser, normalizedCorrect);
+                }
+
+                if (isCorrect) {
+                    correct++;
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('incorrect');
+                    showCorrection(input, el, mode);
+                }
+
+                input.disabled = true;
+            });
+
+            // Afficher le score
+            const percentage = Math.round((correct / total) * 100);
+            document.getElementById('scoreContainer').classList.add('visible');
+            document.getElementById('scoreValue').textContent = `${correct}/${total}`;
+            
+            const badge = document.getElementById('scoreBadge');
+            badge.textContent = `${percentage}%`;
+            
+            if (percentage >= 80) {
+                badge.className = 'score-badge success';
+            } else if (percentage >= 50) {
+                badge.className = 'score-badge warning';
+            } else {
+                badge.className = 'score-badge fail';
+            }
+
+            // Changer les boutons
+            document.getElementById('actionButtons').innerHTML = `
+                <button class="btn btn-secondary" onclick="location.reload()">🔄 Recommencer</button>
+                <a href="${BASE_PATH}/pages/entrainement-connaissances.html" class="btn btn-primary">← Retour au menu</a>
+            `;
+        }
+
+        // ===== NORMALIZE STRING =====
+        function normalizeString(str) {
+            return str
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9\s]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        // ===== CHECK EVENT MATCH =====
+        function checkEventMatch(userAnswer, correctAnswer) {
+            // Si réponse vide
+            if (!userAnswer) return false;
+
+            // Correspondance exacte
+            if (userAnswer === correctAnswer) return true;
+
+            // Extraire les mots clés (mots de plus de 3 lettres)
+            const correctWords = correctAnswer.split(' ').filter(w => w.length > 3);
+            const userWords = userAnswer.split(' ').filter(w => w.length > 3);
+
+            // Compter les mots clés trouvés
+            let matchedWords = 0;
+            for (const word of correctWords) {
+                if (userWords.some(uw => uw.includes(word) || word.includes(uw))) {
+                    matchedWords++;
+                }
+            }
+
+            // Accepter si au moins 50% des mots clés sont présents
+            return matchedWords >= Math.ceil(correctWords.length * 0.5);
+        }
+
+        // ===== SHOW CORRECTION =====
+        function showCorrection(input, element, mode) {
+            const container = input.closest('.frise-point');
+            const correctAnswer = mode === 'dates' ? element.date : element.evenement;
+
+            // Créer la boîte de correction
+            const correctionBox = document.createElement('div');
+            correctionBox.className = 'correction-box incorrect';
+            correctionBox.innerHTML = `
+                <div class="correction-label incorrect">✗ Incorrect</div>
+                <div class="correction-answer">${input.value || '(vide)'}</div>
+                <div class="correction-expected">→ ${correctAnswer}</div>
+            `;
+
+            // Remplacer l'input par la correction
+            if (mode === 'dates') {
+                input.replaceWith(correctionBox);
+            } else {
+                input.parentElement.replaceWith(correctionBox);
+            }
+        }
+
+        // ===== RESET EXERCISE =====
+        function resetExercise() {
+            exerciseData.elements.forEach((el, index) => {
+                const input = document.getElementById(`input-${index}`);
+                if (input) {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                }
+            });
+        }
+
+        // ===== UPDATE NAVIGATION =====
+        function updateNavigation() {
+            const menuLink = `${BASE_PATH}/pages/entrainement-connaissances.html`;
+            
+            document.getElementById('navPrev').href = menuLink;
+            document.getElementById('navPrev').innerHTML = '← Retour au menu';
+            document.getElementById('navPrev').classList.add('menu');
+            
+            document.getElementById('navNext').href = menuLink;
+            document.getElementById('navNext').innerHTML = 'Terminer ✓';
+            
+            document.getElementById('navInfo').textContent = `Exercice : ${exerciseData.id}`;
+        }
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', loadExercise);
+    </script>
+</body>
+</html>
