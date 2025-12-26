@@ -326,19 +326,19 @@
             font-size: 16px;
         }
 
-        /* ===== FILTER TABS ===== */
-        .filter-tabs {
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             margin-bottom: 24px;
-            flex-wrap: wrap;
             background: white;
             padding: 12px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
+            align-items: center;
         }
 
-        .filter-tab {
+        .filter-btn {
             padding: 10px 18px;
             border: none;
             border-radius: 8px;
@@ -352,18 +352,18 @@
             white-space: nowrap;
         }
 
-        .filter-tab:hover {
+        .filter-btn:hover {
             background: var(--primary-bg);
             color: var(--primary);
         }
 
-        .filter-tab.active {
+        .filter-btn.active {
             background: var(--primary);
             color: white;
             box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         }
 
-        .filter-tab .tab-count {
+        .filter-btn .btn-count {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -377,8 +377,137 @@
             background: rgba(0,0,0,0.1);
         }
 
-        .filter-tab.active .tab-count {
+        .filter-btn.active .btn-count {
             background: rgba(255,255,255,0.3);
+        }
+
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            padding: 10px 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-700);
+            font-family: inherit;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+
+        .dropdown-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .dropdown-toggle.has-selection {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .dropdown-toggle .arrow {
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+
+        .dropdown.open .dropdown-toggle .arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 280px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary-bg);
+        }
+
+        .dropdown-item.selected {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .dropdown-item .item-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .dropdown-item .item-info {
+            flex: 1;
+        }
+
+        .dropdown-item .item-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-800);
+        }
+
+        .dropdown-item.selected .item-title {
+            color: var(--primary);
+        }
+
+        .dropdown-item .item-subtitle {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .dropdown-item .item-count {
+            background: var(--gray-100);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .dropdown-item.selected .item-count {
+            background: var(--primary);
+            color: white;
         }
 
         /* ===== LOADING & EMPTY STATE ===== */
@@ -681,18 +810,26 @@
                 padding: 12px 16px 16px;
             }
 
-            .filter-tabs {
-                padding: 10px;
-                gap: 6px;
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
             }
 
-            .filter-tab {
-                padding: 8px 12px;
-                font-size: 13px;
+            .filter-btn {
+                width: 100%;
+                justify-content: center;
             }
 
-            .filter-tab .tab-count {
-                display: none;
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-toggle {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                width: 100%;
             }
         }
     </style>
@@ -735,9 +872,22 @@
                 <p>Entraîne-toi sur les compétences essentielles avec des exercices interactifs</p>
             </div>
 
-            <!-- Filter Tabs -->
-            <div class="filter-tabs" id="filterTabs" style="display: none;">
-                <!-- Généré par JavaScript -->
+            <!-- Filter Bar -->
+            <div class="filter-bar" id="filterBar" style="display: none;">
+                <button class="filter-btn active" id="btnAll" onclick="filterBEX('all')">
+                    📚 Tous
+                    <span class="btn-count" id="countAll">0</span>
+                </button>
+                
+                <div class="dropdown" id="dropdown">
+                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                        <span id="dropdownLabel">Choisir un BEX</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <!-- Généré par JavaScript -->
+                    </div>
+                </div>
             </div>
 
             <!-- Loading State -->
@@ -887,8 +1037,8 @@
                 // Transformer en structure BEX
                 allBexData = transformToBexList(data);
                 
-                // Générer les onglets de filtre
-                renderFilterTabs(allBexData);
+                // Générer la barre de filtres
+                renderFilterBar(allBexData);
                 
                 // Afficher tous les BEX
                 renderBEX(allBexData);
@@ -935,39 +1085,74 @@
             return Object.values(bexMap).sort((a, b) => a.numBEX - b.numBEX);
         }
 
-        // ===== RENDER FILTER TABS =====
-        function renderFilterTabs(bexList) {
-            const container = document.getElementById('filterTabs');
-            
+        // ===== RENDER FILTER BAR =====
+        function renderFilterBar(bexList) {
             // Compter le total d'exercices
             const totalExercices = bexList.reduce((sum, bex) => sum + bex.exercices.length, 0);
+            document.getElementById('countAll').textContent = totalExercices;
             
-            // Créer le bouton "Tous"
-            let tabsHtml = `
-                <button class="filter-tab active" data-filter="all" onclick="filterBEX('all')">
-                    📚 Tous
-                    <span class="tab-count">${totalExercices}</span>
-                </button>
-            `;
+            // Générer les items du dropdown
+            const dropdownMenu = document.getElementById('dropdownMenu');
             
-            // Créer un bouton pour chaque BEX
-            bexList.forEach(bex => {
+            let menuHtml = bexList.map(bex => {
                 const isLocked = bex.statut !== 'disponible';
-                const icon = isLocked ? '🔒' : getIconForBex(bex.numBEX);
+                const icon = getIconForBex(bex.numBEX);
                 const exoCount = bex.exercices.length;
+                const shortTitle = bex.titre || `BEX n°${bex.numBEX}`;
                 
-                tabsHtml += `
-                    <button class="filter-tab ${isLocked ? 'locked' : ''}" 
-                            data-filter="${bex.numBEX}" 
-                            onclick="filterBEX(${bex.numBEX})">
-                        ${icon} BEX ${bex.numBEX}
-                        <span class="tab-count">${exoCount}</span>
-                    </button>
+                return `
+                    <div class="dropdown-item ${isLocked ? 'locked' : ''}" 
+                         data-bex="${bex.numBEX}" 
+                         onclick="selectBEX(${bex.numBEX}, '${icon}', '${shortTitle.replace(/'/g, "\\'")}')">
+                        <span class="item-icon">${isLocked ? '🔒' : icon}</span>
+                        <div class="item-info">
+                            <div class="item-title">BEX ${bex.numBEX} - ${shortTitle}</div>
+                            <div class="item-subtitle">${exoCount} exercice${exoCount > 1 ? 's' : ''}</div>
+                        </div>
+                        <span class="item-count">${exoCount}</span>
+                    </div>
                 `;
+            }).join('');
+            
+            dropdownMenu.innerHTML = menuHtml;
+            document.getElementById('filterBar').style.display = 'flex';
+        }
+
+        // ===== TOGGLE DROPDOWN =====
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // ===== CLOSE DROPDOWN =====
+        function closeDropdown() {
+            document.getElementById('dropdown').classList.remove('open');
+        }
+
+        // ===== SELECT BEX FROM DROPDOWN =====
+        function selectBEX(bexNum, icon, title) {
+            currentFilter = bexNum;
+            
+            // Mettre à jour le label du dropdown
+            document.getElementById('dropdownLabel').innerHTML = `${icon} BEX ${bexNum} - ${title}`;
+            document.querySelector('.dropdown-toggle').classList.add('has-selection');
+            
+            // Désactiver le bouton "Tous"
+            document.getElementById('btnAll').classList.remove('active');
+            
+            // Marquer l'item sélectionné dans le dropdown
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('selected');
+                if (parseInt(item.dataset.bex) === bexNum) {
+                    item.classList.add('selected');
+                }
             });
             
-            container.innerHTML = tabsHtml;
-            container.style.display = 'flex';
+            // Fermer le dropdown
+            closeDropdown();
+            
+            // Filtrer les cartes
+            applyFilter(bexNum);
         }
 
         // ===== GET ICON FOR BEX =====
@@ -981,24 +1166,40 @@
             return icons[numBEX] || '📋';
         }
 
-        // ===== FILTER BEX =====
+        // ===== FILTER BEX (bouton Tous) =====
         function filterBEX(filter) {
-            currentFilter = filter;
-            
-            // Mettre à jour l'état actif des onglets
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.filter == filter) {
-                    tab.classList.add('active');
-                }
-            });
-            
-            // Filtrer les cartes
+            if (filter === 'all') {
+                currentFilter = 'all';
+                
+                // Activer le bouton "Tous"
+                document.getElementById('btnAll').classList.add('active');
+                
+                // Réinitialiser le dropdown
+                document.getElementById('dropdownLabel').textContent = 'Choisir un BEX';
+                document.querySelector('.dropdown-toggle').classList.remove('has-selection');
+                
+                // Désélectionner dans le dropdown
+                document.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Fermer le dropdown si ouvert
+                closeDropdown();
+                
+                // Afficher toutes les cartes
+                applyFilter('all');
+            }
+        }
+
+        // ===== APPLY FILTER =====
+        function applyFilter(filter) {
             document.querySelectorAll('.bex-card').forEach(card => {
                 const cardBexNum = parseInt(card.dataset.bex);
                 
                 if (filter === 'all') {
                     card.classList.remove('hidden');
+                    // Fermer tous les accordéons
+                    card.classList.remove('open');
                 } else {
                     if (cardBexNum === filter) {
                         card.classList.remove('hidden');
@@ -1012,6 +1213,14 @@
                 }
             });
         }
+
+        // ===== CLOSE DROPDOWN ON CLICK OUTSIDE =====
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('dropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        });
 
         // ===== RENDER BEX =====
         function renderBEX(bexList) {
