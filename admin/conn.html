@@ -307,8 +307,9 @@
                 <div class="card">
                     <div class="card-header"><span class="card-title">⚙️ Paramètres généraux</span></div>
                     <div class="card-body">
-                        <div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input" id="evalNom" placeholder="Ex: L4 - Sujet 1"></div><div class="form-group"><label class="form-label">Description</label><input type="text" class="form-input" id="evalDesc" placeholder="Ex: Mise en relation du monde"></div></div>
-                        <div class="form-row form-row-4"><div class="form-group"><label class="form-label">Durée (min)</label><input type="number" class="form-input" id="evalDuree" value="15"></div><div class="form-group"><label class="form-label">Seuil (%)</label><input type="number" class="form-input" id="evalSeuil" value="80"></div><div class="form-group"><label class="form-label">Tentatives</label><select class="form-select" id="evalTentatives"><option value="0">Illimitées</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><div class="form-group"><label class="form-label">Affichage</label><select class="form-select" id="evalAffichage"><option value="all">Tout d'un coup</option><option value="1">1 par page</option><option value="5">5 par page</option></select></div></div>
+                        <div class="form-row form-row-3"><div class="form-group"><label class="form-label">N° Leçon</label><input type="text" class="form-input" id="evalNumLecon" placeholder="Ex: L4"></div><div class="form-group"><label class="form-label">Titre (pour le menu)</label><input type="text" class="form-input" id="evalNom" placeholder="Ex: Sujet 1"></div><div class="form-group"><label class="form-label">Description</label><input type="text" class="form-input" id="evalDesc" placeholder="Ex: Mise en relation du monde"></div></div>
+                        <div class="form-row form-row-3"><div class="form-group"><label class="form-label">Matière</label><select class="form-select" id="evalMatiere"><option value="Histoire">📜 Histoire</option><option value="Géographie">🌍 Géographie</option><option value="EMC">⚖️ EMC</option></select></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="evalType"><option value="entrainement">🏋️ Entraînement</option><option value="evaluation">📝 Évaluation</option></select></div><div class="form-group"><label class="form-label">Durée (min)</label><input type="number" class="form-input" id="evalDuree" value="15"></div></div>
+                        <div class="form-row form-row-3"><div class="form-group"><label class="form-label">Seuil (%)</label><input type="number" class="form-input" id="evalSeuil" value="80"></div><div class="form-group"><label class="form-label">Tentatives</label><select class="form-select" id="evalTentatives"><option value="0">Illimitées</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><div class="form-group"><label class="form-label">Affichage</label><select class="form-select" id="evalAffichage"><option value="all">Tout d'un coup</option><option value="1">1 par page</option><option value="5">5 par page</option></select></div></div>
                         <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;"><button class="btn btn-secondary" onclick="showPage('evaluations')">Annuler</button><button class="btn btn-primary" onclick="goToStep2()">Suivant : Exercices →</button></div>
                     </div>
                 </div>
@@ -538,8 +539,22 @@
 
         function goToStep2() {
             const nom = document.getElementById('evalNom').value;
+            const numLecon = document.getElementById('evalNumLecon').value;
             if (!nom) { showToast('Entrez un nom', true); return; }
-            currentEval = { ID: currentEval?.ID || 'EVAL' + Date.now(), Nom: nom, Description: document.getElementById('evalDesc').value, Duree: document.getElementById('evalDuree').value, Seuil: document.getElementById('evalSeuil').value, Tentatives: document.getElementById('evalTentatives').value, Affichage: document.getElementById('evalAffichage').value, Statut: 'Brouillon' };
+            if (!numLecon) { showToast('Entrez un numéro de leçon (ex: L4)', true); return; }
+            currentEval = { 
+                ID: currentEval?.ID || 'EVAL' + Date.now(), 
+                Nom: nom, 
+                Description: document.getElementById('evalDesc').value, 
+                Duree: document.getElementById('evalDuree').value, 
+                Seuil: document.getElementById('evalSeuil').value, 
+                Tentatives: document.getElementById('evalTentatives').value, 
+                Affichage: document.getElementById('evalAffichage').value, 
+                Statut: 'Brouillon',
+                NumLecon: numLecon,
+                Matiere: document.getElementById('evalMatiere').value,
+                Type: document.getElementById('evalType').value
+            };
             document.getElementById('editEvalTitle').textContent = currentEval.Nom;
             showPage('edit-eval');
             renderEvalExercises();
@@ -547,7 +562,15 @@
 
         function backToStep1() {
             showPage('new-eval');
-            if (currentEval) { document.getElementById('evalNom').value = currentEval.Nom || ''; document.getElementById('evalDesc').value = currentEval.Description || ''; document.getElementById('evalDuree').value = currentEval.Duree || 15; document.getElementById('evalSeuil').value = currentEval.Seuil || 80; }
+            if (currentEval) { 
+                document.getElementById('evalNom').value = currentEval.Nom || ''; 
+                document.getElementById('evalDesc').value = currentEval.Description || ''; 
+                document.getElementById('evalDuree').value = currentEval.Duree || 15; 
+                document.getElementById('evalSeuil').value = currentEval.Seuil || 80; 
+                document.getElementById('evalNumLecon').value = currentEval.NumLecon || '';
+                document.getElementById('evalMatiere').value = currentEval.Matiere || 'Histoire';
+                document.getElementById('evalType').value = currentEval.Type || 'entrainement';
+            }
         }
 
         function editEval(evalId) {
@@ -616,20 +639,68 @@
                     for (const ex of exercices.filter(e => e.EvalID === currentEval.ID)) {
                         await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EXERCICES', action: 'delete', id: ex.ID }) });
                     }
+                    // Supprimer l'entrée MENU_CONN existante
+                    await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'MENU_CONN', action: 'deleteByEvalId', evalId: currentEval.ID }) });
                 }
                 await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EVALUATIONS', action: 'add', row: [currentEval.ID, currentEval.Nom, currentEval.Description, currentEval.Duree, currentEval.Seuil, currentEval.Tentatives, currentEval.Affichage, '', '', currentEval.Statut] }) });
                 for (const ex of currentEvalExercises) {
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EXERCICES', action: 'add', row: [ex.ID, ex.EvalID, ex.Ordre, ex.Type, ex.Mode, ex.Nombre, ex.Banques, ex.Selection, ex.Config] }) });
                 }
+                
+                // Si publication, écrire dans MENU_CONN
+                if (statut === 'Publie') {
+                    // Calculer le numExo (prochain numéro pour cette leçon)
+                    const existingForLecon = await getExistingNumExoForLecon(currentEval.NumLecon);
+                    const numExo = existingForLecon + 1;
+                    
+                    // MENU_CONN: NumLeçon, NumExo, TitreLeçon, TitreExo, Matière, Statut, Type, EvalID
+                    const menuRow = [
+                        currentEval.NumLecon,           // NumLeçon (ex: L4)
+                        numExo,                         // NumExo (1, 2, 3...)
+                        currentEval.Description || currentEval.Nom,  // TitreLeçon
+                        currentEval.Nom,                // TitreExo
+                        currentEval.Matiere,            // Matière
+                        'disponible',                   // Statut
+                        currentEval.Type,               // Type (entrainement/evaluation)
+                        currentEval.ID                  // EvalID
+                    ];
+                    await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'MENU_CONN', action: 'add', row: menuRow }) });
+                    showToast(`✓ Publié dans ${currentEval.Type === 'evaluation' ? 'Évaluations' : 'Entraînements'} !`);
+                }
+                
                 if (existingEval) { const idx = evaluations.findIndex(e => e.ID === currentEval.ID); evaluations[idx] = { ...currentEval }; exercices = exercices.filter(e => e.EvalID !== currentEval.ID); } else { evaluations.push({ ...currentEval }); }
                 exercices.push(...currentEvalExercises);
                 document.getElementById('navEvalCount').textContent = evaluations.length;
                 renderEvaluations();
-                showToast(`✓ Évaluation ${statut === 'Publie' ? 'publiée' : 'enregistrée'} !`);
+                if (statut !== 'Publie') showToast(`✓ Évaluation enregistrée !`);
                 currentEval = null; currentEvalExercises = [];
-                document.getElementById('evalNom').value = ''; document.getElementById('evalDesc').value = '';
+                document.getElementById('evalNom').value = ''; document.getElementById('evalDesc').value = ''; document.getElementById('evalNumLecon').value = '';
                 showPage('evaluations');
             } catch (e) { console.error(e); showToast('Erreur', true); }
+        }
+        
+        // Fonction pour compter les exercices existants pour une leçon
+        async function getExistingNumExoForLecon(numLecon) {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=MENU_CONN`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                if (!json.table || !json.table.rows) return 0;
+                
+                let maxNumExo = 0;
+                json.table.rows.forEach(row => {
+                    const rowNumLecon = row.c[0]?.v || '';
+                    const rowNumExo = parseInt(row.c[1]?.v) || 0;
+                    if (String(rowNumLecon).trim() === numLecon && rowNumExo > maxNumExo) {
+                        maxNumExo = rowNumExo;
+                    }
+                });
+                return maxNumExo;
+            } catch (e) { 
+                console.error('Erreur getExistingNumExoForLecon:', e); 
+                return 0; 
+            }
         }
 
         function selectFormat(el, format) {
