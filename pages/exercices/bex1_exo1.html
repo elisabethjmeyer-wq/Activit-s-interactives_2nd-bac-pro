@@ -6,54 +6,39 @@
     <title>BEX n°1 - Exercice 1 | Espace cours</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary: #6366f1;
-            --primary-light: #818cf8;
             --primary-dark: #4f46e5;
             --primary-bg: #eef2ff;
-            
             --accent-yellow: #f59e0b;
-            --accent-yellow-light: #fef3c7;
-            
             --accent-green: #10b981;
             --accent-green-light: #d1fae5;
-            
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
             --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
             --gray-400: #9ca3af;
             --gray-500: #6b7280;
             --gray-600: #4b5563;
-            --gray-700: #374151;
             --gray-800: #1f2937;
             --gray-900: #111827;
-            
             --sidebar-width: 260px;
             --header-height: 64px;
-            
             --radius: 12px;
             --radius-lg: 16px;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--gray-800);
-            line-height: 1.5;
             min-height: 100vh;
+            line-height: 1.5;
         }
 
-        /* ===== HEADER ===== */
+        /* HEADER */
         .header {
             background: white;
             border-bottom: 1px solid var(--gray-200);
@@ -63,13 +48,9 @@
             right: 0;
             height: var(--header-height);
             z-index: 100;
-        }
-
-        .header-inner {
-            height: 100%;
-            padding: 0 20px;
             display: flex;
             align-items: center;
+            padding: 0 20px;
             gap: 16px;
         }
 
@@ -85,19 +66,11 @@
             justify-content: center;
             font-size: 20px;
             color: var(--gray-600);
-            transition: all 0.2s;
             flex-shrink: 0;
         }
 
-        .menu-toggle:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
-        }
-
-        .menu-toggle.active {
-            background: var(--primary);
-            color: white;
-        }
+        .menu-toggle:hover { background: var(--primary-bg); color: var(--primary); }
+        .menu-toggle.active { background: var(--primary); color: white; }
 
         .logo {
             display: flex;
@@ -121,7 +94,7 @@
             font-size: 18px;
         }
 
-        /* ===== SIDEBAR ===== */
+        /* SIDEBAR */
         .sidebar {
             position: fixed;
             top: var(--header-height);
@@ -133,18 +106,13 @@
             padding: 20px 12px;
             overflow-y: auto;
             z-index: 90;
+            transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
 
-        .sidebar.collapsed {
-            transform: translateX(-100%);
-        }
+        .sidebar.open { transform: translateX(0); }
 
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
 
         .nav-item {
             display: flex;
@@ -155,35 +123,14 @@
             color: var(--gray-600);
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.2s;
         }
 
-        .nav-item:hover {
-            background: var(--gray-100);
-            color: var(--gray-900);
-        }
+        .nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
+        .nav-item.active { background: var(--primary-bg); color: var(--primary); }
+        .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+        .nav-section-title { font-size: 11px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; padding: 20px 16px 8px; }
 
-        .nav-item.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-        }
-
-        .nav-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .nav-section-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--gray-400);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 20px 16px 8px;
-        }
-
-        /* ===== OVERLAY ===== */
+        /* OVERLAY */
         .overlay {
             position: fixed;
             top: var(--header-height);
@@ -194,29 +141,22 @@
             z-index: 80;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             pointer-events: none;
         }
 
-        .overlay.visible {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
+        .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
 
-        /* ===== MAIN CONTENT ===== */
+        /* MAIN CONTENT */
         .main-content {
             margin-top: var(--header-height);
             padding: 24px;
             min-height: calc(100vh - var(--header-height));
         }
 
-        .page-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+        .page-container { max-width: 900px; margin: 0 auto; }
 
-        /* ===== BREADCRUMB ===== */
+        /* BREADCRUMB */
         .breadcrumb {
             display: flex;
             align-items: center;
@@ -226,26 +166,12 @@
             flex-wrap: wrap;
         }
 
-        .breadcrumb a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
+        .breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
+        .breadcrumb a:hover { color: white; }
+        .breadcrumb span { color: rgba(255,255,255,0.5); }
+        .breadcrumb .current { color: white; font-weight: 500; }
 
-        .breadcrumb a:hover {
-            color: white;
-        }
-
-        .breadcrumb span {
-            color: rgba(255,255,255,0.5);
-        }
-
-        .breadcrumb .current {
-            color: white;
-            font-weight: 500;
-        }
-
-        /* ===== EXERCISE CONTENT ===== */
+        /* EXERCISE STYLES */
         .exercise-header {
             background: white;
             border-radius: var(--radius-lg);
@@ -254,112 +180,59 @@
             box-shadow: var(--shadow-lg);
         }
 
-        .exercise-header h1 {
-            font-size: 24px;
-            color: var(--gray-800);
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .exercise-header p {
-            color: var(--gray-500);
-            font-size: 15px;
-        }
+        .exercise-header h1 { font-size: 24px; color: var(--gray-800); margin-bottom: 4px; }
+        .exercise-header p { color: var(--gray-500); }
 
         .timer-box {
             background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
             color: white;
             border-radius: var(--radius);
-            padding: 16px 24px;
+            padding: 16px;
             margin-bottom: 20px;
             text-align: center;
             font-size: 22px;
             font-weight: bold;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-            transition: all 0.3s;
         }
 
-        .timer-box.warning {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
+        .timer-box.warning { background: linear-gradient(135deg, #ef4444, #dc2626); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
         .instructions {
             background: white;
             border-radius: var(--radius);
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
             border-left: 4px solid var(--accent-yellow);
         }
 
-        .instructions strong {
-            color: var(--accent-yellow);
-            font-size: 15px;
-        }
-
-        .instructions p {
-            color: var(--gray-600);
-            margin-top: 8px;
-            line-height: 1.6;
-        }
+        .instructions strong { color: var(--accent-yellow); }
+        .instructions p { color: var(--gray-600); margin-top: 8px; }
 
         .exercise-card {
             background: white;
             border-radius: var(--radius-lg);
             padding: 24px;
             box-shadow: var(--shadow-lg);
-            margin-bottom: 20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
-        }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
 
         th {
             background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
             color: white;
-            padding: 12px 14px;
+            padding: 12px;
             text-align: left;
             font-weight: 600;
             font-size: 14px;
         }
 
-        th:first-child {
-            border-radius: 8px 0 0 0;
-        }
+        th:first-child { border-radius: 8px 0 0 0; }
+        th:last-child { border-radius: 0 8px 0 0; }
 
-        th:last-child {
-            border-radius: 0 8px 0 0;
-        }
-
-        td {
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:nth-child(even) {
-            background: var(--gray-50);
-        }
-
-        td:first-child {
-            font-weight: 700;
-            color: var(--gray-800);
-            font-size: 16px;
-        }
+        td { padding: 12px; border-bottom: 1px solid var(--gray-200); }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: var(--gray-50); }
+        td:first-child { font-weight: 700; color: var(--gray-800); font-size: 16px; }
 
         input[type="text"] {
             width: 100%;
@@ -367,80 +240,32 @@
             border: 2px solid var(--gray-200);
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.2s;
             font-family: inherit;
         }
 
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
+        input:focus { outline: none; border-color: var(--accent-yellow); }
+        input.correct { background: var(--accent-green-light); border-color: var(--accent-green); color: #065f46; font-weight: 600; }
+        input.incorrect { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
 
-        input.correct {
-            background: var(--accent-green-light);
-            border-color: var(--accent-green);
-            color: #065f46;
-            font-weight: 600;
-        }
-
-        input.incorrect {
-            background: #fee2e2;
-            border-color: #ef4444;
-            color: #991b1b;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
 
         button {
             flex: 1;
             min-width: 150px;
-            padding: 14px 24px;
+            padding: 14px;
             border: none;
             border-radius: var(--radius);
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: var(--shadow);
         }
 
-        .btn-verify {
-            background: linear-gradient(135deg, var(--accent-green), #34d399);
-            color: white;
-        }
-
-        .btn-verify:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-solution {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            color: white;
-        }
-
-        .btn-solution:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-restart {
-            background: linear-gradient(135deg, var(--gray-500), var(--gray-400));
-            color: white;
-        }
-
-        .btn-restart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(107, 114, 128, 0.3);
-        }
+        .btn-verify { background: linear-gradient(135deg, var(--accent-green), #34d399); color: white; }
+        .btn-solution { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+        .btn-restart { background: linear-gradient(135deg, var(--gray-500), var(--gray-400)); color: white; }
 
         .result {
-            background: linear-gradient(135deg, var(--accent-green-light), #a7f3d0);
+            background: var(--accent-green-light);
             border: 2px solid var(--accent-green);
             border-radius: var(--radius);
             padding: 20px;
@@ -448,107 +273,41 @@
             display: none;
         }
 
-        .result.show {
-            display: block;
-        }
-
-        .result h3 {
-            color: #065f46;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-
-        .result p {
-            color: #047857;
-            font-size: 15px;
-        }
-
-        .score {
-            font-size: 28px;
-            font-weight: bold;
-            color: #065f46;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (min-width: 1024px) {
-            .sidebar:not(.collapsed) ~ .main-content {
-                margin-left: var(--sidebar-width);
-            }
-        }
+        .result.show { display: block; }
+        .result h3 { color: #065f46; margin-bottom: 8px; }
+        .result p { color: #047857; }
+        .score { font-size: 28px; font-weight: bold; color: #065f46; }
 
         @media (max-width: 768px) {
-            .exercise-header h1 {
-                font-size: 20px;
-            }
-
-            .timer-box {
-                font-size: 18px;
-                padding: 12px 16px;
-            }
-
-            table {
-                font-size: 13px;
-            }
-
-            th, td {
-                padding: 10px 8px;
-            }
-
-            button {
-                min-width: 100%;
-            }
+            table { font-size: 13px; }
+            th, td { padding: 8px; }
+            button { min-width: 100%; }
         }
     </style>
 </head>
 <body>
     <!-- HEADER -->
     <header class="header">
-        <div class="header-inner">
-            <button class="menu-toggle" id="menuToggle">☰</button>
-            <a href="../index.html" class="logo">
-                <div class="logo-icon">📚</div>
-                <span>Espace cours</span>
-            </a>
-        </div>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <a href="../index.html" class="logo">
+            <div class="logo-icon">📚</div>
+            <span>Espace cours</span>
+        </a>
     </header>
 
     <!-- SIDEBAR -->
-    <aside class="sidebar collapsed" id="sidebar">
+    <aside class="sidebar" id="sidebar">
         <nav class="sidebar-nav">
-            <a href="../index.html" class="nav-item">
-                <span class="nav-icon">🏠</span>
-                Tableau de bord
-            </a>
-            
+            <a href="../index.html" class="nav-item"><span class="nav-icon">🏠</span>Tableau de bord</a>
             <div class="nav-section-title">Ressources</div>
-            <a href="../lecons.html" class="nav-item">
-                <span class="nav-icon">📖</span>
-                Leçons
-            </a>
-            <a href="../classeur.html" class="nav-item">
-                <span class="nav-icon">📁</span>
-                Classeur numérique
-            </a>
-            <a href="../videos_hebdomadaires_archives.html" class="nav-item">
-                <span class="nav-icon">🎬</span>
-                Archives vidéos
-            </a>
-            
+            <a href="../lecons.html" class="nav-item"><span class="nav-icon">📖</span>Leçons</a>
+            <a href="../classeur.html" class="nav-item"><span class="nav-icon">📁</span>Classeur numérique</a>
+            <a href="../videos_hebdomadaires_archives.html" class="nav-item"><span class="nav-icon">🎬</span>Archives vidéos</a>
             <div class="nav-section-title">Entraînement</div>
-            <a href="../entrainement-bex.html" class="nav-item active">
-                <span class="nav-icon">⭐</span>
-                Entraînement BEX
-            </a>
-            
+            <a href="../entrainement-bex.html" class="nav-item active"><span class="nav-icon">⭐</span>Entraînement BEX</a>
             <div class="nav-section-title">Outils</div>
-            <a href="../FAQ.html" class="nav-item">
-                <span class="nav-icon">❓</span>
-                FAQ
-            </a>
-            <a href="../emploi-du-temps.html" class="nav-item">
-                <span class="nav-icon">📅</span>
-                Emploi du temps
-            </a>
+            <a href="../FAQ.html" class="nav-item"><span class="nav-icon">❓</span>FAQ</a>
+            <a href="../emploi-du-temps.html" class="nav-item"><span class="nav-icon">📅</span>Emploi du temps</a>
         </nav>
     </aside>
 
@@ -558,7 +317,6 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
         <div class="page-container">
-            <!-- Breadcrumb -->
             <nav class="breadcrumb">
                 <a href="../index.html">🏠 Accueil</a>
                 <span>›</span>
@@ -567,24 +325,18 @@
                 <span class="current">BEX n°1 - Exercice 1</span>
             </nav>
 
-            <!-- Exercise Header -->
             <div class="exercise-header">
                 <h1>📅 BEX n°1 - Exercice 1</h1>
                 <p>Se repérer dans le temps</p>
             </div>
 
-            <!-- Timer -->
-            <div class="timer-box" id="timer">
-                ⏱️ Temps restant : 10:00
-            </div>
+            <div class="timer-box" id="timer">⏱️ Temps restant : 10:00</div>
 
-            <!-- Instructions -->
             <div class="instructions">
                 <strong>📋 Consigne :</strong>
                 <p>Pour chaque date, trouve le siècle, la grande période historique et le personnage-repère associé à cette grande période.</p>
             </div>
 
-            <!-- Exercise Card -->
             <div class="exercise-card">
                 <table>
                     <thead>
@@ -639,42 +391,34 @@
     </main>
 
     <script>
-        // ===== SIDEBAR TOGGLE =====
+        // Sidebar toggle
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
         const overlay = document.getElementById('overlay');
 
-        function toggleSidebar() {
-            const isCollapsed = sidebar.classList.contains('collapsed');
-            
-            if (isCollapsed) {
-                sidebar.classList.remove('collapsed');
-                menuToggle.classList.add('active');
-                overlay.classList.add('visible');
-            } else {
-                sidebar.classList.add('collapsed');
-                menuToggle.classList.remove('active');
-                overlay.classList.remove('visible');
-            }
-        }
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            menuToggle.classList.toggle('active');
+            overlay.classList.toggle('visible');
+        });
 
-        menuToggle.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            menuToggle.classList.remove('active');
+            overlay.classList.remove('visible');
+        });
 
-        // ===== EXERCISE LOGIC =====
+        // Exercise logic
         const answers = {
             siecle1: ['15e', '15ème', 'xve', 'xv', '15'],
             periode1: ['epoque moderne', 'temps modernes', 'moderne'],
             personnage1: ['louis 14', 'louis xiv', 'louis quatorze'],
-            
             siecle2: ['4e', '4ème', 'ive', 'iv', '4'],
             periode2: ['antiquite', 'antiquité'],
             personnage2: ['jules cesar', 'jules césar', 'cesar', 'césar'],
-            
             siecle3: ['17e', '17ème', 'xviie', 'xvii', '17'],
             periode3: ['epoque moderne', 'temps modernes', 'moderne'],
             personnage3: ['louis 14', 'louis xiv', 'louis quatorze'],
-            
             siecle4: ['19e', '19ème', 'xixe', 'xix', '19'],
             periode4: ['epoque contemporaine', 'contemporaine'],
             personnage4: ['victor hugo', 'hugo']
@@ -686,45 +430,28 @@
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
-                updateTimerDisplay();
-
-                if (timeLeft <= 120 && timeLeft > 0) {
-                    document.getElementById('timer').classList.add('warning');
-                }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    alert('⏰ Temps écoulé ! L\'exercice va être corrigé automatiquement.');
-                    verifyAnswers();
-                }
+                const m = Math.floor(timeLeft / 60);
+                const s = timeLeft % 60;
+                document.getElementById('timer').textContent = `⏱️ Temps restant : ${m}:${s.toString().padStart(2, '0')}`;
+                if (timeLeft <= 120) document.getElementById('timer').classList.add('warning');
+                if (timeLeft <= 0) { clearInterval(timerInterval); verifyAnswers(); }
             }, 1000);
         }
 
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `⏱️ Temps restant : ${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
         function normalizeString(str) {
-            return str.toLowerCase()
-                      .trim()
-                      .normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                      .replace(/[^a-z0-9\s]/g, '');
+            return str.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, '');
         }
 
         function verifyAnswers() {
+            clearInterval(timerInterval);
             let correctCount = 0;
-            const totalQuestions = 12;
 
             for (let key in answers) {
                 const input = document.getElementById(key);
                 const userAnswer = normalizeString(input.value);
-                const correctAnswers = answers[key].map(a => normalizeString(a));
+                const correctList = answers[key].map(a => normalizeString(a));
 
-                if (correctAnswers.includes(userAnswer)) {
+                if (correctList.includes(userAnswer)) {
                     input.classList.remove('incorrect');
                     input.classList.add('correct');
                     correctCount++;
@@ -734,39 +461,25 @@
                 }
             }
 
-            const percentage = Math.round((correctCount / totalQuestions) * 100);
-            document.getElementById('score').textContent = `${correctCount}/${totalQuestions}`;
-            
-            let message = '';
-            if (percentage === 100) {
-                message = '🎉 Parfait ! Tu maîtrises parfaitement cette compétence !';
-            } else if (percentage >= 75) {
-                message = '👍 Très bien ! Encore quelques petites erreurs à corriger.';
-            } else if (percentage >= 50) {
-                message = '💪 Pas mal ! Continue à t\'entraîner pour progresser.';
-            } else {
-                message = '📚 Révise ton cours et recommence, tu vas y arriver !';
-            }
-            
-            document.getElementById('message').textContent = message;
-            document.getElementById('result').classList.add('show');
+            const pct = Math.round((correctCount / 12) * 100);
+            document.getElementById('score').textContent = `${correctCount}/12`;
 
-            clearInterval(timerInterval);
+            let msg = pct === 100 ? '🎉 Parfait !' : pct >= 75 ? '👍 Très bien !' : pct >= 50 ? '💪 Pas mal !' : '📚 Révise et recommence !';
+            document.getElementById('message').textContent = msg;
+            document.getElementById('result').classList.add('show');
         }
 
         function showSolution() {
+            clearInterval(timerInterval);
             document.getElementById('siecle1').value = '15e';
             document.getElementById('periode1').value = 'Époque moderne';
             document.getElementById('personnage1').value = 'Louis XIV';
-            
             document.getElementById('siecle2').value = '4e';
             document.getElementById('periode2').value = 'Antiquité';
             document.getElementById('personnage2').value = 'Jules César';
-            
             document.getElementById('siecle3').value = '17e';
             document.getElementById('periode3').value = 'Époque moderne';
             document.getElementById('personnage3').value = 'Louis XIV';
-            
             document.getElementById('siecle4').value = '19e';
             document.getElementById('periode4').value = 'Époque contemporaine';
             document.getElementById('personnage4').value = 'Victor Hugo';
@@ -776,11 +489,9 @@
                 document.getElementById(key).classList.remove('incorrect');
             }
 
-            document.getElementById('result').classList.add('show');
             document.getElementById('score').textContent = '12/12';
             document.getElementById('message').textContent = '📖 Étudie bien les réponses !';
-            
-            clearInterval(timerInterval);
+            document.getElementById('result').classList.add('show');
         }
 
         function restart() {
@@ -789,17 +500,14 @@
                 input.value = '';
                 input.classList.remove('correct', 'incorrect');
             }
-
             document.getElementById('result').classList.remove('show');
-
             clearInterval(timerInterval);
             timeLeft = 600;
             document.getElementById('timer').classList.remove('warning');
-            updateTimerDisplay();
+            document.getElementById('timer').textContent = '⏱️ Temps restant : 10:00';
             startTimer();
         }
 
-        // Start timer on load
         startTimer();
     </script>
 </body>
