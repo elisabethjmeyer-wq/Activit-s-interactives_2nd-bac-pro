@@ -809,10 +809,11 @@
         // ===== TRANSFORMATION URLs =====
         function transformUrl(url) {
             if (!url) return '';
-            // Google Drive : convertir en URL d'affichage direct
+            // Google Drive : convertir en URL d'affichage direct via thumbnail
             const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
             if (driveMatch) {
-                return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+                // Utiliser l'API thumbnail avec une grande taille
+                return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1200`;
             }
             return url;
         }
