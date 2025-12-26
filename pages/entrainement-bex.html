@@ -326,6 +326,61 @@
             font-size: 16px;
         }
 
+        /* ===== FILTER TABS ===== */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 12px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-tab {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .filter-tab .tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            margin-left: 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .filter-tab.active .tab-count {
+            background: rgba(255,255,255,0.3);
+        }
+
         /* ===== LOADING & EMPTY STATE ===== */
         .loading, .empty-state {
             text-align: center;
@@ -368,6 +423,10 @@
             box-shadow: var(--shadow);
             overflow: hidden;
             transition: all 0.3s;
+        }
+
+        .bex-card.hidden {
+            display: none;
         }
 
         .bex-card:hover {
@@ -621,6 +680,20 @@
             .exercices-container {
                 padding: 12px 16px 16px;
             }
+
+            .filter-tabs {
+                padding: 10px;
+                gap: 6px;
+            }
+
+            .filter-tab {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .filter-tab .tab-count {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -662,6 +735,11 @@
                 <p>Entraîne-toi sur les compétences essentielles avec des exercices interactifs</p>
             </div>
 
+            <!-- Filter Tabs -->
+            <div class="filter-tabs" id="filterTabs" style="display: none;">
+                <!-- Généré par JavaScript -->
+            </div>
+
             <!-- Loading State -->
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
@@ -696,6 +774,10 @@
             'paratexte': 'exercices/templates/bex3.html',
             'vocabulaire': 'exercices/templates/bex4.html'
         };
+
+        // Variable globale pour stocker les données
+        let allBexData = [];
+        let currentFilter = 'all';
 
         // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
@@ -802,7 +884,14 @@
                     return;
                 }
 
-                renderBEX(data);
+                // Transformer en structure BEX
+                allBexData = transformToBexList(data);
+                
+                // Générer les onglets de filtre
+                renderFilterTabs(allBexData);
+                
+                // Afficher tous les BEX
+                renderBEX(allBexData);
 
             } catch (error) {
                 console.error('Erreur:', error);
@@ -811,8 +900,8 @@
             }
         }
 
-        // ===== RENDER BEX =====
-        function renderBEX(data) {
+        // ===== TRANSFORM DATA =====
+        function transformToBexList(data) {
             const bexMap = {};
             
             data.forEach(item => {
@@ -843,7 +932,89 @@
                 }
             });
 
-            const bexList = Object.values(bexMap).sort((a, b) => a.numBEX - b.numBEX);
+            return Object.values(bexMap).sort((a, b) => a.numBEX - b.numBEX);
+        }
+
+        // ===== RENDER FILTER TABS =====
+        function renderFilterTabs(bexList) {
+            const container = document.getElementById('filterTabs');
+            
+            // Compter le total d'exercices
+            const totalExercices = bexList.reduce((sum, bex) => sum + bex.exercices.length, 0);
+            
+            // Créer le bouton "Tous"
+            let tabsHtml = `
+                <button class="filter-tab active" data-filter="all" onclick="filterBEX('all')">
+                    📚 Tous
+                    <span class="tab-count">${totalExercices}</span>
+                </button>
+            `;
+            
+            // Créer un bouton pour chaque BEX
+            bexList.forEach(bex => {
+                const isLocked = bex.statut !== 'disponible';
+                const icon = isLocked ? '🔒' : getIconForBex(bex.numBEX);
+                const exoCount = bex.exercices.length;
+                
+                tabsHtml += `
+                    <button class="filter-tab ${isLocked ? 'locked' : ''}" 
+                            data-filter="${bex.numBEX}" 
+                            onclick="filterBEX(${bex.numBEX})">
+                        ${icon} BEX ${bex.numBEX}
+                        <span class="tab-count">${exoCount}</span>
+                    </button>
+                `;
+            });
+            
+            container.innerHTML = tabsHtml;
+            container.style.display = 'flex';
+        }
+
+        // ===== GET ICON FOR BEX =====
+        function getIconForBex(numBEX) {
+            const icons = {
+                1: '⏱️',  // Temps
+                2: '🗺️',  // Espace/Carte
+                3: '📄',  // Paratexte
+                4: '📝'   // Vocabulaire
+            };
+            return icons[numBEX] || '📋';
+        }
+
+        // ===== FILTER BEX =====
+        function filterBEX(filter) {
+            currentFilter = filter;
+            
+            // Mettre à jour l'état actif des onglets
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.filter == filter) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Filtrer les cartes
+            document.querySelectorAll('.bex-card').forEach(card => {
+                const cardBexNum = parseInt(card.dataset.bex);
+                
+                if (filter === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    if (cardBexNum === filter) {
+                        card.classList.remove('hidden');
+                        // Ouvrir automatiquement le BEX sélectionné
+                        if (!card.classList.contains('locked')) {
+                            card.classList.add('open');
+                        }
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // ===== RENDER BEX =====
+        function renderBEX(bexList) {
             const container = document.getElementById('bexGrid');
             container.innerHTML = '';
 
@@ -860,6 +1031,7 @@
         function createBEXCard(bex) {
             const card = document.createElement('div');
             card.className = 'bex-card';
+            card.dataset.bex = bex.numBEX;
             
             const isLocked = bex.statut !== 'disponible';
             if (isLocked) card.classList.add('locked');
