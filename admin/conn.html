@@ -7,17 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-light: #f8fafc;
+            --bg-light: #f8f9fc;
             --bg-card: #ffffff;
-            --bg-hover: #f1f5f9;
-            --border: #e2e8f0;
-            --text: #1e293b;
-            --text-muted: #64748b;
+            --bg-hover: #f1f3f9;
+            --border: #e2e4eb;
+            --text: #1a1d26;
+            --text-muted: #6b7280;
             --primary: #7c3aed;
-            --primary-light: #ede9fe;
+            --primary-light: #8b5cf6;
             --primary-glow: rgba(124, 58, 237, 0.15);
-            --success: #16a34a;
-            --success-bg: rgba(22, 163, 74, 0.1);
+            --success: #059669;
+            --success-bg: rgba(5, 150, 105, 0.1);
             --warning: #d97706;
             --warning-bg: rgba(217, 119, 6, 0.1);
             --danger: #dc2626;
@@ -26,21 +26,21 @@
             --info-bg: rgba(37, 99, 235, 0.1);
             --radius: 12px;
             --radius-sm: 8px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg-light); color: var(--text); min-height: 100vh; line-height: 1.6; }
         .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-        .sidebar { background: var(--bg-card); border-right: 1px solid var(--border); padding: 24px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto; box-shadow: var(--shadow); }
+        .sidebar { background: var(--bg-card); border-right: 1px solid var(--border); padding: 24px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto; box-shadow: var(--shadow-sm); }
         .logo { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 32px; }
-        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), #a78bfa); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 12px var(--primary-glow); }
+        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 12px var(--primary-glow); }
         .logo-text { font-weight: 700; font-size: 16px; color: var(--text); }
         .logo-text span { display: block; font-size: 11px; font-weight: 400; color: var(--text-muted); }
         .nav-section { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 20px 16px 8px; }
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500; }
         .nav-item:hover { background: var(--bg-hover); color: var(--text); }
-        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
+        .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
         .nav-item .icon { font-size: 18px; }
         .nav-item .badge { margin-left: auto; background: var(--bg-hover); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
         .nav-item.active .badge { background: rgba(255,255,255,0.25); color: white; }
@@ -48,14 +48,14 @@
         .header { margin-bottom: 32px; }
         .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; color: var(--text); }
         .header p { color: var(--text-muted); font-size: 15px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 24px; overflow: hidden; box-shadow: var(--shadow); }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 24px; overflow: hidden; box-shadow: var(--shadow-sm); }
         .card-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); background: var(--bg-light); }
         .card-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; color: var(--text); }
         .card-body { padding: 24px; }
         .card-body.np { padding: 0; }
         .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px var(--primary-glow); }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--primary-glow); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px var(--primary-glow); }
         .btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
         .btn-secondary:hover { background: var(--bg-hover); }
         .btn-success { background: var(--success); color: white; }
@@ -68,17 +68,17 @@
         .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; font-family: inherit; transition: all 0.2s; }
         .form-textarea { min-height: 100px; resize: vertical; }
         .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
-        .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+        .form-input::placeholder { color: var(--text-muted); }
         .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
         .form-row-3 { grid-template-columns: repeat(3, 1fr); }
         .form-row-4 { grid-template-columns: repeat(4, 1fr); }
         .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
         .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
-        .badge-event { background: var(--success-bg); color: var(--success); }
-        .badge-qr { background: var(--info-bg); color: var(--info); }
-        .badge-zone { background: rgba(219, 39, 119, 0.1); color: #db2777; }
-        .badge-dictee { background: rgba(147, 51, 234, 0.1); color: #9333ea; }
-        .badge-erreur { background: var(--warning-bg); color: var(--warning); }
+        .badge-event { background: var(--success-bg); color: var(--success); border: 1px solid var(--success); }
+        .badge-qr { background: var(--info-bg); color: var(--info); border: 1px solid var(--info); }
+        .badge-zone { background: rgba(219, 39, 119, 0.1); color: #db2777; border: 1px solid #db2777; }
+        .badge-dictee { background: rgba(124, 58, 237, 0.1); color: #7c3aed; border: 1px solid #7c3aed; }
+        .badge-erreur { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning); }
         .badge-success { background: var(--success-bg); color: var(--success); }
         .badge-warning { background: var(--warning-bg); color: var(--warning); }
         table { width: 100%; border-collapse: collapse; }
@@ -88,7 +88,7 @@
         .list-item { display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--border); transition: background 0.2s; cursor: pointer; }
         .list-item:hover { background: var(--bg-hover); }
         .list-item:last-child { border-bottom: none; }
-        .list-item.active { background: var(--primary-light); border-left: 3px solid var(--primary); }
+        .list-item.active { background: var(--primary-glow); border-left: 3px solid var(--primary); }
         .list-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: var(--bg-light); border: 1px solid var(--border); }
         .list-info { flex: 1; }
         .list-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; color: var(--text); }
@@ -99,7 +99,7 @@
         .element-icon.event { background: var(--success-bg); }
         .element-icon.qr { background: var(--info-bg); }
         .element-icon.zone { background: rgba(219, 39, 119, 0.1); }
-        .element-icon.dictee { background: rgba(147, 51, 234, 0.1); }
+        .element-icon.dictee { background: rgba(124, 58, 237, 0.1); }
         .element-icon.erreur { background: var(--warning-bg); }
         .element-content { flex: 1; }
         .element-date { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--primary); min-width: 50px; }
@@ -107,17 +107,17 @@
         .element-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
         .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
         .filter-btn { padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .filter-btn:hover, .filter-btn.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+        .filter-btn:hover, .filter-btn.active { background: var(--primary-glow); border-color: var(--primary); color: var(--primary); }
         .format-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-        .format-option { padding: 20px 16px; background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.2s; }
-        .format-option:hover { border-color: var(--primary); background: var(--primary-light); }
-        .format-option.selected { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 3px var(--primary-glow); }
+        .format-option { padding: 20px 16px; background: var(--bg-light); border: 2px solid var(--border); border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.2s; }
+        .format-option:hover { border-color: var(--primary); background: var(--primary-glow); }
+        .format-option.selected { border-color: var(--primary); background: var(--primary-glow); box-shadow: 0 0 0 3px var(--primary-glow); }
         .format-option .icon { font-size: 28px; margin-bottom: 8px; }
         .format-option h4 { font-size: 13px; font-weight: 600; color: var(--text); }
         .exercise-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .exercise-card { padding: 16px; background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.2s; }
-        .exercise-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .exercise-card.selected { border-color: var(--primary); background: var(--primary-light); }
+        .exercise-card { padding: 16px; background: var(--bg-light); border: 2px solid var(--border); border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.2s; }
+        .exercise-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .exercise-card.selected { border-color: var(--primary); background: var(--primary-glow); }
         .exercise-card .icon { font-size: 24px; margin-bottom: 8px; }
         .exercise-card h4 { font-size: 12px; font-weight: 600; color: var(--text); }
         .exercise-card p { font-size: 11px; color: var(--text-muted); }
@@ -131,13 +131,13 @@
         .bank-check .count { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
         .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; transform: translateY(20px) scale(0.95); transition: transform 0.3s; box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; transform: translateY(20px) scale(0.95); transition: transform 0.3s; box-shadow: var(--shadow); }
         .modal.lg { max-width: 900px; }
         .modal-overlay.visible .modal { transform: translateY(0) scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); background: var(--bg-light); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
         .modal-header h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text); }
-        .modal-close { width: 36px; height: 36px; border: none; background: var(--bg-card); border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; font-size: 18px; transition: all 0.2s; border: 1px solid var(--border); }
-        .modal-close:hover { background: var(--bg-hover); color: var(--text); }
+        .modal-close { width: 36px; height: 36px; border: none; background: var(--bg-hover); border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; font-size: 18px; transition: all 0.2s; }
+        .modal-close:hover { background: var(--border); color: var(--text); }
         .modal-body { padding: 24px; }
         .modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid var(--border); background: var(--bg-light); }
         .two-cols { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
@@ -147,9 +147,9 @@
         .empty { text-align: center; padding: 60px 40px; color: var(--text-muted); }
         .empty .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
         .tag-selector { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag-opt { padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text-muted); }
-        .tag-opt:hover, .tag-opt.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
-        .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; background: var(--bg-card); border: 1px solid var(--success); border-radius: var(--radius); color: var(--success); font-weight: 600; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; box-shadow: var(--shadow-md); }
+        .tag-opt { padding: 8px 16px; background: var(--bg-light); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text-muted); }
+        .tag-opt:hover, .tag-opt.selected { border-color: var(--primary); background: var(--primary-glow); color: var(--primary); }
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; background: var(--bg-card); border: 1px solid var(--success); border-radius: var(--radius); color: var(--success); font-weight: 600; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; box-shadow: var(--shadow); }
         .toast.visible { transform: translateY(0); opacity: 1; }
         .toast.error { border-color: var(--danger); color: var(--danger); }
         .exercise-item { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-light); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px; }
@@ -159,28 +159,42 @@
         .exercise-item .info p { font-size: 12px; color: var(--text-muted); }
         .exercise-item .actions { display: flex; gap: 8px; }
         .steps { display: flex; gap: 8px; margin-bottom: 24px; }
-        .step { flex: 1; padding: 12px; background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius-sm); text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
-        .step.active { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .step { flex: 1; padding: 12px; background: var(--bg-light); border: 2px solid var(--border); border-radius: var(--radius-sm); text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .step.active { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
         .step.done { border-color: var(--success); color: var(--success); background: var(--success-bg); }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f8f9fc 0%, #eef2ff 100%); }
+        .login-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 48px; text-align: center; max-width: 420px; width: 90%; box-shadow: var(--shadow); }
+        .login-icon { width: 72px; height: 72px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 28px; box-shadow: 0 8px 24px var(--primary-glow); }
+        .login-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+        .login-subtitle { color: var(--text-muted); margin-bottom: 36px; font-size: 15px; }
+        .login-form .form-group { text-align: left; }
+        .login-error { color: var(--danger); margin-top: 16px; font-size: 14px; font-weight: 500; display: none; }
         @media (max-width: 1024px) { .format-grid { grid-template-columns: repeat(3, 1fr); } .exercise-grid { grid-template-columns: repeat(2, 1fr); } .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; } .two-cols { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } .format-grid, .exercise-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg-light);display:flex;align-items:center;justify-content:center;z-index:9999;">
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;max-width:400px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.1);">
-            <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--primary),#a78bfa);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 24px;box-shadow:0 4px 12px var(--primary-glow);">🔐</div>
-            <h1 style="font-size:24px;margin-bottom:8px;color:var(--text);">Admin CONN</h1>
-            <p style="color:var(--text-muted);margin-bottom:32px;">Espace réservé à l'enseignant</p>
-            <input type="password" id="loginPassword" class="form-input" placeholder="Mot de passe" style="margin-bottom:16px;text-align:center;" onkeypress="if(event.key==='Enter')checkPassword()">
-            <button class="btn btn-primary" style="width:100%;" onclick="checkPassword()">Connexion</button>
-            <p id="loginError" style="color:var(--danger);margin-top:16px;display:none;">Mot de passe incorrect</p>
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <div class="login-icon">🔐</div>
+            <h1 class="login-title">Admin CONN</h1>
+            <p class="login-subtitle">Espace réservé à l'enseignant</p>
+            <div class="login-form">
+                <div class="form-group">
+                    <label class="form-label">Identifiant</label>
+                    <input type="text" id="loginUsername" class="form-input" placeholder="Votre identifiant" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Votre mot de passe" autocomplete="current-password" onkeypress="if(event.key==='Enter')checkLogin()">
+                </div>
+                <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="checkLogin()">Connexion</button>
+            </div>
+            <p id="loginError" class="login-error">Identifiant ou mot de passe incorrect</p>
         </div>
     </div>
 
     <div class="layout" style="display:none;" id="mainApp">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-icon">📝</div>
@@ -194,14 +208,12 @@
                 <div class="nav-item" onclick="showPage('evaluations')"><span class="icon">📋</span>Mes évaluations<span class="badge" id="navEvalCount">0</span></div>
                 <div class="nav-item" onclick="showPage('new-eval')"><span class="icon">➕</span>Nouvelle évaluation</div>
                 <div class="nav-section">Système</div>
-                <div class="nav-item" onclick="loadAllData()"><span class="icon">🔄</span>Rafraîchir les données</div>
+                <div class="nav-item" onclick="loadAllData()"><span class="icon">🔄</span>Rafraîchir</div>
                 <div class="nav-item" onclick="openModal('modalHelp')"><span class="icon">❓</span>Aide</div>
+                <div class="nav-item" onclick="logout()"><span class="icon">🚪</span>Déconnexion</div>
             </nav>
         </aside>
-
-        <!-- Main Content -->
         <main class="main">
-            <!-- PAGE: Banques -->
             <div id="page-banks">
                 <div class="header"><h1>🗃️ Mes banques de questions</h1><p>5 formats de données • Cliquez sur une banque pour voir ses éléments</p></div>
                 <div class="two-cols">
@@ -218,8 +230,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- PAGE: Nouvel élément -->
             <div id="page-new-element" style="display:none">
                 <div class="header"><h1>➕ Nouvel élément</h1><p>Choisissez un format et remplissez les champs</p></div>
                 <div class="card">
@@ -282,8 +292,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- PAGE: Évaluations -->
             <div id="page-evaluations" style="display:none">
                 <div class="header"><h1>📋 Mes évaluations</h1><p>8 types d'exercices disponibles</p></div>
                 <div class="card">
@@ -293,8 +301,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- PAGE: Nouvelle évaluation -->
             <div id="page-new-eval" style="display:none">
                 <div class="header"><h1>➕ Nouvelle évaluation</h1><p>Étape 1 : Paramètres généraux</p></div>
                 <div class="steps"><div class="step active">1. Paramètres</div><div class="step">2. Exercices</div><div class="step">3. Validation</div></div>
@@ -307,8 +313,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- PAGE: Éditer évaluation -->
             <div id="page-edit-eval" style="display:none">
                 <div class="header"><h1>✏️ <span id="editEvalTitle">Évaluation</span></h1><p>Ajoutez et configurez les exercices</p></div>
                 <div class="steps"><div class="step done">1. Paramètres ✓</div><div class="step active">2. Exercices</div><div class="step">3. Validation</div></div>
@@ -345,8 +349,6 @@
             </div>
         </main>
     </div>
-
-    <!-- Modals -->
     <div class="modal-overlay" id="modalNewBank">
         <div class="modal">
             <div class="modal-header"><h2>➕ Nouvelle banque</h2><button class="modal-close" onclick="closeModal('modalNewBank')">✕</button></div>
@@ -357,7 +359,6 @@
             <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalNewBank')">Annuler</button><button class="btn btn-primary" onclick="saveBank()">✓ Créer</button></div>
         </div>
     </div>
-
     <div class="modal-overlay" id="modalConfirmDelete">
         <div class="modal">
             <div class="modal-header"><h2>🗑️ Confirmer la suppression</h2><button class="modal-close" onclick="closeModal('modalConfirmDelete')">✕</button></div>
@@ -365,12 +366,11 @@
             <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalConfirmDelete')">Annuler</button><button class="btn btn-primary" style="background:var(--danger);" onclick="confirmDelete()">🗑️ Supprimer</button></div>
         </div>
     </div>
-
     <div class="modal-overlay" id="modalHelp">
         <div class="modal lg">
             <div class="modal-header"><h2>❓ Aide - Formats & Exercices</h2><button class="modal-close" onclick="closeModal('modalHelp')">✕</button></div>
             <div class="modal-body">
-                <h3 style="margin-bottom:16px;color:var(--text);">📦 5 formats de données</h3>
+                <h3 style="margin-bottom:16px;">📦 5 formats de données</h3>
                 <table style="margin-bottom:24px;"><thead><tr><th>Format</th><th>Champs</th><th>Exercices</th></tr></thead><tbody>
                     <tr><td><span class="badge badge-event">Événement</span></td><td>Date + Événement</td><td>Frise, Timeline, QCM</td></tr>
                     <tr><td><span class="badge badge-qr">Question-Réponse</span></td><td>Question + Réponse + Tag</td><td>Question ouverte, QCM</td></tr>
@@ -382,10 +382,9 @@
             <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('modalHelp')">Compris !</button></div>
         </div>
     </div>
-
     <div class="toast" id="toast"></div>
-
     <script>
+        const ADMIN_USERNAME = 'emeyer20';
         const ADMIN_PASSWORD = 'TEST';
         const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
         const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzyqkUjiZBuS7MR-fo9qbb2Vrbw7JuIuBXczzNIT0qXUE6BZUu9XmJ3zVR-UmzC8SCQ/exec';
@@ -398,8 +397,10 @@
         const exerciseNames = { frise: 'Frise chronologique', timeline: 'Timeline', qcm: 'QCM', ouverte: 'Question ouverte', carte: 'Carte cliquable', image: 'Identification image', dictee: 'Dictée', erreur: "Trouve l'erreur" };
         const exerciseIcons = { frise: '⏱️', timeline: '🔀', qcm: '🎯', ouverte: '❓', carte: '🗺️', image: '🖼️', dictee: '🎧', erreur: '🔍' };
 
-        function checkPassword() {
-            if (document.getElementById('loginPassword').value === ADMIN_PASSWORD) {
+        function checkLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'grid';
                 sessionStorage.setItem('conn_admin_auth', 'true');
@@ -408,7 +409,20 @@
                 document.getElementById('loginPassword').value = '';
             }
         }
-        if (sessionStorage.getItem('conn_admin_auth') === 'true') { document.getElementById('loginScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'grid'; }
+
+        function logout() {
+            sessionStorage.removeItem('conn_admin_auth');
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        if (sessionStorage.getItem('conn_admin_auth') === 'true') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'grid';
+        }
 
         async function loadSheet(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -432,7 +446,6 @@
             elements = await loadSheet('ELEMENTS');
             evaluations = await loadSheet('EVALUATIONS');
             exercices = await loadSheet('EXERCICES');
-            console.log('Banques:', banques, 'Elements:', elements, 'Evaluations:', evaluations, 'Exercices:', exercices);
             document.getElementById('navBankCount').textContent = banques.length;
             document.getElementById('navEvalCount').textContent = evaluations.length;
             renderBanks(); renderEvaluations(); updateBanqueSelect(); updateExoBanquesCheckboxes();
@@ -507,7 +520,7 @@
             const container = document.getElementById('exoBanques');
             const requiredFormats = exerciseFormats[selectedExerciseType] || [];
             const compatibleBanks = banques.filter(b => elements.filter(e => e.Banque === b.ID).some(e => requiredFormats.includes(e.Format)));
-            if (compatibleBanks.length === 0) { container.innerHTML = `<div style="padding:16px;color:var(--text-muted);font-size:13px;">⚠️ Aucune banque compatible (format requis: ${requiredFormats.join(', ')})</div>`; return; }
+            if (compatibleBanks.length === 0) { container.innerHTML = `<div style="padding:16px;color:var(--text-muted);font-size:13px;">⚠️ Aucune banque compatible</div>`; return; }
             container.innerHTML = compatibleBanks.map(b => {
                 const count = elements.filter(e => e.Banque === b.ID && requiredFormats.includes(e.Format)).length;
                 return `<div class="bank-check"><input type="checkbox" id="bank_${b.ID}" value="${b.ID}"><label for="bank_${b.ID}">${b.Nom || b.ID}</label><span class="count">${count}</span></div>`;
