@@ -186,6 +186,16 @@
             color: var(--primary);
         }
 
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+            color: var(--gray-700);
+        }
+
         .sidebar-item .item-icon {
             width: 32px;
             height: 32px;
@@ -203,6 +213,11 @@
         .sidebar-item.active .item-icon {
             background: var(--primary);
             color: white;
+        }
+
+        .sidebar-item.disabled:hover .item-icon {
+            background: var(--gray-100);
+            color: inherit;
         }
 
         .sidebar-item .item-text {
@@ -327,6 +342,12 @@
             pointer-events: none;
         }
 
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 z-index: 60;
@@ -339,11 +360,6 @@
             }
             .flipbook-card iframe {
                 height: 500px;
-            }
-            .overlay.visible {
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
             }
         }
     </style>
@@ -358,109 +374,17 @@
         <div class="header-inner">
             <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
             
-            <a href="../index.html" class="logo">
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
                 <div class="logo-icon">📚</div>
                 <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
             </a>
         </div>
     </header>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (chargé dynamiquement) -->
     <aside class="sidebar collapsed" id="sidebar">
-        <div class="sidebar-inner">
-            
-            <!-- Organisation -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>🧰</span> Organisation
-                </div>
-                <a href="emploi-du-temps.html" class="sidebar-item">
-                    <span class="item-icon">📅</span>
-                    <span class="item-text">Emploi du temps</span>
-                </a>
-                <a href="classeur.html" class="sidebar-item active">
-                    <span class="item-icon">📁</span>
-                    <span class="item-text">Classeur</span>
-                </a>
-                <a href="notes.html" class="sidebar-item">
-                    <span class="item-icon">📊</span>
-                    <span class="item-text">Notes</span>
-                </a>
-            </div>
-
-            <!-- Cours -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>📚</span> Cours
-                </div>
-                <a href="lecons.html" class="sidebar-item">
-                    <span class="item-icon">📖</span>
-                    <span class="item-text">Leçons</span>
-                </a>
-                <a href="methodologie.html" class="sidebar-item">
-                    <span class="item-icon">🧠</span>
-                    <span class="item-text">Méthodologie</span>
-                </a>
-            </div>
-
-            <!-- Entraînements -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>💪</span> Entraînements
-                </div>
-                <a href="entrainement-connaissances.html" class="sidebar-item">
-                    <span class="item-icon">✅</span>
-                    <span class="item-text">
-                        Connaissances
-                        <span class="item-sub">Apprendre ses leçons</span>
-                    </span>
-                </a>
-                <a href="entrainement-bex.html" class="sidebar-item">
-                    <span class="item-icon">⭐</span>
-                    <span class="item-text">
-                        BEX (lundi)
-                        <span class="item-sub">Maîtriser les savoir-faire</span>
-                    </span>
-                </a>
-                <a href="entrainement-tc.html" class="sidebar-item">
-                    <span class="item-icon">📝</span>
-                    <span class="item-text">
-                        TC (vendredi)
-                        <span class="item-sub">Préparer l'évaluation</span>
-                    </span>
-                </a>
-            </div>
-
-            <!-- Évaluations -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>📝</span> Évaluations
-                </div>
-                <a href="evaluations-connaissances.html" class="sidebar-item">
-                    <span class="item-icon">✅</span>
-                    <span class="item-text">Éval. de connaissances</span>
-                </a>
-                <a href="bonus.html" class="sidebar-item">
-                    <span class="item-icon">🌟</span>
-                    <span class="item-text">Points supplémentaires</span>
-                </a>
-            </div>
-
-            <!-- Communication -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>💬</span> Communication
-                </div>
-                <a href="../FAQ.html" class="sidebar-item">
-                    <span class="item-icon">❓</span>
-                    <span class="item-text">Aide / FAQ</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <span class="item-icon">🗣️</span>
-                    <span class="item-text">Espace discussion</span>
-                </a>
-            </div>
-
+        <div class="sidebar-inner" id="sidebarContent">
+            <!-- Le contenu sera chargé par JavaScript -->
         </div>
     </aside>
 
@@ -470,7 +394,7 @@
             
             <!-- BREADCRUMB -->
             <nav class="breadcrumb">
-                <a href="../index.html">🏠 Accueil</a>
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
                 <span class="separator">›</span>
                 <span class="current">📁 Classeur modèle</span>
             </nav>
@@ -501,7 +425,12 @@
         </div>
     </main>
 
+    <!-- SCRIPT SIDEBAR -->
     <script>
+        // ===== CONFIGURATION =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const CURRENT_PAGE = 'classeur';
+
         // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
@@ -511,7 +440,6 @@
             sidebar.classList.toggle('collapsed');
             menuToggle.classList.toggle('active');
             
-            // Overlay only on mobile
             if (window.innerWidth <= 768) {
                 overlay.classList.toggle('visible');
             }
@@ -534,6 +462,32 @@
                 overlay.classList.remove('visible');
             }
         });
+
+        // ===== LOAD SIDEBAR =====
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                if (!response.ok) throw new Error('Sidebar not found');
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                // Marquer la page active
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.dataset.page === CURRENT_PAGE) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Désactiver les liens vides
+                document.querySelectorAll('.nav-item.disabled, .nav-item[href="#"]').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSidebar);
     </script>
 
 </body>
