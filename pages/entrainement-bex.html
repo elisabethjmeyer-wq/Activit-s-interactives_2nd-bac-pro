@@ -20,6 +20,8 @@
             
             --accent-green: #10b981;
             --accent-green-light: #d1fae5;
+            --accent-orange: #f59e0b;
+            --accent-orange-light: #fef3c7;
             
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
@@ -534,9 +536,28 @@
             margin-bottom: 2px;
         }
 
-        .exercice-info span {
-            font-size: 12px;
-            color: var(--gray-500);
+        .exercice-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .exercice-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .exercice-badge.eval {
+            background: var(--accent-orange-light);
+            color: var(--accent-orange);
+        }
+
+        .exercice-badge.bonus {
+            background: var(--primary-bg);
+            color: var(--primary);
         }
 
         .exercice-arrow {
@@ -663,9 +684,18 @@
         // ===== CONFIG =====
         const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
         const CURRENT_PAGE = 'entrainement-bex';
-        const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
-        const SHEET_NAME = 'EXERCICES';
-        const EXERCICES_BASE_URL = 'exercices/';
+        
+        // NOUVEAU Google Sheet EXERCICES
+        const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
+        const SHEET_NAME = 'MENU_BEX';
+        
+        // Mapping Type -> Template
+        const TEMPLATES = {
+            'tableau-dates': 'templates/bex-tableau-dates.html',
+            'carte': 'templates/bex-carte.html',
+            'paratexte': 'templates/bex-paratexte.html',
+            'vocabulaire': 'templates/bex-vocabulaire.html'
+        };
 
         // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
@@ -726,7 +756,12 @@
                 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
                 const response = await fetch(url);
                 const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                // Parser la réponse Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonText = text.substring(jsonStart, jsonEnd);
+                const json = JSON.parse(jsonText);
 
                 if (!json.table || !json.table.rows) {
                     throw new Error('No data');
@@ -737,13 +772,16 @@
                     const row = json.table.rows[i].c;
                     if (!row) continue;
 
+                    // Colonnes: NumBEX, NumExo, TitreBEX, TitreExo, Type, EnEval, Statut
                     const numBEX = row[0]?.v ?? '';
                     const numExo = row[1]?.v ?? '';
                     const titreBEX = row[2]?.v || '';
                     const titreExo = row[3]?.v || '';
-                    const lien = row[4]?.v || '';
-                    const statut = String(row[5]?.v || '').toLowerCase();
+                    const type = row[4]?.v || '';
+                    const enEval = row[5]?.v || '';
+                    const statut = String(row[6]?.v || '').toLowerCase();
 
+                    // Skip header row
                     if (String(numBEX).toLowerCase().includes('numbex')) continue;
                     if (numBEX === '' && numExo === '') continue;
 
@@ -752,7 +790,8 @@
                         numExo: parseInt(numExo) || 0,
                         titreBEX: String(titreBEX).trim(),
                         titreExo: String(titreExo).trim(),
-                        lien: String(lien).trim(),
+                        type: String(type).trim().toLowerCase(),
+                        enEval: String(enEval).trim().toLowerCase() === 'oui',
                         statut: statut.includes('disponible') ? 'disponible' : 'à venir'
                     });
                 }
@@ -781,19 +820,24 @@
                     bexMap[item.numBEX] = {
                         numBEX: item.numBEX,
                         titre: '',
+                        type: '',
                         statut: 'à venir',
                         exercices: []
                     };
                 }
 
+                // NumExo = 0 = ligne d'en-tête du BEX
                 if (item.numExo === 0) {
                     bexMap[item.numBEX].titre = item.titreBEX;
+                    bexMap[item.numBEX].type = item.type;
                     bexMap[item.numBEX].statut = item.statut;
                 } else {
+                    // C'est un exercice
                     bexMap[item.numBEX].exercices.push({
                         numExo: item.numExo,
-                        titre: item.titreExo || `Exercice n°${item.numExo}`,
-                        lien: item.lien,
+                        titre: item.titreExo || `Exercice ${item.numExo}`,
+                        type: item.type || bexMap[item.numBEX].type,
+                        enEval: item.enEval,
                         statut: item.statut
                     });
                 }
@@ -840,14 +884,14 @@
                     </div>
                     ${!isLocked ? '<div class="bex-toggle">▼</div>' : ''}
                 </div>
-                ${!isLocked ? createExercicesList(bex.exercices) : ''}
+                ${!isLocked ? createExercicesList(bex.exercices, bex.type) : ''}
             `;
 
             return card;
         }
 
         // ===== CREATE EXERCICES LIST =====
-        function createExercicesList(exercices) {
+        function createExercicesList(exercices, bexType) {
             if (exercices.length === 0) {
                 return `
                     <div class="exercices-list">
@@ -864,7 +908,19 @@
 
             const items = exercices.map(exo => {
                 const isLocked = exo.statut !== 'disponible';
-                const href = isLocked ? '#' : (EXERCICES_BASE_URL + exo.lien);
+                
+                // Générer le lien vers le template avec paramètre ?exo=
+                const type = exo.type || bexType;
+                const template = TEMPLATES[type] || '';
+                const href = isLocked || !template ? '#' : `${template}?exo=${exo.numExo}`;
+
+                // Badges
+                let badgeHtml = '';
+                if (exo.enEval) {
+                    badgeHtml = '<span class="exercice-badge eval">📋 Peut tomber en évaluation</span>';
+                } else {
+                    badgeHtml = '<span class="exercice-badge bonus">🎁 Bonus</span>';
+                }
 
                 return `
                     <a href="${href}" class="exercice-item ${isLocked ? 'locked' : ''}">
@@ -873,7 +929,9 @@
                         </div>
                         <div class="exercice-info">
                             <h4>${exo.titre}</h4>
-                            <span>${isLocked ? 'Bientôt disponible' : 'Cliquer pour commencer'}</span>
+                            <div class="exercice-badges">
+                                ${badgeHtml}
+                            </div>
                         </div>
                         ${!isLocked ? '<span class="exercice-arrow">→</span>' : ''}
                     </a>
