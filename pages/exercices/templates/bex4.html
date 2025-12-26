@@ -113,13 +113,6 @@
 
         .sidebar.collapsed { transform: translateX(-100%); }
         .sidebar-inner { padding: 16px 12px; }
-        .sidebar-section { margin-bottom: 8px; }
-        .sidebar-section-title {
-            font-size: 11px; font-weight: 700; color: var(--gray-400);
-            text-transform: uppercase; letter-spacing: 0.05em;
-            padding: 12px 12px 8px;
-            display: flex; align-items: center; gap: 8px;
-        }
 
         .sidebar-item {
             display: flex; align-items: center; gap: 12px;
@@ -127,10 +120,8 @@
             text-decoration: none; color: var(--gray-700);
             font-size: 14px; font-weight: 500; transition: all 0.15s;
         }
-
         .sidebar-item:hover { background: var(--primary-bg); color: var(--primary); }
         .sidebar-item.active { background: var(--primary-bg); color: var(--primary); }
-        .sidebar-item.disabled { opacity: 0.5; cursor: not-allowed; }
         .sidebar-item .item-icon {
             width: 32px; height: 32px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
@@ -259,7 +250,6 @@
             box-shadow: var(--shadow); font-family: inherit;
         }
         .buttons button:hover { transform: translateY(-2px); }
-        .btn-verify { background: linear-gradient(135deg, var(--accent-green), #34d399); color: white; }
         .btn-solution { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
         .btn-restart { background: linear-gradient(135deg, var(--gray-500), var(--gray-400)); color: white; }
 
@@ -272,6 +262,47 @@
         .result.show { display: block; }
         .result h3 { color: #065f46; margin-bottom: 8px; font-size: 15px; }
         .result p { color: #047857; font-size: 14px; }
+
+        .nav-exercices {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .nav-btn.prev { background: var(--gray-100); color: var(--gray-700); }
+        .nav-btn.prev:hover { background: var(--gray-200); }
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        .nav-btn.menu { background: var(--gray-100); color: var(--gray-600); }
+        .nav-btn.menu:hover { background: var(--primary-bg); color: var(--primary); }
+        .nav-info { text-align: center; color: var(--gray-500); font-size: 13px; }
 
         .loading { text-align: center; padding: 60px 20px; color: var(--gray-500); }
         .loading-spinner {
@@ -303,6 +334,8 @@
             .sidebar { z-index: 60; }
             .main { margin-left: 0; }
             .buttons button { min-width: 100%; }
+            .nav-exercices { flex-direction: column; gap: 10px; }
+            .nav-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -357,6 +390,8 @@
         let exerciseData = null;
         let timeLeft = 600;
         let timerInterval = null;
+        let totalExercises = 0;
+        let currentExoNum = 1;
 
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
@@ -407,46 +442,24 @@
             return { exo: parseInt(params.get('exo')) || 1 };
         }
 
-        // ===== TRANSFORMATION AUTOMATIQUE DES URLs =====
-        // Tu peux coller n'importe quel lien Google Drive, il sera transformé automatiquement !
-        function transformUrl(url, type) {
+        function transformUrl(url) {
             if (!url) return '';
             
-            // Détecter si c'est un lien Google Drive
             const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+            
             const docsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
+            if (docsMatch) return `https://docs.google.com/document/d/${docsMatch[1]}/preview`;
+            
             const sheetsMatch = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+            if (sheetsMatch) return `https://docs.google.com/spreadsheets/d/${sheetsMatch[1]}/preview`;
+            
             const slidesMatch = url.match(/docs\.google\.com\/presentation\/d\/([a-zA-Z0-9_-]+)/);
+            if (slidesMatch) return `https://docs.google.com/presentation/d/${slidesMatch[1]}/preview`;
             
-            if (driveMatch) {
-                const fileId = driveMatch[1];
-                // Pour les images, on utilise /preview dans un iframe (plus fiable)
-                // Pour tous les fichiers Drive (PDF, images, sons, vidéos), /preview fonctionne
-                return `https://drive.google.com/file/d/${fileId}/preview`;
-            }
-            
-            if (docsMatch) {
-                const docId = docsMatch[1];
-                return `https://docs.google.com/document/d/${docId}/preview`;
-            }
-            
-            if (sheetsMatch) {
-                const sheetId = sheetsMatch[1];
-                return `https://docs.google.com/spreadsheets/d/${sheetId}/preview`;
-            }
-            
-            if (slidesMatch) {
-                const slideId = slidesMatch[1];
-                return `https://docs.google.com/presentation/d/${slideId}/preview`;
-            }
-            
-            // YouTube
             const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-            if (youtubeMatch) {
-                return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
-            }
+            if (youtubeMatch) return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
             
-            // Si ce n'est pas un lien spécial, retourner tel quel
             return url;
         }
 
@@ -460,28 +473,66 @@
                 const jsonEnd = text.lastIndexOf('}') + 1;
                 const data = JSON.parse(text.substring(jsonStart, jsonEnd));
                 
+                let foundExercise = null;
+                let maxExo = 0;
+                
                 for (let row of data.table.rows) {
                     const numExo = row.c[0]?.v;
-                    if (numExo === exoNum) {
-                        return {
-                            numExo: numExo,
-                            titre: row.c[1]?.v || `Exercice ${exoNum}`,
-                            mot: row.c[2]?.v || 'mot',
-                            temps: row.c[3]?.v || 600,
-                            documentTitre: row.c[4]?.v || 'Document',
-                            documentUrl: row.c[5]?.v || '',
-                            documentLegende: row.c[6]?.v || '',
-                            corrigeEtape1: row.c[7]?.v || '',
-                            corrigeEtape2: row.c[8]?.v || ''
-                        };
+                    if (typeof numExo === 'number' && numExo > 0) {
+                        maxExo = Math.max(maxExo, numExo);
+                        
+                        if (numExo === exoNum) {
+                            foundExercise = {
+                                numExo: numExo,
+                                titre: row.c[1]?.v || `Exercice ${exoNum}`,
+                                mot: row.c[2]?.v || 'mot',
+                                temps: row.c[3]?.v || 600,
+                                documentTitre: row.c[4]?.v || 'Document',
+                                documentUrl: row.c[5]?.v || '',
+                                documentLegende: row.c[6]?.v || '',
+                                corrigeEtape1: row.c[7]?.v || '',
+                                corrigeEtape2: row.c[8]?.v || ''
+                            };
+                        }
                     }
                 }
                 
+                totalExercises = maxExo;
+                currentExoNum = exoNum;
+                
+                if (foundExercise) return foundExercise;
                 throw new Error(`Exercice ${exoNum} non trouvé`);
             } catch (error) {
                 console.error('Erreur:', error);
                 throw error;
             }
+        }
+
+        function renderNavigation() {
+            const prevExo = currentExoNum - 1;
+            const nextExo = currentExoNum + 1;
+            const hasPrev = prevExo >= 1;
+            const hasNext = nextExo <= totalExercises;
+
+            const prevLink = hasPrev ? `?exo=${prevExo}` : '#';
+            const nextLink = hasNext ? `?exo=${nextExo}` : '#';
+            const menuLink = `${BASE_PATH}/pages/entrainement-bex.html`;
+
+            return `
+                <nav class="nav-exercices">
+                    ${hasPrev ? `
+                        <a href="${prevLink}" class="nav-btn prev">← Exercice ${prevExo}</a>
+                    ` : `
+                        <a href="${menuLink}" class="nav-btn menu">← Retour au menu</a>
+                    `}
+                    <div class="nav-info">Exercice ${currentExoNum} / ${totalExercises}</div>
+                    ${hasNext ? `
+                        <a href="${nextLink}" class="nav-btn next">Exercice ${nextExo} →</a>
+                    ` : `
+                        <a href="${menuLink}" class="nav-btn next">Terminer ✓</a>
+                    `}
+                </nav>
+            `;
         }
 
         function renderExercise(data) {
@@ -490,17 +541,11 @@
             document.title = `BEX n°4 - ${data.titre} | Espace cours`;
             
             timeLeft = data.temps || 600;
-
-            // Transformer l'URL automatiquement
-            const finalUrl = transformUrl(data.documentUrl, data.documentType);
+            const finalUrl = transformUrl(data.documentUrl);
             
-            let documentHtml = '';
-            if (finalUrl) {
-                // Utiliser iframe pour tous les types (plus flexible et compatible)
-                documentHtml = `<iframe src="${finalUrl}" title="${data.documentTitre}" allow="autoplay"></iframe>`;
-            } else {
-                documentHtml = `<p style="padding: 20px; color: var(--gray-500);">Document non disponible</p>`;
-            }
+            let documentHtml = finalUrl
+                ? `<iframe src="${finalUrl}" title="${data.documentTitre}" allow="autoplay"></iframe>`
+                : `<p style="padding: 20px; color: var(--gray-500);">Document non disponible</p>`;
 
             const html = `
                 <div class="timer-box" id="timer">⏱️ Temps restant : ${formatTime(timeLeft)}</div>
@@ -513,9 +558,7 @@
                 <div class="exercise-layout">
                     <div class="document-card">
                         <h3>📄 ${data.documentTitre}</h3>
-                        <div class="document-container">
-                            ${documentHtml}
-                        </div>
+                        <div class="document-container">${documentHtml}</div>
                         <div class="document-legende">${data.documentLegende}</div>
                     </div>
 
@@ -552,6 +595,8 @@
                         </div>
                     </div>
                 </div>
+
+                ${renderNavigation()}
             `;
 
             document.getElementById('content').innerHTML = html;
@@ -563,9 +608,7 @@
                 <div class="error-message">
                     <h3>❌ Erreur</h3>
                     <p>${message}</p>
-                    <p style="margin-top: 12px;">
-                        <a href="${BASE_PATH}/pages/entrainement-bex.html">← Retour</a>
-                    </p>
+                    <p style="margin-top: 12px;"><a href="${BASE_PATH}/pages/entrainement-bex.html">← Retour</a></p>
                 </div>
             `;
         }
