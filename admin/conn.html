@@ -6,67 +6,230 @@
 <title>Admin CONN</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,sans-serif;background:#f5f5f5;min-height:100vh;display:flex;align-items:center;justify-content:center}
+body{font-family:system-ui,sans-serif;background:#f5f5f5;min-height:100vh}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .login{background:#fff;padding:40px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);text-align:center;max-width:400px;width:90%}
 .login h1{margin-bottom:8px;font-size:24px}
 .login p{color:#666;margin-bottom:24px}
 .login input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:16px;font-size:16px;text-align:center}
 .login button{width:100%;padding:12px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer}
-.login button:hover{background:#6d28d9}
 .error{color:#dc2626;margin-top:12px;display:none}
-.app{display:none;padding:40px}
-.app h1{margin-bottom:20px}
+.app{display:none}
+.sidebar{width:250px;background:#fff;border-right:1px solid #e5e5e5;padding:20px;position:fixed;height:100vh;overflow-y:auto}
+.sidebar h2{font-size:16px;margin-bottom:20px;color:#7c3aed}
+.nav-item{padding:12px;margin-bottom:4px;border-radius:8px;cursor:pointer;font-size:14px}
+.nav-item:hover{background:#f5f5f5}
+.nav-item.active{background:#7c3aed;color:#fff}
+.main{margin-left:250px;padding:30px}
+.header h1{font-size:24px;margin-bottom:8px}
+.header p{color:#666;margin-bottom:24px}
 .card{background:#fff;padding:24px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.btn{padding:10px 16px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500}
+.btn-primary{background:#7c3aed;color:#fff}
+.btn-success{background:#16a34a;color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #e5e5e5}
+th{font-size:12px;color:#666;text-transform:uppercase}
+.badge{display:inline-block;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-success{background:#dcfce7;color:#16a34a}
+.badge-warning{background:#fef3c7;color:#d97706}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:#666}
+.form-input,.form-select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:1000}
+.modal.show{display:flex}
+.modal-content{background:#fff;padding:24px;border-radius:12px;width:90%;max-width:500px}
+.modal-title{font-size:18px;font-weight:600;margin-bottom:20px}
+.modal-footer{display:flex;gap:12px;justify-content:flex-end;margin-top:20px}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #e5e5e5;cursor:pointer}
+.list-item:hover{background:#f9f9f9}
+.list-item.active{background:#ede9fe}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;background:#16a34a;color:#fff;border-radius:8px;display:none}
+.toast.show{display:block}
 </style>
 </head>
 <body>
-<div class="login" id="loginScreen">
+<div class="login-wrap" id="loginScreen">
+<div class="login">
 <h1>🔐 Admin CONN</h1>
 <p>Espace réservé à l'enseignant</p>
 <input type="password" id="pwd" placeholder="Mot de passe" onkeypress="if(event.key==='Enter')login()">
 <button onclick="login()">Connexion</button>
 <p class="error" id="err">Mot de passe incorrect</p>
 </div>
+</div>
+
 <div class="app" id="app">
-<h1>✅ Connecté !</h1>
+<div class="sidebar">
+<h2>📝 Admin CONN</h2>
+<div class="nav-item active" onclick="showPage('banks')">🗃️ Banques</div>
+<div class="nav-item" onclick="showPage('entrainements')">🏋️ Entraînements</div>
+<div class="nav-item" onclick="showPage('evaluations')">📋 Évaluations</div>
+<div class="nav-item" onclick="showPage('menu')">📚 Menu CONN</div>
+<div class="nav-item" onclick="loadData()">🔄 Rafraîchir</div>
+</div>
+
+<div class="main">
+<div id="page-banks">
+<div class="header"><h1>🗃️ Banques de questions</h1><p>Gérez vos banques et éléments</p></div>
 <div class="card">
-<h2>Banques : <span id="bankCount">...</span></h2>
+<div class="card-title">Banques <button class="btn btn-primary btn-sm" onclick="showModal('modalBank')">+ Nouvelle</button></div>
+<div id="banksList">Chargement...</div>
 </div>
 <div class="card">
-<h2>Menu CONN : <span id="menuCount">...</span></h2>
+<div class="card-title">Éléments <span id="bankName"></span></div>
+<div id="elementsList">Sélectionnez une banque</div>
 </div>
-<button onclick="location.reload()">Déconnexion</button>
 </div>
+
+<div id="page-entrainements" style="display:none">
+<div class="header"><h1>🏋️ Entraînements</h1><p>Exercices illimités</p></div>
+<div class="card">
+<div class="card-title">Liste <button class="btn btn-success btn-sm" onclick="alert('Bientôt disponible')">+ Nouveau</button></div>
+<table><thead><tr><th>Nom</th><th>Exercices</th><th>Statut</th></tr></thead><tbody id="entrainList"></tbody></table>
+</div>
+</div>
+
+<div id="page-evaluations" style="display:none">
+<div class="header"><h1>📋 Évaluations</h1><p>Évaluations notées</p></div>
+<div class="card">
+<div class="card-title">Liste <button class="btn btn-primary btn-sm" onclick="alert('Bientôt disponible')">+ Nouvelle</button></div>
+<table><thead><tr><th>Nom</th><th>Durée</th><th>Seuil</th><th>Statut</th></tr></thead><tbody id="evalList"></tbody></table>
+</div>
+</div>
+
+<div id="page-menu" style="display:none">
+<div class="header"><h1>📚 Menu CONN</h1><p>Structure du menu élève</p></div>
+<div class="card">
+<div class="card-title">Entrées <button class="btn btn-primary btn-sm" onclick="showModal('modalMenu')">+ Ajouter</button></div>
+<table><thead><tr><th>Leçon</th><th>N°</th><th>Titre</th><th>Type</th><th>Statut</th></tr></thead><tbody id="menuList"></tbody></table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modalBank">
+<div class="modal-content">
+<div class="modal-title">Nouvelle banque</div>
+<div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input" id="bankNom" placeholder="L4 - Grandes explorations"></div>
+<div class="form-group"><label class="form-label">Catégorie</label><select class="form-select" id="bankCat"><option>Histoire</option><option>Géographie</option><option>EMC</option></select></div>
+<div class="modal-footer"><button class="btn" onclick="hideModal('modalBank')">Annuler</button><button class="btn btn-primary" onclick="saveBank()">Créer</button></div>
+</div>
+</div>
+
+<div class="modal" id="modalMenu">
+<div class="modal-content">
+<div class="modal-title">Nouvelle entrée</div>
+<div class="form-row">
+<div class="form-group"><label class="form-label">N° Leçon</label><input type="text" class="form-input" id="menuLecon" placeholder="L4"></div>
+<div class="form-group"><label class="form-label">N° Exercice</label><input type="number" class="form-input" id="menuExo" placeholder="0=titre"></div>
+</div>
+<div class="form-group"><label class="form-label">Titre Leçon</label><input type="text" class="form-input" id="menuTitreL" placeholder="La mise en relation..."></div>
+<div class="form-group"><label class="form-label">Titre Exercice</label><input type="text" class="form-input" id="menuTitreE" placeholder="Exercice 1"></div>
+<div class="modal-footer"><button class="btn" onclick="hideModal('modalMenu')">Annuler</button><button class="btn btn-primary" onclick="saveMenu()">Ajouter</button></div>
+</div>
+</div>
+
+<div class="toast" id="toast">Enregistré !</div>
+
 <script>
 const PWD='TEST';
 const SHEET='1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
+const API='https://script.google.com/macros/s/AKfycbzyqkUjiZBuS7MR-fo9qbb2Vrbw7JuIuBXczzNIT0qXUE6BZUu9XmJ3zVR-UmzC8SCQ/exec';
+let banques=[],elements=[],evals=[],exercices=[],menuConn=[],selBank=null;
 
 function login(){
 if(document.getElementById('pwd').value===PWD){
 document.getElementById('loginScreen').style.display='none';
 document.getElementById('app').style.display='block';
 loadData();
-}else{
-document.getElementById('err').style.display='block';
+}else{document.getElementById('err').style.display='block';}
 }
+
+async function loadSheet(name){
+const r=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent(name));
+const t=await r.text();
+const j=JSON.parse(t.substring(47,t.length-2));
+if(!j.table||!j.table.rows)return[];
+const h=j.table.cols.map(c=>c.label||'');
+return j.table.rows.map(row=>{const o={};row.c.forEach((c,i)=>{o[h[i]]=c?(c.v!==null?c.v:''):'';});return o;});
 }
 
 async function loadData(){
-try{
-const r1=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET+'/gviz/tq?tqx=out:json&sheet=BANQUES%20QUESTIONS');
-const t1=await r1.text();
-const j1=JSON.parse(t1.substring(47,t1.length-2));
-document.getElementById('bankCount').textContent=j1.table.rows?j1.table.rows.length:0;
-
-const r2=await fetch('https://docs.google.com/spreadsheets/d/'+SHEET+'/gviz/tq?tqx=out:json&sheet=MENU_CONN');
-const t2=await r2.text();
-const j2=JSON.parse(t2.substring(47,t2.length-2));
-document.getElementById('menuCount').textContent=j2.table.rows?j2.table.rows.length:0;
-}catch(e){
-console.error(e);
-document.getElementById('bankCount').textContent='Erreur';
-document.getElementById('menuCount').textContent='Erreur';
+banques=(await loadSheet('BANQUES QUESTIONS')).filter(r=>r.ID);
+elements=(await loadSheet('ELEMENTS')).filter(r=>r.ID);
+evals=(await loadSheet('EVALUATIONS')).filter(r=>r.ID);
+exercices=(await loadSheet('EXERCICES')).filter(r=>r.ID);
+menuConn=await loadSheet('MENU_CONN');
+renderBanks();renderEvals();renderMenu();
 }
+
+function renderBanks(){
+const c=document.getElementById('banksList');
+if(banques.length===0){c.innerHTML='<p>Aucune banque</p>';return;}
+c.innerHTML=banques.map(b=>'<div class="list-item'+(selBank===b.ID?' active':'')+'" onclick="selectBank(\''+b.ID+'\')"><span>📂</span><span>'+b.Nom+' ('+elements.filter(e=>e.Banque===b.ID).length+')</span></div>').join('');
+}
+
+function selectBank(id){
+selBank=id;renderBanks();
+const b=banques.find(x=>x.ID===id);
+document.getElementById('bankName').textContent=b?b.Nom:'';
+const els=elements.filter(e=>e.Banque===id);
+if(els.length===0){document.getElementById('elementsList').innerHTML='<p>Aucun élément</p>';return;}
+document.getElementById('elementsList').innerHTML=els.map(e=>'<div class="list-item"><span>📄</span><span>'+(e.Date||'')+' '+(e.Evenement||e.Question||e.Texte||'')+'</span><span class="badge badge-success">'+e.Format+'</span></div>').join('');
+}
+
+function renderEvals(){
+const ent=evals.filter(e=>e.Type==='Entrainement');
+const ev=evals.filter(e=>e.Type==='Evaluation');
+document.getElementById('entrainList').innerHTML=ent.length?ent.map(e=>'<tr><td>'+e.Nom+'</td><td>'+exercices.filter(x=>x.EvalID===e.ID).length+'</td><td><span class="badge '+(e.Statut==='Publie'?'badge-success':'badge-warning')+'">'+(e.Statut||'Brouillon')+'</span></td></tr>').join(''):'<tr><td colspan="3">Aucun</td></tr>';
+document.getElementById('evalList').innerHTML=ev.length?ev.map(e=>'<tr><td>'+e.Nom+'</td><td>'+(e.Duree||'-')+'min</td><td>'+(e.Seuil||'-')+'%</td><td><span class="badge '+(e.Statut==='Publie'?'badge-success':'badge-warning')+'">'+(e.Statut||'Brouillon')+'</span></td></tr>').join(''):'<tr><td colspan="4">Aucune</td></tr>';
+}
+
+function renderMenu(){
+const list=menuConn.filter(m=>m['NumLeçon']);
+document.getElementById('menuList').innerHTML=list.length?list.map(m=>{
+const isT=!m.NumExo||m.NumExo==='0'||m.NumExo===0;
+return '<tr style="'+(isT?'font-weight:600':'')+'"><td>'+m['NumLeçon']+'</td><td>'+(isT?'-':m.NumExo)+'</td><td>'+(isT?m['TitreLeçon']:m.TitreExo)+'</td><td>'+(m.Type||'-')+'</td><td><span class="badge '+(m.Statut==='disponible'?'badge-success':'badge-warning')+'">'+(m.Statut||'-')+'</span></td></tr>';
+}).join(''):'<tr><td colspan="5">Aucune entrée</td></tr>';
+}
+
+function showPage(id){
+document.querySelectorAll('[id^="page-"]').forEach(p=>p.style.display='none');
+document.getElementById('page-'+id).style.display='block';
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+event.target.classList.add('active');
+}
+
+function showModal(id){document.getElementById(id).classList.add('show');}
+function hideModal(id){document.getElementById(id).classList.remove('show');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+
+async function saveBank(){
+const nom=document.getElementById('bankNom').value;
+const cat=document.getElementById('bankCat').value;
+if(!nom){alert('Entrez un nom');return;}
+const id=nom.replace(/[^a-zA-Z0-9]/g,'').substring(0,10).toUpperCase()+Date.now().toString().slice(-4);
+await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify({sheet:'BANQUES QUESTIONS',action:'add',row:[id,nom,cat,'Actif']})});
+hideModal('modalBank');toast('Banque créée !');
+document.getElementById('bankNom').value='';
+setTimeout(loadData,1000);
+}
+
+async function saveMenu(){
+const l=document.getElementById('menuLecon').value;
+const e=document.getElementById('menuExo').value||'0';
+const tl=document.getElementById('menuTitreL').value;
+const te=document.getElementById('menuTitreE').value;
+if(!l){alert('Entrez le n° de leçon');return;}
+await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify({sheet:'MENU_CONN',action:'add',row:[l,e,tl,te,'Histoire','','','']})});
+hideModal('modalMenu');toast('Entrée ajoutée !');
+document.getElementById('menuLecon').value='';document.getElementById('menuExo').value='';
+document.getElementById('menuTitreL').value='';document.getElementById('menuTitreE').value='';
+setTimeout(loadData,1000);
 }
 </script>
 </body>
