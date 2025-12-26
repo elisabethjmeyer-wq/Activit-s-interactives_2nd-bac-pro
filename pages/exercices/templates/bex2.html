@@ -1,1 +1,941 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEX n°2 | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-yellow: #f59e0b;
+            --accent-yellow-light: #fef3c7;
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+            color: var(--gray-700);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item.disabled:hover .item-icon {
+            background: var(--gray-100);
+            color: inherit;
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            color: var(--gray-500);
+            font-size: 15px;
+        }
+
+        /* ===== TIMER ===== */
+        .timer-box {
+            background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
+            color: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* ===== INSTRUCTIONS ===== */
+        .instructions {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-yellow);
+            box-shadow: var(--shadow);
+        }
+
+        .instructions strong {
+            color: var(--accent-yellow);
+        }
+
+        .instructions p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        /* ===== MAP CARD ===== */
+        .map-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 24px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .map-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .map-marker {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .map-marker input {
+            width: 120px;
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            background: white;
+            box-shadow: var(--shadow-md);
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .map-marker input:focus {
+            outline: none;
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .map-marker input.correct {
+            background: var(--accent-green-light);
+            border-color: var(--accent-green);
+            color: #065f46;
+        }
+
+        .map-marker input.incorrect {
+            background: var(--accent-red-light);
+            border-color: var(--accent-red);
+            color: #991b1b;
+        }
+
+        .map-marker .marker-number {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== BUTTONS ===== */
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .buttons button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            font-family: inherit;
+        }
+
+        .buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, var(--accent-green), #34d399);
+            color: white;
+        }
+
+        .btn-solution {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, var(--gray-500), var(--gray-400));
+            color: white;
+        }
+
+        /* ===== RESULT ===== */
+        .result {
+            background: var(--accent-green-light);
+            border: 2px solid var(--accent-green);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            color: #047857;
+        }
+
+        /* ===== LOADING & ERROR ===== */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: var(--accent-red-light);
+            border: 2px solid var(--accent-red);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            color: #991b1b;
+        }
+
+        .error-message a {
+            color: #991b1b;
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+            .buttons button {
+                min-width: 100%;
+            }
+            .map-marker input {
+                width: 80px;
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR (chargé dynamiquement) -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner" id="sidebarContent">
+            <!-- Chargé par JavaScript -->
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            
+            <!-- BREADCRUMB -->
+            <nav class="breadcrumb">
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-bex.html">Entraînement BEX</a>
+                <span class="separator">›</span>
+                <span class="current" id="breadcrumbCurrent">🗺️ BEX n°2</span>
+            </nav>
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <h1 id="pageTitle">🗺️ BEX n°2 - Se repérer dans l'espace</h1>
+                <p>Entraîne-toi à identifier les continents et océans sur un planisphère.</p>
+            </div>
+
+            <!-- CONTENU DE L'EXERCICE -->
+            <div id="content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Chargement de l'exercice...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ===== CONFIG =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const CURRENT_PAGE = 'entrainement-bex';
+        const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
+        const SHEET_NAME = 'BEX2_DATA';
+
+        // ===== VARIABLES GLOBALES =====
+        let exerciseData = null;
+        let timeLeft = 600;
+        let timerInterval = null;
+
+        // ===== SIDEBAR TOGGLE =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+            
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Restaurer l'état du sidebar
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== LOAD SIDEBAR =====
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                if (!response.ok) throw new Error('Sidebar not found');
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                // Marquer la page active
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (item.dataset.page === CURRENT_PAGE) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Désactiver les liens vides
+                document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
+
+        // ===== RÉCUPÉRATION PARAMÈTRES URL =====
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                exo: parseInt(params.get('exo')) || 1
+            };
+        }
+
+        // ===== CHARGEMENT DONNÉES GOOGLE SHEETS =====
+        async function loadExerciseData(exoNum) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+            
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parser la réponse Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonText = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonText);
+                
+                const rows = data.table.rows;
+                
+                // Colonnes: NumExo, Titre, Consigne, Temps, CarteURL, Elements
+                for (let row of rows) {
+                    const numExo = row.c[0]?.v;
+                    if (numExo === exoNum) {
+                        const elementsJson = row.c[5]?.v || '[]';
+                        let elements = [];
+                        try {
+                            elements = JSON.parse(elementsJson);
+                        } catch (e) {
+                            console.error('Erreur parsing JSON elements:', e);
+                        }
+                        
+                        return {
+                            numExo: numExo,
+                            titre: row.c[1]?.v || `Exercice ${exoNum}`,
+                            consigne: row.c[2]?.v || 'Identifie les éléments sur la carte.',
+                            temps: row.c[3]?.v || 600,
+                            carteUrl: row.c[4]?.v || '',
+                            elements: elements
+                        };
+                    }
+                }
+                
+                throw new Error(`Exercice ${exoNum} non trouvé`);
+                
+            } catch (error) {
+                console.error('Erreur chargement données:', error);
+                throw error;
+            }
+        }
+
+        // ===== AFFICHAGE EXERCICE =====
+        function renderExercise(data) {
+            // Mise à jour du titre et breadcrumb
+            document.getElementById('breadcrumbCurrent').textContent = `🗺️ BEX n°2 - ${data.titre}`;
+            document.getElementById('pageTitle').textContent = `🗺️ BEX n°2 - ${data.titre}`;
+            document.title = `BEX n°2 - ${data.titre} | Espace cours`;
+            
+            timeLeft = data.temps || 600;
+
+            // Générer les marqueurs
+            const markersHtml = data.elements.map((el, i) => `
+                <div class="map-marker" style="top: ${el.top}; left: ${el.left};" data-id="${el.id}" data-reponses="${el.reponses}">
+                    <span class="marker-number">${i + 1}</span>
+                    <input type="text" id="marker-${i}" placeholder="?">
+                </div>
+            `).join('');
+
+            // URL de la carte (placeholder si non définie)
+            const carteUrl = data.carteUrl || 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/PlanigloboblueFR.svg/1200px-PlanigloboblueFR.svg.png';
+
+            const html = `
+                <div class="timer-box" id="timer">
+                    ⏱️ Temps restant : ${formatTime(timeLeft)}
+                </div>
+
+                <div class="instructions">
+                    <strong>📋 Consigne :</strong>
+                    <p>${data.consigne}</p>
+                </div>
+
+                <div class="map-card">
+                    <div class="map-container">
+                        <img src="${carteUrl}" alt="Planisphère" id="mapImage">
+                        ${markersHtml}
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn-verify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
+                        <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                        <button class="btn-restart" onclick="restart()">🔄 Recommencer</button>
+                    </div>
+
+                    <div class="result" id="result">
+                        <h3>📊 Résultat</h3>
+                        <p id="resultMessage"></p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = html;
+            startTimer();
+        }
+
+        function renderError(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Erreur</h3>
+                    <p>${message}</p>
+                    <p style="margin-top: 12px;">
+                        <a href="${BASE_PATH}/pages/entrainement-bex.html">
+                            ← Retour à la liste des exercices
+                        </a>
+                    </p>
+                </div>
+            `;
+        }
+
+        // ===== TIMER =====
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) {
+                    timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+                    
+                    if (timeLeft <= 120) {
+                        timerEl.classList.add('warning');
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        verifyAnswers();
+                    }
+                }
+            }, 1000);
+        }
+
+        // ===== VÉRIFICATION DES RÉPONSES =====
+        function normalizeString(str) {
+            return str.toLowerCase()
+                      .trim()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z0-9 ]/g, ' ')
+                      .replace(/\s+/g, ' ')
+                      .trim();
+        }
+
+        function checkAnswer(userAnswer, correctAnswers) {
+            const normalized = normalizeString(userAnswer);
+            const answers = correctAnswers.split(',').map(a => normalizeString(a));
+            return answers.some(answer => normalized === answer);
+        }
+
+        function verifyAnswers() {
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            const markers = document.querySelectorAll('.map-marker');
+
+            markers.forEach((marker, i) => {
+                const input = document.getElementById(`marker-${i}`);
+                const correctAnswers = marker.dataset.reponses;
+                
+                if (checkAnswer(input.value, correctAnswers)) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                }
+            });
+
+            const total = markers.length;
+            const percentage = Math.round((correctCount / total) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = `🎉 Parfait ! Tu as tout bon ! Score : ${correctCount}/${total}`;
+            } else if (percentage >= 75) {
+                message = `👍 Très bien ! Tu as trouvé ${correctCount}/${total} réponses correctes.`;
+            } else if (percentage >= 50) {
+                message = `💪 Pas mal ! Tu as trouvé ${correctCount}/${total} réponses. Continue à t'entraîner !`;
+            } else {
+                message = `📚 Tu as trouvé ${correctCount}/${total} réponses. Révise la méthode et recommence !`;
+            }
+
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('result').classList.add('show');
+        }
+
+        function showSolution() {
+            clearInterval(timerInterval);
+
+            const markers = document.querySelectorAll('.map-marker');
+            markers.forEach((marker, i) => {
+                const input = document.getElementById(`marker-${i}`);
+                const correctAnswers = marker.dataset.reponses;
+                // Afficher la première réponse correcte
+                const firstAnswer = correctAnswers.split(',')[0];
+                input.value = firstAnswer;
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+            });
+
+            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet !';
+            document.getElementById('result').classList.add('show');
+        }
+
+        function restart() {
+            const markers = document.querySelectorAll('.map-marker');
+            markers.forEach((marker, i) => {
+                const input = document.getElementById(`marker-${i}`);
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+
+            document.getElementById('result').classList.remove('show');
+
+            clearInterval(timerInterval);
+            timeLeft = exerciseData.temps || 600;
+            document.getElementById('timer').classList.remove('warning');
+            document.getElementById('timer').textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+            startTimer();
+        }
+
+        // ===== INIT =====
+        async function init() {
+            // Charger le sidebar
+            await loadSidebar();
+            
+            // Charger l'exercice
+            const params = getUrlParams();
+            
+            try {
+                exerciseData = await loadExerciseData(params.exo);
+                renderExercise(exerciseData);
+            } catch (error) {
+                renderError(`Impossible de charger l'exercice ${params.exo}. Vérifie que le Google Sheet est bien partagé.`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
