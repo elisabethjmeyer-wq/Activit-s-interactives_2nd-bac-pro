@@ -7,277 +7,137 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-bg: #eef2ff;
-            --accent-yellow: #f59e0b;
-            --accent-green: #10b981;
-            --accent-green-light: #d1fae5;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --sidebar-width: 260px;
-            --header-height: 64px;
-            --radius: 12px;
-            --radius-lg: 16px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --primary: #6366f1; --primary-dark: #4f46e5; --primary-bg: #eef2ff;
+            --accent-yellow: #f59e0b; --accent-green: #10b981; --accent-green-light: #d1fae5;
+            --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-400: #9ca3af;
+            --gray-500: #6b7280; --gray-600: #4b5563; --gray-800: #1f2937; --gray-900: #111827;
+            --sidebar-width: 260px; --header-height: 64px;
+            --radius: 12px; --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            line-height: 1.5;
+            min-height: 100vh; line-height: 1.5;
         }
-
-        /* HEADER */
         .header {
-            background: white;
-            border-bottom: 1px solid var(--gray-200);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 16px;
+            background: white; border-bottom: 1px solid var(--gray-200);
+            position: fixed; top: 0; left: 0; right: 0; height: var(--header-height);
+            z-index: 100; display: flex; align-items: center; padding: 0 20px; gap: 16px;
         }
-
         .menu-toggle {
-            width: 42px;
-            height: 42px;
-            background: var(--gray-100);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: var(--gray-600);
-            flex-shrink: 0;
+            width: 42px; height: 42px; background: var(--gray-100); border: none;
+            border-radius: 10px; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 20px; color: var(--gray-600); flex-shrink: 0;
         }
-
         .menu-toggle:hover { background: var(--primary-bg); color: var(--primary); }
         .menu-toggle.active { background: var(--primary); color: white; }
-
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--gray-900);
-            text-decoration: none;
+            display: flex; align-items: center; gap: 12px; font-weight: 700;
+            font-size: 18px; color: var(--gray-900); text-decoration: none;
         }
-
         .logo-icon {
-            width: 38px;
-            height: 38px;
+            width: 38px; height: 38px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 18px;
         }
-
-        /* SIDEBAR */
         .sidebar {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            width: var(--sidebar-width);
-            height: calc(100vh - var(--header-height));
-            background: white;
-            border-right: 1px solid var(--gray-200);
-            padding: 20px 12px;
-            overflow-y: auto;
-            z-index: 90;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            position: fixed; top: var(--header-height); left: 0; width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height)); background: white;
+            border-right: 1px solid var(--gray-200); padding: 20px 12px;
+            overflow-y: auto; z-index: 90; transform: translateX(-100%); transition: transform 0.3s ease;
         }
-
         .sidebar.open { transform: translateX(0); }
-
         .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            color: var(--gray-600);
-            text-decoration: none;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            border-radius: 10px; color: var(--gray-600); text-decoration: none; font-weight: 500;
         }
-
         .nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
         .nav-item.active { background: var(--primary-bg); color: var(--primary); }
         .nav-icon { font-size: 18px; width: 24px; text-align: center; }
-        .nav-section-title { font-size: 11px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; padding: 20px 16px 8px; }
-
-        /* OVERLAY */
-        .overlay {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 80;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            pointer-events: none;
+        .nav-section-title {
+            font-size: 11px; font-weight: 600; color: var(--gray-400);
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 20px 16px 8px;
         }
-
+        .overlay {
+            position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3); z-index: 80; opacity: 0; visibility: hidden;
+            transition: all 0.3s; pointer-events: none;
+        }
         .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
-
-        /* MAIN CONTENT */
         .main-content {
-            margin-top: var(--header-height);
-            padding: 24px;
+            margin-top: var(--header-height); padding: 24px;
             min-height: calc(100vh - var(--header-height));
         }
-
         .page-container { max-width: 900px; margin: 0 auto; }
-
-        /* BREADCRUMB */
         .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            flex-wrap: wrap;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px; font-size: 14px; flex-wrap: wrap;
         }
-
         .breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
         .breadcrumb a:hover { color: white; }
         .breadcrumb span { color: rgba(255,255,255,0.5); }
         .breadcrumb .current { color: white; font-weight: 500; }
-
-        /* EXERCISE STYLES */
         .exercise-header {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-lg);
+            background: white; border-radius: var(--radius-lg);
+            padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-lg);
         }
-
         .exercise-header h1 { font-size: 24px; color: var(--gray-800); margin-bottom: 4px; }
         .exercise-header p { color: var(--gray-500); }
-
         .timer-box {
             background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
-            color: white;
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
+            color: white; border-radius: var(--radius); padding: 16px;
+            margin-bottom: 20px; text-align: center; font-size: 22px; font-weight: bold;
         }
-
         .timer-box.warning { background: linear-gradient(135deg, #ef4444, #dc2626); animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-
         .instructions {
-            background: white;
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--accent-yellow);
+            background: white; border-radius: var(--radius); padding: 20px;
+            margin-bottom: 20px; border-left: 4px solid var(--accent-yellow);
         }
-
         .instructions strong { color: var(--accent-yellow); }
         .instructions p { color: var(--gray-600); margin-top: 8px; }
-
         .exercise-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            box-shadow: var(--shadow-lg);
+            background: white; border-radius: var(--radius-lg);
+            padding: 24px; box-shadow: var(--shadow-lg);
         }
-
         table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-
         th {
             background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 14px;
+            color: white; padding: 12px; text-align: left; font-weight: 600; font-size: 14px;
         }
-
         th:first-child { border-radius: 8px 0 0 0; }
         th:last-child { border-radius: 0 8px 0 0; }
-
         td { padding: 12px; border-bottom: 1px solid var(--gray-200); }
         tr:last-child td { border-bottom: none; }
         tr:nth-child(even) { background: var(--gray-50); }
         td:first-child { font-weight: 700; color: var(--gray-800); font-size: 16px; }
-
         input[type="text"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
+            width: 100%; padding: 10px 12px; border: 2px solid var(--gray-200);
+            border-radius: 8px; font-size: 14px; font-family: inherit;
         }
-
         input:focus { outline: none; border-color: var(--accent-yellow); }
         input.correct { background: var(--accent-green-light); border-color: var(--accent-green); color: #065f46; font-weight: 600; }
         input.incorrect { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
-
         .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-
         button {
-            flex: 1;
-            min-width: 150px;
-            padding: 14px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
+            flex: 1; min-width: 150px; padding: 14px; border: none;
+            border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer;
         }
-
         .btn-verify { background: linear-gradient(135deg, var(--accent-green), #34d399); color: white; }
         .btn-solution { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
         .btn-restart { background: linear-gradient(135deg, var(--gray-500), var(--gray-400)); color: white; }
-
         .result {
-            background: var(--accent-green-light);
-            border: 2px solid var(--accent-green);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
+            background: var(--accent-green-light); border: 2px solid var(--accent-green);
+            border-radius: var(--radius); padding: 20px; margin-top: 20px; display: none;
         }
-
         .result.show { display: block; }
         .result h3 { color: #065f46; margin-bottom: 8px; }
         .result p { color: #047857; }
         .score { font-size: 28px; font-weight: bold; color: #065f46; }
-
         @media (max-width: 768px) {
             table { font-size: 13px; }
             th, td { padding: 8px; }
@@ -286,7 +146,6 @@
     </style>
 </head>
 <body>
-    <!-- HEADER -->
     <header class="header">
         <button class="menu-toggle" id="menuToggle">☰</button>
         <a href="../../index.html" class="logo">
@@ -295,26 +154,27 @@
         </a>
     </header>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <nav class="sidebar-nav">
             <a href="../../index.html" class="nav-item"><span class="nav-icon">🏠</span>Tableau de bord</a>
-            <div class="nav-section-title">Ressources</div>
-            <a href="../lecons.html" class="nav-item"><span class="nav-icon">📖</span>Leçons</a>
-            <a href="../classeur.html" class="nav-item"><span class="nav-icon">📁</span>Classeur numérique</a>
-            <a href="../../videos_hebdomadaires_archives.html" class="nav-item"><span class="nav-icon">🎬</span>Archives vidéos</a>
-            <div class="nav-section-title">Entraînement</div>
-            <a href="../entrainement-bex.html" class="nav-item active"><span class="nav-icon">⭐</span>Entraînement BEX</a>
-            <div class="nav-section-title">Outils</div>
-            <a href="../../FAQ.html" class="nav-item"><span class="nav-icon">❓</span>FAQ</a>
+            
+            <div class="nav-section-title">📁 Organisation</div>
             <a href="../emploi-du-temps.html" class="nav-item"><span class="nav-icon">📅</span>Emploi du temps</a>
+            <a href="../classeur.html" class="nav-item"><span class="nav-icon">📁</span>Classeur</a>
+            
+            <div class="nav-section-title">📚 Cours</div>
+            <a href="../lecons.html" class="nav-item"><span class="nav-icon">📖</span>Leçons</a>
+            
+            <div class="nav-section-title">💪 Entraînements</div>
+            <a href="../entrainement-bex.html" class="nav-item active"><span class="nav-icon">⭐</span>BEX (lundi)</a>
+            
+            <div class="nav-section-title">💬 Communication</div>
+            <a href="../../FAQ.html" class="nav-item"><span class="nav-icon">❓</span>Aide / FAQ</a>
         </nav>
     </aside>
 
-    <!-- OVERLAY -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
         <div class="page-container">
             <nav class="breadcrumb">
@@ -391,7 +251,6 @@
     </main>
 
     <script>
-        // Sidebar toggle
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
         const overlay = document.getElementById('overlay');
@@ -408,7 +267,6 @@
             overlay.classList.remove('visible');
         });
 
-        // Exercise logic
         const answers = {
             siecle1: ['15e', '15ème', 'xve', 'xv', '15'],
             periode1: ['epoque moderne', 'temps modernes', 'moderne'],
@@ -445,12 +303,10 @@
         function verifyAnswers() {
             clearInterval(timerInterval);
             let correctCount = 0;
-
             for (let key in answers) {
                 const input = document.getElementById(key);
                 const userAnswer = normalizeString(input.value);
                 const correctList = answers[key].map(a => normalizeString(a));
-
                 if (correctList.includes(userAnswer)) {
                     input.classList.remove('incorrect');
                     input.classList.add('correct');
@@ -460,10 +316,8 @@
                     input.classList.add('incorrect');
                 }
             }
-
             const pct = Math.round((correctCount / 12) * 100);
             document.getElementById('score').textContent = `${correctCount}/12`;
-
             let msg = pct === 100 ? '🎉 Parfait !' : pct >= 75 ? '👍 Très bien !' : pct >= 50 ? '💪 Pas mal !' : '📚 Révise et recommence !';
             document.getElementById('message').textContent = msg;
             document.getElementById('result').classList.add('show');
@@ -483,12 +337,10 @@
             document.getElementById('siecle4').value = '19e';
             document.getElementById('periode4').value = 'Époque contemporaine';
             document.getElementById('personnage4').value = 'Victor Hugo';
-
             for (let key in answers) {
                 document.getElementById(key).classList.add('correct');
                 document.getElementById(key).classList.remove('incorrect');
             }
-
             document.getElementById('score').textContent = '12/12';
             document.getElementById('message').textContent = '📖 Étudie bien les réponses !';
             document.getElementById('result').classList.add('show');
