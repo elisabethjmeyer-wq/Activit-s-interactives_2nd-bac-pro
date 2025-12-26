@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEX n°1 | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            --accent-yellow: #f59e0b;
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--gray-900);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 20px 12px;
+            overflow-y: auto;
+            z-index: 90;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        .nav-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 20px 16px 8px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 80;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-top: var(--header-height);
+            padding: 24px;
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+        }
+
+        .breadcrumb span {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .breadcrumb .current {
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Exercise header */
+        .exercise-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .exercise-header h1 {
+            font-size: 24px;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .exercise-header p {
+            color: var(--gray-500);
+        }
+
+        /* Timer */
+        .timer-box {
+            background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
+            color: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Instructions */
+        .instructions {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-yellow);
+            box-shadow: var(--shadow);
+        }
+
+        .instructions strong {
+            color: var(--accent-yellow);
+        }
+
+        .instructions p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        /* Exercise card */
+        .exercise-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        th:first-child {
+            border-radius: var(--radius) 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 var(--radius) 0 0;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        td.date-cell {
+            background: var(--gray-100);
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            width: 100px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input.correct {
+            background: var(--accent-green-light);
+            border-color: var(--accent-green);
+            color: #065f46;
+        }
+
+        input.incorrect {
+            background: var(--accent-red-light);
+            border-color: var(--accent-red);
+            color: #991b1b;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, var(--accent-green), #34d399);
+            color: white;
+        }
+
+        .btn-solution {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, var(--gray-500), var(--gray-400));
+            color: white;
+        }
+
+        /* Result */
+        .result {
+            background: var(--accent-green-light);
+            border: 2px solid var(--accent-green);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            color: #047857;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error-message {
+            background: var(--accent-red-light);
+            border: 2px solid var(--accent-red);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            color: #991b1b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .exercise-header h1 {
+                font-size: 20px;
+            }
+
+            button {
+                min-width: 100%;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+
+            input[type="text"] {
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <span>Espace cours</span>
+            </a>
+        </div>
+    </header>
+
+    <aside class="sidebar collapsed" id="sidebar">
+        <nav class="sidebar-nav">
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="nav-item">
+                <span class="nav-icon">🏠</span>Tableau de bord
+            </a>
+            <div class="nav-section-title">Ressources</div>
+            <a href="/Activit-s-interactives_2nd-bac-pro/pages/lecons.html" class="nav-item">
+                <span class="nav-icon">📖</span>Leçons
+            </a>
+            <a href="/Activit-s-interactives_2nd-bac-pro/pages/classeur.html" class="nav-item">
+                <span class="nav-icon">📁</span>Classeur numérique
+            </a>
+            <div class="nav-section-title">Entraînement</div>
+            <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-bex.html" class="nav-item active">
+                <span class="nav-icon">⭐</span>Entraînement BEX
+            </a>
+            <div class="nav-section-title">Outils</div>
+            <a href="/Activit-s-interactives_2nd-bac-pro/pages/faq.html" class="nav-item">
+                <span class="nav-icon">❓</span>FAQ
+            </a>
+            <a href="/Activit-s-interactives_2nd-bac-pro/pages/emploi-du-temps.html" class="nav-item">
+                <span class="nav-icon">📅</span>Emploi du temps
+            </a>
+        </nav>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <div class="page-container">
+            <nav class="breadcrumb">
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+                <span>›</span>
+                <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-bex.html">Entraînement BEX</a>
+                <span>›</span>
+                <span class="current" id="breadcrumbCurrent">BEX n°1</span>
+            </nav>
+
+            <div id="content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Chargement de l'exercice...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
+        const SHEET_NAME = 'BEX1_DATA';
+
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
+        let exerciseData = null;
+        let timeLeft = 600;
+        let timerInterval = null;
+
+        // ============================================
+        // SIDEBAR
+        // ============================================
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            if (isCollapsed) {
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // ============================================
+        // RÉCUPÉRATION PARAMÈTRES URL
+        // ============================================
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                exo: parseInt(params.get('exo')) || 1
+            };
+        }
+
+        // ============================================
+        // CHARGEMENT DONNÉES GOOGLE SHEETS
+        // ============================================
+        async function loadExerciseData(exoNum) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+            
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parser la réponse Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonText = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonText);
+                
+                // Trouver les colonnes
+                const cols = data.table.cols.map(c => c.label);
+                const rows = data.table.rows;
+                
+                // Trouver la ligne correspondant à l'exercice
+                for (let row of rows) {
+                    const numExo = row.c[0]?.v;
+                    if (numExo === exoNum) {
+                        return {
+                            numExo: numExo,
+                            titre: row.c[1]?.v || `Exercice ${exoNum}`,
+                            temps: row.c[2]?.v || 600,
+                            dates: [
+                                {
+                                    date: row.c[3]?.v,
+                                    siecle: (row.c[4]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    periode: (row.c[5]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    personnage: (row.c[6]?.v || '').split(',').map(s => s.trim().toLowerCase())
+                                },
+                                {
+                                    date: row.c[7]?.v,
+                                    siecle: (row.c[8]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    periode: (row.c[9]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    personnage: (row.c[10]?.v || '').split(',').map(s => s.trim().toLowerCase())
+                                },
+                                {
+                                    date: row.c[11]?.v,
+                                    siecle: (row.c[12]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    periode: (row.c[13]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    personnage: (row.c[14]?.v || '').split(',').map(s => s.trim().toLowerCase())
+                                },
+                                {
+                                    date: row.c[15]?.v,
+                                    siecle: (row.c[16]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    periode: (row.c[17]?.v || '').split(',').map(s => s.trim().toLowerCase()),
+                                    personnage: (row.c[18]?.v || '').split(',').map(s => s.trim().toLowerCase())
+                                }
+                            ]
+                        };
+                    }
+                }
+                
+                throw new Error(`Exercice ${exoNum} non trouvé`);
+                
+            } catch (error) {
+                console.error('Erreur chargement données:', error);
+                throw error;
+            }
+        }
+
+        // ============================================
+        // AFFICHAGE EXERCICE
+        // ============================================
+        function renderExercise(data) {
+            document.getElementById('breadcrumbCurrent').textContent = `BEX n°1 - ${data.titre}`;
+            document.title = `BEX n°1 - ${data.titre} | Espace cours`;
+            
+            timeLeft = data.temps || 600;
+
+            const html = `
+                <div class="exercise-header">
+                    <h1>⏰ BEX n°1 - ${data.titre}</h1>
+                    <p>Se repérer dans le temps</p>
+                </div>
+
+                <div class="timer-box" id="timer">
+                    ⏱️ Temps restant : ${formatTime(timeLeft)}
+                </div>
+
+                <div class="instructions">
+                    <strong>📋 Consigne :</strong>
+                    <p>Pour chaque date, trouve le siècle, la grande période historique et le personnage-repère associé à cette période.</p>
+                </div>
+
+                <div class="exercise-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Siècle</th>
+                                    <th>Grande période historique</th>
+                                    <th>Personnage repère</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.dates.map((d, i) => `
+                                    <tr>
+                                        <td class="date-cell">${d.date}</td>
+                                        <td><input type="text" id="siecle-${i}" placeholder="Ex: 15e"></td>
+                                        <td><input type="text" id="periode-${i}" placeholder="Ex: Époque moderne"></td>
+                                        <td><input type="text" id="personnage-${i}" placeholder="Ex: Louis XIV"></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn-verify" onclick="verifyAnswers()">✓ Vérifier mes réponses</button>
+                        <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                        <button class="btn-restart" onclick="restart()">🔄 Recommencer</button>
+                    </div>
+
+                    <div class="result" id="result">
+                        <h3>📊 Résultat</h3>
+                        <p id="resultMessage"></p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = html;
+            startTimer();
+        }
+
+        function renderError(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Erreur</h3>
+                    <p>${message}</p>
+                    <p style="margin-top: 12px;">
+                        <a href="${BASE_PATH}/pages/entrainement-bex.html" style="color: #991b1b;">
+                            ← Retour à la liste des exercices
+                        </a>
+                    </p>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // TIMER
+        // ============================================
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) {
+                    timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+                    
+                    if (timeLeft <= 120) {
+                        timerEl.classList.add('warning');
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        verifyAnswers();
+                    }
+                }
+            }, 1000);
+        }
+
+        // ============================================
+        // VÉRIFICATION DES RÉPONSES
+        // ============================================
+        function normalizeString(str) {
+            return str.toLowerCase()
+                      .trim()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z0-9 ]/g, ' ')
+                      .replace(/\s+/g, ' ')
+                      .trim();
+        }
+
+        function checkAnswer(userAnswer, correctAnswers) {
+            const normalized = normalizeString(userAnswer);
+            return correctAnswers.some(answer => normalizeString(answer) === normalized);
+        }
+
+        function verifyAnswers() {
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            let totalFields = 0;
+
+            exerciseData.dates.forEach((d, i) => {
+                // Vérifier siècle
+                const siecleInput = document.getElementById(`siecle-${i}`);
+                if (checkAnswer(siecleInput.value, d.siecle)) {
+                    siecleInput.classList.add('correct');
+                    siecleInput.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    siecleInput.classList.add('incorrect');
+                    siecleInput.classList.remove('correct');
+                }
+                totalFields++;
+
+                // Vérifier période
+                const periodeInput = document.getElementById(`periode-${i}`);
+                if (checkAnswer(periodeInput.value, d.periode)) {
+                    periodeInput.classList.add('correct');
+                    periodeInput.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    periodeInput.classList.add('incorrect');
+                    periodeInput.classList.remove('correct');
+                }
+                totalFields++;
+
+                // Vérifier personnage
+                const personnageInput = document.getElementById(`personnage-${i}`);
+                if (checkAnswer(personnageInput.value, d.personnage)) {
+                    personnageInput.classList.add('correct');
+                    personnageInput.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    personnageInput.classList.add('incorrect');
+                    personnageInput.classList.remove('correct');
+                }
+                totalFields++;
+            });
+
+            const percentage = Math.round((correctCount / totalFields) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = `🎉 Parfait ! Tu as tout bon ! Score : ${correctCount}/${totalFields}`;
+            } else if (percentage >= 75) {
+                message = `👍 Très bien ! Tu as trouvé ${correctCount}/${totalFields} réponses correctes.`;
+            } else if (percentage >= 50) {
+                message = `💪 Pas mal ! Tu as trouvé ${correctCount}/${totalFields} réponses. Continue à t'entraîner !`;
+            } else {
+                message = `📚 Tu as trouvé ${correctCount}/${totalFields} réponses. Révise la méthode et recommence !`;
+            }
+
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('result').classList.add('show');
+        }
+
+        function showSolution() {
+            clearInterval(timerInterval);
+
+            exerciseData.dates.forEach((d, i) => {
+                const siecleInput = document.getElementById(`siecle-${i}`);
+                const periodeInput = document.getElementById(`periode-${i}`);
+                const personnageInput = document.getElementById(`personnage-${i}`);
+
+                // Afficher les bonnes réponses (première option)
+                siecleInput.value = d.siecle[0] || '';
+                periodeInput.value = d.periode[0] || '';
+                personnageInput.value = d.personnage[0] || '';
+
+                // Marquer comme correct
+                siecleInput.classList.add('correct');
+                siecleInput.classList.remove('incorrect');
+                periodeInput.classList.add('correct');
+                periodeInput.classList.remove('incorrect');
+                personnageInput.classList.add('correct');
+                personnageInput.classList.remove('incorrect');
+            });
+
+            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet !';
+            document.getElementById('result').classList.add('show');
+        }
+
+        function restart() {
+            exerciseData.dates.forEach((d, i) => {
+                const siecleInput = document.getElementById(`siecle-${i}`);
+                const periodeInput = document.getElementById(`periode-${i}`);
+                const personnageInput = document.getElementById(`personnage-${i}`);
+
+                siecleInput.value = '';
+                periodeInput.value = '';
+                personnageInput.value = '';
+
+                siecleInput.classList.remove('correct', 'incorrect');
+                periodeInput.classList.remove('correct', 'incorrect');
+                personnageInput.classList.remove('correct', 'incorrect');
+            });
+
+            document.getElementById('result').classList.remove('show');
+
+            clearInterval(timerInterval);
+            timeLeft = exerciseData.temps || 600;
+            document.getElementById('timer').classList.remove('warning');
+            document.getElementById('timer').textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+            startTimer();
+        }
+
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        async function init() {
+            const params = getUrlParams();
+            
+            try {
+                exerciseData = await loadExerciseData(params.exo);
+                renderExercise(exerciseData);
+            } catch (error) {
+                renderError(`Impossible de charger l'exercice ${params.exo}. Vérifie que le Google Sheet est bien partagé.`);
+            }
+        }
+
+        // Lancer l'initialisation
+        init();
+    </script>
+</body>
+</html>
