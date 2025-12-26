@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin CONN - Évaluations de connaissances</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a24;
+            --border: #2a2a3a;
+            --text: #e4e4e7;
+            --text-muted: #71717a;
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.3);
+            --success: #22c55e;
+            --success-bg: rgba(34, 197, 94, 0.1);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --info: #3b82f6;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), #a78bfa);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 0;
+        }
+
+        .nav-section {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 20px 16px 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), #a78bfa);
+            color: white;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .nav-item .icon { font-size: 18px; }
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--bg-hover);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .nav-item.active .badge {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Main */
+        .main {
+            padding: 32px;
+            max-width: 1400px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body { padding: 24px; }
+        .card-body.np { padding: 0; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #a78bfa);
+            color: white;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-sm { padding: 8px 14px; font-size: 13px; }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--radius-sm);
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-icon.danger:hover {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Forms */
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-textarea { min-height: 100px; resize: vertical; }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .form-row-3 { grid-template-columns: repeat(3, 1fr); }
+        .form-row-4 { grid-template-columns: repeat(4, 1fr); }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .badge-event { background: var(--success-bg); color: var(--success); border: 1px solid var(--success); }
+        .badge-qr { background: var(--info-bg); color: var(--info); border: 1px solid var(--info); }
+        .badge-zone { background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid #ec4899; }
+        .badge-dictee { background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid #a855f7; }
+        .badge-erreur { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-success { background: var(--success-bg); color: var(--success); }
+        .badge-warning { background: var(--warning-bg); color: var(--warning); }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            background: var(--bg-dark);
+        }
+
+        tr:hover { background: var(--bg-hover); }
+
+        /* List items */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .list-item:hover { background: var(--bg-hover); }
+        .list-item:last-child { border-bottom: none; }
+        .list-item.active { background: var(--primary-glow); border-left: 3px solid var(--primary); }
+
+        .list-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+        }
+
+        .list-info { flex: 1; }
+        .list-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .list-info p { font-size: 13px; color: var(--text-muted); }
+
+        /* Element row */
+        .element-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .element-row:hover { background: var(--bg-hover); }
+
+        .element-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .element-icon.event { background: var(--success-bg); }
+        .element-icon.qr { background: var(--info-bg); }
+        .element-icon.zone { background: rgba(236, 72, 153, 0.1); }
+        .element-icon.dictee { background: rgba(168, 85, 247, 0.1); }
+        .element-icon.erreur { background: var(--warning-bg); }
+
+        .element-content { flex: 1; }
+        .element-date { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--primary); min-width: 50px; }
+        .element-text { font-size: 14px; }
+        .element-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .filter-btn {
+            padding: 8px 14px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Format grid */
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .format-option {
+            padding: 20px 16px;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .format-option:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .format-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .format-option .icon { font-size: 28px; margin-bottom: 8px; }
+        .format-option h4 { font-size: 13px; font-weight: 600; }
+
+        /* Exercise type grid */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .exercise-card {
+            padding: 16px;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .exercise-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .exercise-card .icon { font-size: 24px; margin-bottom: 8px; }
+        .exercise-card h4 { font-size: 12px; font-weight: 600; }
+        .exercise-card p { font-size: 11px; color: var(--text-muted); }
+
+        /* Config panel */
+        .config-panel {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .config-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Bank checkbox */
+        .bank-checks {
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+        }
+
+        .bank-check {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .bank-check:hover { background: var(--bg-hover); }
+        .bank-check input { width: 18px; height: 18px; accent-color: var(--primary); }
+        .bank-check label { flex: 1; font-size: 14px; cursor: pointer; }
+        .bank-check .count { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s;
+        }
+
+        .modal.lg { max-width: 900px; }
+        .modal-overlay.visible .modal { transform: translateY(0) scale(1); }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg-hover);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover { background: var(--border); color: var(--text); }
+
+        .modal-body { padding: 24px; }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Two columns */
+        .two-cols {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 60px 40px;
+            color: var(--text-muted);
+        }
+
+        .empty .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+
+        /* Tag selector */
+        .tag-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .tag-opt {
+            padding: 8px 16px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-opt:hover, .tag-opt.selected {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            border-radius: var(--radius);
+            color: var(--success);
+            font-weight: 600;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.visible { transform: translateY(0); opacity: 1; }
+        .toast.error { border-color: var(--danger); color: var(--danger); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .format-grid { grid-template-columns: repeat(3, 1fr); }
+            .exercise-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
+            .two-cols { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .format-grid, .exercise-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Écran de connexion -->
+    <div id="loginScreen" style="
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: var(--bg-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    ">
+        <div style="
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        ">
+            <div style="
+                width: 64px;
+                height: 64px;
+                background: linear-gradient(135deg, var(--primary), #a78bfa);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                margin: 0 auto 24px;
+                box-shadow: 0 4px 20px var(--primary-glow);
+            ">🔐</div>
+            <h1 style="font-size: 24px; margin-bottom: 8px;">Admin CONN</h1>
+            <p style="color: var(--text-muted); margin-bottom: 32px;">Espace réservé à l'enseignant</p>
+            <input 
+                type="password" 
+                id="loginPassword" 
+                class="form-input" 
+                placeholder="Mot de passe"
+                style="margin-bottom: 16px; text-align: center;"
+                onkeypress="if(event.key==='Enter')checkPassword()"
+            >
+            <button class="btn btn-primary" style="width: 100%;" onclick="checkPassword()">
+                Connexion
+            </button>
+            <p id="loginError" style="color: var(--danger); margin-top: 16px; display: none;">
+                Mot de passe incorrect
+            </p>
+        </div>
+    </div>
+
+    <div class="layout" style="display: none;" id="mainApp">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">📝</div>
+                <div class="logo-text">
+                    Admin CONN
+                    <span>Évaluations de connaissances</span>
+                </div>
+            </div>
+
+            <nav>
+                <div class="nav-section">Banques</div>
+                <div class="nav-item active" onclick="showPage('banks')">
+                    <span class="icon">🗃️</span>
+                    Mes banques
+                    <span class="badge" id="navBankCount">0</span>
+                </div>
+                <div class="nav-item" onclick="showPage('new-element')">
+                    <span class="icon">➕</span>
+                    Nouvel élément
+                </div>
+
+                <div class="nav-section">Évaluations</div>
+                <div class="nav-item" onclick="showPage('evaluations')">
+                    <span class="icon">📋</span>
+                    Mes évaluations
+                    <span class="badge" id="navEvalCount">0</span>
+                </div>
+                <div class="nav-item" onclick="showPage('new-eval')">
+                    <span class="icon">➕</span>
+                    Nouvelle évaluation
+                </div>
+
+                <div class="nav-section">Système</div>
+                <div class="nav-item" onclick="loadAllData()">
+                    <span class="icon">🔄</span>
+                    Rafraîchir les données
+                </div>
+                <div class="nav-item" onclick="openModal('modalHelp')">
+                    <span class="icon">❓</span>
+                    Aide
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <!-- PAGE: Banques -->
+            <div id="page-banks">
+                <div class="header">
+                    <h1>🗃️ Mes banques de questions</h1>
+                    <p>5 formats de données • Cliquez sur une banque pour voir ses éléments</p>
+                </div>
+
+                <div class="two-cols">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">📂 Banques</span>
+                            <button class="btn btn-sm btn-primary" onclick="openModal('modalNewBank')">➕</button>
+                        </div>
+                        <div class="card-body np" id="banksList">
+                            <div class="loading"><div class="spinner"></div> Chargement...</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title" id="elementsTitle">Sélectionnez une banque</span>
+                            <button class="btn btn-sm btn-primary" onclick="showPage('new-element')" style="display:none" id="btnAddElement">➕</button>
+                        </div>
+                        <div class="card-body np">
+                            <div class="filters" id="elementsFilters" style="display:none; padding: 16px 24px 0;"></div>
+                            <div id="elementsList">
+                                <div class="empty">
+                                    <div class="icon">👈</div>
+                                    <p>Sélectionnez une banque à gauche</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: Nouvel élément -->
+            <div id="page-new-element" style="display:none">
+                <div class="header">
+                    <h1>➕ Nouvel élément</h1>
+                    <p>Choisissez un format et remplissez les champs</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">1️⃣ Format de données</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="format-grid">
+                            <div class="format-option selected" onclick="selectFormat(this, 'Evenement')">
+                                <div class="icon">📅</div>
+                                <h4>Événement</h4>
+                            </div>
+                            <div class="format-option" onclick="selectFormat(this, 'QuestionReponse')">
+                                <div class="icon">❓</div>
+                                <h4>Question-Réponse</h4>
+                            </div>
+                            <div class="format-option" onclick="selectFormat(this, 'Zone')">
+                                <div class="icon">🗺️</div>
+                                <h4>Zone image</h4>
+                            </div>
+                            <div class="format-option" onclick="selectFormat(this, 'Dictee')">
+                                <div class="icon">🎧</div>
+                                <h4>Dictée</h4>
+                            </div>
+                            <div class="format-option" onclick="selectFormat(this, 'Erreur')">
+                                <div class="icon">🔍</div>
+                                <h4>Erreur</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Evenement -->
+                <div class="card" id="formEvenement">
+                    <div class="card-header">
+                        <span class="card-title">2️⃣ Contenu - Événement</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-input" id="eventDate" placeholder="Ex: 1492">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Événement</label>
+                                <input type="text" class="form-input" id="eventText" placeholder="Ex: Christophe Colomb arrive aux Antilles">
+                            </div>
+                        </div>
+                        <p class="form-hint">💡 Utilisable pour : Frise chronologique, Timeline, QCM dates</p>
+                    </div>
+                </div>
+
+                <!-- Form QuestionReponse -->
+                <div class="card" id="formQuestionReponse" style="display:none">
+                    <div class="card-header">
+                        <span class="card-title">2️⃣ Contenu - Question-Réponse</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Question / Indice</label>
+                            <textarea class="form-textarea" id="qrQuestion" placeholder="Ex: Qui a franchi le Cap de Bonne-Espérance en 1488 ?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Réponse attendue</label>
+                            <input type="text" class="form-input" id="qrReponse" placeholder="Ex: Bartolomeu Dias">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tag (optionnel)</label>
+                            <div class="tag-selector">
+                                <span class="tag-opt selected" onclick="selectTag(this)">Personnage</span>
+                                <span class="tag-opt" onclick="selectTag(this)">Vocabulaire</span>
+                                <span class="tag-opt" onclick="selectTag(this)">Lieu</span>
+                                <span class="tag-opt" onclick="selectTag(this)">Date</span>
+                                <span class="tag-opt" onclick="selectTag(this)">Autre</span>
+                            </div>
+                        </div>
+                        <p class="form-hint">💡 Utilisable pour : Question ouverte, QCM, Identification image</p>
+                    </div>
+                </div>
+
+                <!-- Form Dictee -->
+                <div class="card" id="formDictee" style="display:none">
+                    <div class="card-header">
+                        <span class="card-title">2️⃣ Contenu - Dictée</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Texte à dicter</label>
+                            <textarea class="form-textarea" id="dicteeTexte" placeholder="Ex: La caravelle est un bateau léger utilisé par les Portugais."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" onclick="playDictee()">🔊 Écouter (synthèse vocale)</button>
+                        </div>
+                        <p class="form-hint">💡 L'audio sera généré automatiquement côté élève</p>
+                    </div>
+                </div>
+
+                <!-- Form Erreur -->
+                <div class="card" id="formErreur" style="display:none">
+                    <div class="card-header">
+                        <span class="card-title">2️⃣ Contenu - Trouve l'erreur</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Phrase avec erreur</label>
+                            <input type="text" class="form-input" id="erreurPhrase" placeholder="Ex: Christophe Colomb arrive aux Antilles en 1498.">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Mot erroné</label>
+                                <input type="text" class="form-input" id="erreurMot" placeholder="Ex: 1498">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Correction</label>
+                                <input type="text" class="form-input" id="erreurCorrection" placeholder="Ex: 1492">
+                            </div>
+                        </div>
+                        <p class="form-hint">💡 L'élève devra cliquer sur le mot erroné</p>
+                    </div>
+                </div>
+
+                <!-- Form Zone -->
+                <div class="card" id="formZone" style="display:none">
+                    <div class="card-header">
+                        <span class="card-title">2️⃣ Contenu - Zone image</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">URL de l'image</label>
+                            <input type="text" class="form-input" id="zoneImage" placeholder="Ex: https://example.com/carte.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Consigne</label>
+                            <input type="text" class="form-input" id="zoneConsigne" placeholder="Ex: Localise le Cap de Bonne-Espérance">
+                        </div>
+                        <div class="form-row form-row-3">
+                            <div class="form-group">
+                                <label class="form-label">Position X (%)</label>
+                                <input type="number" class="form-input" id="zoneX" placeholder="Ex: 45">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Position Y (%)</label>
+                                <input type="number" class="form-input" id="zoneY" placeholder="Ex: 78">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Rayon tolérance</label>
+                                <input type="number" class="form-input" id="zoneRayon" value="30">
+                            </div>
+                        </div>
+                        <p class="form-hint">💡 Utilisable pour : Carte cliquable</p>
+                    </div>
+                </div>
+
+                <!-- Banque destination -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">3️⃣ Banque de destination</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Ranger dans</label>
+                            <select class="form-select" id="elementBanque"></select>
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                            <button class="btn btn-secondary" onclick="showPage('banks')">Annuler</button>
+                            <button class="btn btn-primary" onclick="saveElement()">💾 Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: Évaluations -->
+            <div id="page-evaluations" style="display:none">
+                <div class="header">
+                    <h1>📋 Mes évaluations</h1>
+                    <p>8 types d'exercices disponibles</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Liste des évaluations</span>
+                        <button class="btn btn-primary" onclick="showPage('new-eval')">➕ Nouvelle</button>
+                    </div>
+                    <div class="card-body np">
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Évaluation</th>
+                                        <th>Durée</th>
+                                        <th>Seuil</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evalsList">
+                                    <tr><td colspan="5" class="loading"><div class="spinner"></div> Chargement...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: Nouvelle évaluation -->
+            <div id="page-new-eval" style="display:none">
+                <div class="header">
+                    <h1>➕ Nouvelle évaluation</h1>
+                    <p>Configurez puis ajoutez des exercices</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⚙️ Paramètres</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-input" id="evalNom" placeholder="Ex: L4 - Sujet 1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <input type="text" class="form-input" id="evalDesc" placeholder="Ex: Mise en relation du monde">
+                            </div>
+                        </div>
+                        <div class="form-row form-row-4">
+                            <div class="form-group">
+                                <label class="form-label">Durée (min)</label>
+                                <input type="number" class="form-input" id="evalDuree" value="15">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Seuil (%)</label>
+                                <input type="number" class="form-input" id="evalSeuil" value="80">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tentatives</label>
+                                <select class="form-select" id="evalTentatives">
+                                    <option>Illimite</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Affichage</label>
+                                <select class="form-select" id="evalAffichage">
+                                    <option>Tout</option>
+                                    <option>1/page</option>
+                                    <option>5/page</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="showPage('evaluations')">Annuler</button>
+                            <button class="btn btn-primary" onclick="saveEvaluation()">💾 Créer l'évaluation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Nouvelle banque -->
+    <div class="modal-overlay" id="modalNewBank">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>➕ Nouvelle banque</h2>
+                <button class="modal-close" onclick="closeModal('modalNewBank')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="newBankNom" placeholder="Ex: L6 - Renaissance">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <select class="form-select" id="newBankCat">
+                        <option>Histoire</option>
+                        <option>Géographie</option>
+                        <option>EMC</option>
+                        <option>Révision</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalNewBank')">Annuler</button>
+                <button class="btn btn-primary" onclick="saveBank()">✓ Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Aide -->
+    <div class="modal-overlay" id="modalHelp">
+        <div class="modal lg">
+            <div class="modal-header">
+                <h2>❓ Aide - Formats & Exercices</h2>
+                <button class="modal-close" onclick="closeModal('modalHelp')">✕</button>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin-bottom: 16px; font-size: 16px;">📦 5 formats de données</h3>
+                <table style="margin-bottom: 24px;">
+                    <thead>
+                        <tr><th>Format</th><th>Champs</th><th>Utilisé par</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><span class="badge-event badge">Événement</span></td><td>Date + Événement</td><td>Frise, Timeline, QCM</td></tr>
+                        <tr><td><span class="badge-qr badge">Question-Réponse</span></td><td>Question + Réponse + Tag</td><td>Question ouverte, QCM</td></tr>
+                        <tr><td><span class="badge-zone badge">Zone</span></td><td>Image + Consigne + X/Y</td><td>Carte cliquable</td></tr>
+                        <tr><td><span class="badge-dictee badge">Dictée</span></td><td>Texte (audio auto)</td><td>Dictée</td></tr>
+                        <tr><td><span class="badge-erreur badge">Erreur</span></td><td>Phrase + Mot + Correction</td><td>Trouve l'erreur</td></tr>
+                    </tbody>
+                </table>
+                <h3 style="margin-bottom: 16px; font-size: 16px;">🎮 8 types d'exercices</h3>
+                <p style="color: var(--text-muted); font-size: 14px;">
+                    ⏱️ Frise chronologique • 🔀 Timeline • 🖼️ Identification image • ❓ Question ouverte<br>
+                    🗺️ Carte cliquable • 🎯 QCM • 🎧 Dictée • 🔍 Trouve l'erreur
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('modalHelp')">Compris !</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // =====================
+        // AUTH
+        // =====================
+        const ADMIN_PASSWORD = 'TEST';
+
+        function checkPassword() {
+            const input = document.getElementById('loginPassword').value;
+            if (input === ADMIN_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'grid';
+                sessionStorage.setItem('conn_admin_auth', 'true');
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        // Check if already logged in this session
+        if (sessionStorage.getItem('conn_admin_auth') === 'true') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'grid';
+        }
+
+        // =====================
+        // CONFIG
+        // =====================
+        const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzyqkUjiZBuS7MR-fo9qbb2Vrbw7JuIuBXczzNIT0qXUE6BZUu9XmJ3zVR-UmzC8SCQ/exec';
+
+        // =====================
+        // DATA
+        // =====================
+        let banques = [];
+        let elements = [];
+        let evaluations = [];
+        let exercices = [];
+        let selectedBanque = null;
+        let selectedFormat = 'Evenement';
+        let selectedTag = 'Personnage';
+
+        // =====================
+        // LOAD DATA
+        // =====================
+        async function loadSheet(sheetName) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                if (!json.table || !json.table.rows) return [];
+                
+                const headers = json.table.cols.map(col => col.label || '');
+                return json.table.rows.map(row => {
+                    const obj = {};
+                    row.c.forEach((cell, i) => {
+                        obj[headers[i]] = cell ? (cell.v || '') : '';
+                    });
+                    return obj;
+                }).filter(row => Object.values(row).some(v => v !== ''));
+            } catch (e) {
+                console.error('Erreur chargement', sheetName, e);
+                return [];
+            }
+        }
+
+        async function loadAllData() {
+            showToast('Chargement des données...');
+            
+            banques = await loadSheet('BANQUES QUESTIONS');
+            elements = await loadSheet('ELEMENTS');
+            evaluations = await loadSheet('EVALUATIONS');
+            exercices = await loadSheet('EXERCICES');
+
+            // Update counts
+            document.getElementById('navBankCount').textContent = banques.length;
+            document.getElementById('navEvalCount').textContent = evaluations.length;
+
+            // Render
+            renderBanks();
+            renderEvaluations();
+            updateBanqueSelect();
+
+            showToast('✓ Données chargées !');
+        }
+
+        // =====================
+        // RENDER
+        // =====================
+        function renderBanks() {
+            const container = document.getElementById('banksList');
+            if (banques.length === 0) {
+                container.innerHTML = `<div class="empty"><div class="icon">📭</div><p>Aucune banque créée</p></div>`;
+                return;
+            }
+
+            container.innerHTML = banques.map(b => {
+                const count = elements.filter(e => e.Banque === b.ID).length;
+                const catIcons = { Histoire: '📜', Géographie: '🌍', EMC: '⚖️', Révision: '🔄' };
+                const icon = catIcons[b['Catégorie']] || '📂';
+                return `
+                    <div class="list-item ${selectedBanque === b.ID ? 'active' : ''}" onclick="selectBanque('${b.ID}')">
+                        <div class="list-icon">${icon}</div>
+                        <div class="list-info">
+                            <h4>${b.Nom || b.ID}</h4>
+                            <p>${b['Catégorie'] || ''} • ${count} éléments</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectBanque(id) {
+            selectedBanque = id;
+            renderBanks();
+            renderElements();
+        }
+
+        function renderElements() {
+            const container = document.getElementById('elementsList');
+            const title = document.getElementById('elementsTitle');
+            const filters = document.getElementById('elementsFilters');
+            const btnAdd = document.getElementById('btnAddElement');
+
+            if (!selectedBanque) {
+                container.innerHTML = `<div class="empty"><div class="icon">👈</div><p>Sélectionnez une banque</p></div>`;
+                filters.style.display = 'none';
+                btnAdd.style.display = 'none';
+                return;
+            }
+
+            const banque = banques.find(b => b.ID === selectedBanque);
+            title.textContent = banque ? banque.Nom : selectedBanque;
+            btnAdd.style.display = 'block';
+
+            const bankElements = elements.filter(e => e.Banque === selectedBanque);
+
+            // Filters
+            const formats = [...new Set(bankElements.map(e => e.Format))];
+            filters.style.display = 'flex';
+            filters.innerHTML = `
+                <button class="filter-btn active" onclick="filterElements('')">Tous (${bankElements.length})</button>
+                ${formats.map(f => `<button class="filter-btn" onclick="filterElements('${f}')">${formatIcon(f)} ${f} (${bankElements.filter(e => e.Format === f).length})</button>`).join('')}
+            `;
+
+            renderElementsList(bankElements);
+        }
+
+        function filterElements(format) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let bankElements = elements.filter(e => e.Banque === selectedBanque);
+            if (format) bankElements = bankElements.filter(e => e.Format === format);
+            renderElementsList(bankElements);
+        }
+
+        function renderElementsList(list) {
+            const container = document.getElementById('elementsList');
+            
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty"><div class="icon">📭</div><p>Aucun élément</p></div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(e => {
+                const iconClass = e.Format.toLowerCase().replace('questionreponse', 'qr');
+                let content = '';
+
+                if (e.Format === 'Evenement') {
+                    content = `<span class="element-date">${e.Date}</span><div class="element-text">${e.Evenement}</div>`;
+                } else if (e.Format === 'QuestionReponse') {
+                    content = `<div class="element-text">${e.Question}<div class="element-sub">→ ${e.Reponse}</div></div>`;
+                } else if (e.Format === 'Dictee') {
+                    content = `<div class="element-text">${e.Texte}<div class="element-sub">🔊 Synthèse vocale auto</div></div>`;
+                } else if (e.Format === 'Erreur') {
+                    content = `<div class="element-text">${e.Phrase}<div class="element-sub">Erreur: ${e.MotErrone} → ${e.Correction}</div></div>`;
+                } else if (e.Format === 'Zone') {
+                    content = `<div class="element-text">${e.Question || 'Zone image'}<div class="element-sub">📍 (${e.X}, ${e.Y})</div></div>`;
+                }
+
+                return `
+                    <div class="element-row">
+                        <div class="element-icon ${iconClass}">${formatIcon(e.Format)}</div>
+                        <div class="element-content">${content}</div>
+                        <span class="badge badge-${iconClass}">${e.Tag || e.Format}</span>
+                        <button class="btn-icon danger" onclick="deleteElement('${e.ID}')">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatIcon(format) {
+            const icons = { Evenement: '📅', QuestionReponse: '❓', Zone: '🗺️', Dictee: '🎧', Erreur: '🔍' };
+            return icons[format] || '📄';
+        }
+
+        function renderEvaluations() {
+            const container = document.getElementById('evalsList');
+            
+            if (evaluations.length === 0) {
+                container.innerHTML = `<tr><td colspan="5" class="empty"><div class="icon">📭</div><p>Aucune évaluation</p></td></tr>`;
+                return;
+            }
+
+            container.innerHTML = evaluations.map(e => `
+                <tr>
+                    <td>
+                        <strong>${e.Nom || e.ID}</strong><br>
+                        <span style="font-size:12px;color:var(--text-muted)">${e.Description || ''}</span>
+                    </td>
+                    <td>${e.Duree || '-'} min</td>
+                    <td>${e.Seuil || '-'}%</td>
+                    <td><span class="badge ${e.Statut === 'Publie' ? 'badge-success' : 'badge-warning'}">${e.Statut || 'Brouillon'}</span></td>
+                    <td>
+                        <button class="btn-icon">✏️</button>
+                        <button class="btn-icon danger">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateBanqueSelect() {
+            const select = document.getElementById('elementBanque');
+            select.innerHTML = banques.map(b => `<option value="${b.ID}">${b.Nom || b.ID}</option>`).join('');
+        }
+
+        // =====================
+        // NAVIGATION
+        // =====================
+        function showPage(pageId) {
+            document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+            document.getElementById('page-' + pageId).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event?.target?.closest('.nav-item')?.classList.add('active');
+        }
+
+        // =====================
+        // FORMS
+        // =====================
+        function selectFormat(el, format) {
+            document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedFormat = format;
+
+            // Show/hide forms
+            ['Evenement', 'QuestionReponse', 'Zone', 'Dictee', 'Erreur'].forEach(f => {
+                document.getElementById('form' + f).style.display = f === format ? 'block' : 'none';
+            });
+        }
+
+        function selectTag(el) {
+            document.querySelectorAll('.tag-opt').forEach(t => t.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedTag = el.textContent;
+        }
+
+        function playDictee() {
+            const text = document.getElementById('dicteeTexte').value || 'Ceci est un test de dictée.';
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fr-FR';
+            speechSynthesis.speak(utterance);
+        }
+
+        // =====================
+        // SAVE (placeholder - needs Apps Script)
+        // =====================
+        async function saveBank() {
+            const nom = document.getElementById('newBankNom').value;
+            const cat = document.getElementById('newBankCat').value;
+            
+            if (!nom) {
+                showToast('Veuillez entrer un nom', true);
+                return;
+            }
+
+            // Generate ID
+            const id = nom.replace(/[^a-zA-Z0-9]/g, '').substring(0, 10).toUpperCase();
+            
+            showToast('Enregistrement...');
+            
+            try {
+                await fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sheet: 'BANQUES QUESTIONS',
+                        action: 'add',
+                        row: [id, nom, cat, 'Actif']
+                    })
+                });
+                
+                // Add locally
+                banques.push({ ID: id, Nom: nom, 'Catégorie': cat, Statut: 'Actif' });
+                document.getElementById('navBankCount').textContent = banques.length;
+                renderBanks();
+                updateBanqueSelect();
+                closeModal('modalNewBank');
+                showToast('✓ Banque créée !');
+                document.getElementById('newBankNom').value = '';
+            } catch (e) {
+                console.error(e);
+                showToast('Erreur de sauvegarde', true);
+            }
+        }
+
+        async function saveElement() {
+            const banque = document.getElementById('elementBanque').value;
+            
+            if (!banque) {
+                showToast('Sélectionnez une banque', true);
+                return;
+            }
+
+            const id = 'E' + Date.now();
+            const element = { ID: id, Banque: banque, Format: selectedFormat, Statut: 'Actif' };
+            
+            // Préparer la ligne pour le Sheet
+            // Colonnes: ID, Banque, Format, Date, Evenement, Question, Reponse, Image, Tag, Texte, Phrase, MotErrone, Correction, X, Y, Rayon, Statut
+            let row = [id, banque, selectedFormat, '', '', '', '', '', '', '', '', '', '', '', '', '', 'Actif'];
+
+            if (selectedFormat === 'Evenement') {
+                element.Date = document.getElementById('eventDate').value;
+                element.Evenement = document.getElementById('eventText').value;
+                if (!element.Date || !element.Evenement) {
+                    showToast('Remplissez tous les champs', true);
+                    return;
+                }
+                row[3] = element.Date;
+                row[4] = element.Evenement;
+            } else if (selectedFormat === 'QuestionReponse') {
+                element.Question = document.getElementById('qrQuestion').value;
+                element.Reponse = document.getElementById('qrReponse').value;
+                element.Tag = selectedTag;
+                if (!element.Question || !element.Reponse) {
+                    showToast('Remplissez tous les champs', true);
+                    return;
+                }
+                row[5] = element.Question;
+                row[6] = element.Reponse;
+                row[8] = element.Tag;
+            } else if (selectedFormat === 'Dictee') {
+                element.Texte = document.getElementById('dicteeTexte').value;
+                if (!element.Texte) {
+                    showToast('Entrez le texte de la dictée', true);
+                    return;
+                }
+                row[9] = element.Texte;
+            } else if (selectedFormat === 'Erreur') {
+                element.Phrase = document.getElementById('erreurPhrase').value;
+                element.MotErrone = document.getElementById('erreurMot').value;
+                element.Correction = document.getElementById('erreurCorrection').value;
+                if (!element.Phrase || !element.MotErrone || !element.Correction) {
+                    showToast('Remplissez tous les champs', true);
+                    return;
+                }
+                row[10] = element.Phrase;
+                row[11] = element.MotErrone;
+                row[12] = element.Correction;
+            } else if (selectedFormat === 'Zone') {
+                element.Image = document.getElementById('zoneImage').value;
+                element.Question = document.getElementById('zoneConsigne').value;
+                element.X = document.getElementById('zoneX').value;
+                element.Y = document.getElementById('zoneY').value;
+                element.Rayon = document.getElementById('zoneRayon').value;
+                row[5] = element.Question;
+                row[7] = element.Image;
+                row[13] = element.X;
+                row[14] = element.Y;
+                row[15] = element.Rayon;
+            }
+
+            showToast('Enregistrement...');
+            
+            try {
+                await fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sheet: 'ELEMENTS',
+                        action: 'add',
+                        row: row
+                    })
+                });
+                
+                elements.push(element);
+                showToast('✓ Élément ajouté !');
+                
+                // Clear forms
+                document.querySelectorAll('.form-input, .form-textarea').forEach(el => {
+                    if (el.id !== 'elementBanque' && el.id !== 'zoneRayon') el.value = '';
+                });
+                
+                showPage('banks');
+                selectBanque(banque);
+            } catch (e) {
+                console.error(e);
+                showToast('Erreur de sauvegarde', true);
+            }
+        }
+
+        async function saveEvaluation() {
+            const nom = document.getElementById('evalNom').value;
+            if (!nom) {
+                showToast('Entrez un nom', true);
+                return;
+            }
+
+            const id = 'EVAL' + Date.now();
+            const evaluation = {
+                ID: id,
+                Nom: nom,
+                Description: document.getElementById('evalDesc').value,
+                Duree: document.getElementById('evalDuree').value,
+                Seuil: document.getElementById('evalSeuil').value,
+                Tentatives: document.getElementById('evalTentatives').value,
+                Affichage: document.getElementById('evalAffichage').value,
+                Statut: 'Brouillon'
+            };
+
+            // Colonnes: ID, Nom, Description, Duree, Seuil, Tentatives, Affichage, Ouverture, Fermeture, Statut
+            const row = [id, nom, evaluation.Description, evaluation.Duree, evaluation.Seuil, evaluation.Tentatives, evaluation.Affichage, '', '', 'Brouillon'];
+
+            showToast('Enregistrement...');
+            
+            try {
+                await fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sheet: 'EVALUATIONS',
+                        action: 'add',
+                        row: row
+                    })
+                });
+                
+                evaluations.push(evaluation);
+                document.getElementById('navEvalCount').textContent = evaluations.length;
+                renderEvaluations();
+                showToast('✓ Évaluation créée !');
+                
+                // Clear form
+                document.getElementById('evalNom').value = '';
+                document.getElementById('evalDesc').value = '';
+                
+                showPage('evaluations');
+            } catch (e) {
+                console.error(e);
+                showToast('Erreur de sauvegarde', true);
+            }
+        }
+
+        async function deleteElement(id) {
+            if (!confirm('Supprimer cet élément ?')) return;
+            
+            showToast('Suppression...');
+            
+            try {
+                await fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sheet: 'ELEMENTS',
+                        action: 'delete',
+                        id: id
+                    })
+                });
+                
+                elements = elements.filter(e => e.ID !== id);
+                renderElements();
+                showToast('✓ Élément supprimé !');
+            } catch (e) {
+                console.error(e);
+                showToast('Erreur de suppression', true);
+            }
+        }
+
+        // =====================
+        // MODALS
+        // =====================
+        function openModal(id) {
+            document.getElementById(id).classList.add('visible');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('visible');
+        }
+
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.onclick = e => { if (e.target === o) o.classList.remove('visible'); };
+        });
+
+        // =====================
+        // TOAST
+        // =====================
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast visible' + (isError ? ' error' : '');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+
+        // =====================
+        // INIT
+        // =====================
+        loadAllData();
+    </script>
+</body>
+</html>
