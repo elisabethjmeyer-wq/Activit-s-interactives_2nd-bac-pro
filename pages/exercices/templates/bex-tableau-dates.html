@@ -26,7 +26,7 @@
             --gray-600: #4b5563;
             --gray-800: #1f2937;
             --gray-900: #111827;
-            --sidebar-width: 260px;
+            --sidebar-width: 280px;
             --header-height: 64px;
             --radius: 12px;
             --radius-lg: 16px;
@@ -40,7 +40,9 @@
             min-height: 100vh;
         }
 
-        /* Header */
+        /* ============================================
+           HEADER
+           ============================================ */
         .header {
             background: white;
             border-bottom: 1px solid var(--gray-200);
@@ -50,6 +52,7 @@
             right: 0;
             height: var(--header-height);
             z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .header-inner {
@@ -107,7 +110,16 @@
             font-size: 18px;
         }
 
-        /* Sidebar */
+        .header-subtitle {
+            color: var(--gray-500);
+            font-weight: 400;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+
+        /* ============================================
+           SIDEBAR (styles pour le contenu chargé)
+           ============================================ */
         .sidebar {
             position: fixed;
             top: var(--header-height);
@@ -116,60 +128,87 @@
             height: calc(100vh - var(--header-height));
             background: white;
             border-right: 1px solid var(--gray-200);
-            padding: 20px 12px;
             overflow-y: auto;
             z-index: 90;
             transition: transform 0.3s ease;
+            padding: 16px 12px;
         }
 
         .sidebar.collapsed {
             transform: translateX(-100%);
         }
 
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .sidebar-section {
+            margin-bottom: 8px;
         }
 
-        .nav-item {
+        .sidebar-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
+            padding: 10px 16px;
             border-radius: 10px;
-            color: var(--gray-600);
+            color: var(--gray-700);
             text-decoration: none;
             font-weight: 500;
+            font-size: 14px;
             transition: all 0.2s;
+            margin-bottom: 2px;
         }
 
-        .nav-item:hover {
+        .sidebar-item:hover {
             background: var(--gray-100);
             color: var(--gray-900);
         }
 
-        .nav-item.active {
+        .sidebar-item.active {
             background: var(--primary-bg);
             color: var(--primary);
         }
 
-        .nav-icon {
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+        }
+
+        .item-icon {
             font-size: 18px;
             width: 24px;
             text-align: center;
+            flex-shrink: 0;
         }
 
-        .nav-section-title {
+        .item-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .item-sub {
             font-size: 11px;
-            font-weight: 600;
             color: var(--gray-400);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 20px 16px 8px;
+            font-weight: 400;
         }
 
-        /* Overlay */
+        /* ============================================
+           OVERLAY
+           ============================================ */
         .overlay {
             position: fixed;
             top: var(--header-height);
@@ -190,19 +229,33 @@
             pointer-events: auto;
         }
 
-        /* Main content */
-        .main-content {
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        .main {
             margin-top: var(--header-height);
             padding: 24px;
             min-height: calc(100vh - var(--header-height));
+            transition: margin-left 0.3s ease;
         }
 
-        .page-container {
+        @media (min-width: 1024px) {
+            .main {
+                margin-left: var(--sidebar-width);
+            }
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+
+        .main-inner {
             max-width: 900px;
             margin: 0 auto;
         }
 
-        /* Breadcrumb */
+        /* ============================================
+           BREADCRUMB
+           ============================================ */
         .breadcrumb {
             display: flex;
             align-items: center;
@@ -230,7 +283,9 @@
             font-weight: 500;
         }
 
-        /* Exercise header */
+        /* ============================================
+           EXERCISE COMPONENTS
+           ============================================ */
         .exercise-header {
             background: white;
             border-radius: var(--radius-lg);
@@ -249,7 +304,6 @@
             color: var(--gray-500);
         }
 
-        /* Timer */
         .timer-box {
             background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
             color: white;
@@ -272,7 +326,6 @@
             50% { transform: scale(1.02); }
         }
 
-        /* Instructions */
         .instructions {
             background: white;
             border-radius: var(--radius);
@@ -292,7 +345,6 @@
             line-height: 1.6;
         }
 
-        /* Exercise card */
         .exercise-card {
             background: white;
             border-radius: var(--radius-lg);
@@ -300,7 +352,9 @@
             box-shadow: var(--shadow-lg);
         }
 
-        /* Table */
+        /* ============================================
+           TABLE
+           ============================================ */
         .table-container {
             overflow-x: auto;
             margin-bottom: 24px;
@@ -371,7 +425,9 @@
             color: #991b1b;
         }
 
-        /* Buttons */
+        /* ============================================
+           BUTTONS
+           ============================================ */
         .buttons {
             display: flex;
             gap: 12px;
@@ -410,7 +466,9 @@
             color: white;
         }
 
-        /* Result */
+        /* ============================================
+           RESULT
+           ============================================ */
         .result {
             background: var(--accent-green-light);
             border: 2px solid var(--accent-green);
@@ -433,7 +491,9 @@
             color: #047857;
         }
 
-        /* Loading */
+        /* ============================================
+           LOADING & ERROR
+           ============================================ */
         .loading {
             text-align: center;
             padding: 60px 20px;
@@ -454,7 +514,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Error */
         .error-message {
             background: var(--accent-red-light);
             border: 2px solid var(--accent-red);
@@ -464,9 +523,11 @@
             color: #991b1b;
         }
 
-        /* Responsive */
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
-            .main-content {
+            .main {
                 padding: 16px;
             }
 
@@ -491,46 +552,39 @@
     </style>
 </head>
 <body>
+    <!-- ============================================
+         HEADER
+         ============================================ -->
     <header class="header">
         <div class="header-inner">
             <button class="menu-toggle" id="menuToggle">☰</button>
             <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
                 <div class="logo-icon">📚</div>
                 <span>Espace cours</span>
+                <span class="header-subtitle">• Mme Meyer</span>
             </a>
         </div>
     </header>
 
+    <!-- ============================================
+         SIDEBAR (chargé dynamiquement)
+         ============================================ -->
     <aside class="sidebar collapsed" id="sidebar">
-        <nav class="sidebar-nav">
-            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="nav-item">
-                <span class="nav-icon">🏠</span>Tableau de bord
-            </a>
-            <div class="nav-section-title">Ressources</div>
-            <a href="/Activit-s-interactives_2nd-bac-pro/pages/lecons.html" class="nav-item">
-                <span class="nav-icon">📖</span>Leçons
-            </a>
-            <a href="/Activit-s-interactives_2nd-bac-pro/pages/classeur.html" class="nav-item">
-                <span class="nav-icon">📁</span>Classeur numérique
-            </a>
-            <div class="nav-section-title">Entraînement</div>
-            <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-bex.html" class="nav-item active">
-                <span class="nav-icon">⭐</span>Entraînement BEX
-            </a>
-            <div class="nav-section-title">Outils</div>
-            <a href="/Activit-s-interactives_2nd-bac-pro/pages/faq.html" class="nav-item">
-                <span class="nav-icon">❓</span>FAQ
-            </a>
-            <a href="/Activit-s-interactives_2nd-bac-pro/pages/emploi-du-temps.html" class="nav-item">
-                <span class="nav-icon">📅</span>Emploi du temps
-            </a>
-        </nav>
+        <div id="sidebarContent">
+            <!-- Contenu chargé depuis components/sidebar.html -->
+        </div>
     </aside>
 
+    <!-- ============================================
+         OVERLAY
+         ============================================ -->
     <div class="overlay" id="overlay"></div>
 
-    <main class="main-content">
-        <div class="page-container">
+    <!-- ============================================
+         MAIN CONTENT
+         ============================================ -->
+    <main class="main">
+        <div class="main-inner">
             <nav class="breadcrumb">
                 <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
                 <span>›</span>
@@ -555,6 +609,7 @@
         const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
         const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
         const SHEET_NAME = 'BEX1_DATA';
+        const CURRENT_PAGE = 'entrainement-bex';
 
         // ============================================
         // VARIABLES GLOBALES
@@ -585,6 +640,29 @@
 
         menuToggle.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
+
+        // Charger le sidebar partagé
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                // Marquer la page active
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (item.dataset.page === CURRENT_PAGE) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Désactiver les liens vides
+                document.querySelectorAll('.sidebar-item.disabled').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
 
         // ============================================
         // RÉCUPÉRATION PARAMÈTRES URL
@@ -902,6 +980,10 @@
         // INITIALISATION
         // ============================================
         async function init() {
+            // Charger le sidebar
+            await loadSidebar();
+            
+            // Charger l'exercice
             const params = getUrlParams();
             
             try {
