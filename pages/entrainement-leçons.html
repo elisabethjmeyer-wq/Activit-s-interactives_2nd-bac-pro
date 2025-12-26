@@ -1,1 +1,1291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entraînement Connaissances | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-orange: #f59e0b;
+            --accent-orange-light: #fef3c7;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 12px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .filter-btn .btn-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            margin-left: 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .filter-btn.active .btn-count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            padding: 10px 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-700);
+            font-family: inherit;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+
+        .dropdown-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .dropdown-toggle.has-selection {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .dropdown-toggle .arrow {
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+
+        .dropdown.open .dropdown-toggle .arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 320px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary-bg);
+        }
+
+        .dropdown-item.selected {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .dropdown-item.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .dropdown-item .item-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .dropdown-item .item-info {
+            flex: 1;
+        }
+
+        .dropdown-item .item-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-800);
+        }
+
+        .dropdown-item.selected .item-title {
+            color: var(--primary);
+        }
+
+        .dropdown-item .item-subtitle {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .dropdown-item .item-count {
+            background: var(--gray-100);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .dropdown-item.selected .item-count {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ===== LOADING & EMPTY STATE ===== */
+        .loading, .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            display: none;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* ===== CONN CARDS ===== */
+        .conn-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .conn-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .conn-card.hidden {
+            display: none;
+        }
+
+        .conn-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .conn-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .conn-header:hover {
+            background: var(--gray-50);
+        }
+
+        .conn-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .conn-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .conn-icon.histoire { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .conn-icon.geographie { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .conn-icon.litterature { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .conn-icon.emc { background: linear-gradient(135deg, #ec4899, #db2777); }
+
+        .conn-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .conn-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .conn-count {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .conn-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .conn-status.disponible {
+            background: var(--accent-green-light);
+            color: var(--accent-green);
+        }
+
+        .conn-status.locked {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .conn-toggle {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--gray-400);
+            transition: all 0.3s;
+        }
+
+        .conn-card.open .conn-toggle {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        /* Sujets List */
+        .sujets-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .conn-card.open .sujets-list {
+            max-height: 1000px;
+        }
+
+        .sujets-container {
+            padding: 16px 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sujet-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: white;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid var(--gray-200);
+        }
+
+        .sujet-item:hover {
+            border-color: var(--primary-light);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .sujet-item.locked {
+            opacity: 0.6;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .sujet-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-green-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .sujet-item.locked .sujet-icon {
+            background: var(--gray-100);
+        }
+
+        .sujet-info {
+            flex: 1;
+        }
+
+        .sujet-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 2px;
+        }
+
+        .sujet-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .sujet-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+            background: var(--accent-green-light);
+            color: var(--accent-green);
+        }
+
+        .sujet-arrow {
+            color: var(--gray-400);
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .sujet-item:hover .sujet-arrow {
+            transform: translateX(4px);
+            color: var(--primary);
+        }
+
+        /* Locked CONN Card */
+        .conn-card.locked {
+            opacity: 0.7;
+        }
+
+        .conn-card.locked .conn-header {
+            cursor: default;
+        }
+
+        .conn-card.locked .conn-header:hover {
+            background: transparent;
+        }
+
+        .conn-card.locked .conn-icon {
+            background: linear-gradient(135deg, var(--gray-400), var(--gray-500));
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .conn-header {
+                padding: 16px;
+            }
+
+            .conn-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .conn-info h3 {
+                font-size: 16px;
+            }
+
+            .sujets-container {
+                padding: 12px 16px 16px;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-toggle {
+                width: 100%;
+            }
+
+            .dropdown-menu {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR (chargé dynamiquement) -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner" id="sidebarContent">
+            <!-- Chargé par JavaScript -->
+        </div>
+    </aside>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="main-inner">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <span class="current">Entraînement Connaissances</span>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>✅ Connaissances</h1>
+                <p>Apprends et vérifie tes connaissances sur chaque leçon</p>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar" id="filterBar" style="display: none;">
+                <button class="filter-btn active" id="btnAll" onclick="filterCONN('all')">
+                    📚 Tous
+                    <span class="btn-count" id="countAll">0</span>
+                </button>
+                
+                <div class="dropdown" id="dropdown">
+                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                        <span id="dropdownLabel">Choisir une leçon</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <!-- Généré par JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Chargement des évaluations...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="icon">📭</div>
+                <h3>Aucune évaluation disponible</h3>
+                <p>Les évaluations de connaissances seront bientôt disponibles.</p>
+            </div>
+
+            <!-- CONN Grid -->
+            <div class="conn-grid" id="connGrid" style="display: none;"></div>
+        </div>
+    </main>
+
+    <script>
+        // ===== CONFIG =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const CURRENT_PAGE = 'entrainement-conn';
+        
+        // Google Sheet EXERCICES
+        const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
+        const SHEET_NAME = 'MENU_CONN';
+        
+        // Icônes par matière
+        const MATIERE_ICONS = {
+            'histoire': '📜',
+            'géographie': '🌍',
+            'geographie': '🌍',
+            'littérature': '📚',
+            'litterature': '📚',
+            'emc': '⚖️'
+        };
+
+        // Variable globale pour stocker les données
+        let allConnData = [];
+        let currentFilter = 'all';
+
+        // ===== SIDEBAR TOGGLE =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+            
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== LOAD SIDEBAR =====
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                if (!response.ok) throw new Error('Sidebar not found');
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                // Marquer la page active
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (item.dataset.page === CURRENT_PAGE) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Désactiver les liens vides
+                document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
+
+        // ===== LOAD DATA =====
+        async function loadCONN() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parser la réponse Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonText = text.substring(jsonStart, jsonEnd);
+                const json = JSON.parse(jsonText);
+
+                if (!json.table || !json.table.rows) {
+                    throw new Error('No data');
+                }
+
+                const data = [];
+                for (let i = 0; i < json.table.rows.length; i++) {
+                    const row = json.table.rows[i].c;
+                    if (!row) continue;
+
+                    // Colonnes: NumLeçon, NumExo, TitreLeçon, TitreExo, Matière, Statut
+                    const numLecon = row[0]?.v ?? '';
+                    const numExo = row[1]?.v ?? '';
+                    const titreLecon = row[2]?.v || '';
+                    const titreExo = row[3]?.v || '';
+                    const matiere = row[4]?.v || '';
+                    const statut = String(row[5]?.v || '').toLowerCase();
+
+                    // Skip header row
+                    if (String(numLecon).toLowerCase().includes('numle')) continue;
+                    if (numLecon === '' && numExo === '') continue;
+
+                    data.push({
+                        numLecon: String(numLecon).trim(),
+                        numExo: parseInt(numExo) || 0,
+                        titreLecon: String(titreLecon).trim(),
+                        titreExo: String(titreExo).trim(),
+                        matiere: String(matiere).trim().toLowerCase(),
+                        statut: statut.includes('disponible') ? 'disponible' : 'à venir'
+                    });
+                }
+
+                if (data.length === 0) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
+                // Transformer en structure CONN
+                allConnData = transformToConnList(data);
+                
+                // Générer la barre de filtres
+                renderFilterBar(allConnData);
+                
+                // Afficher toutes les leçons
+                renderCONN(allConnData);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // ===== TRANSFORM DATA =====
+        function transformToConnList(data) {
+            const connMap = {};
+            
+            data.forEach(item => {
+                if (!connMap[item.numLecon]) {
+                    connMap[item.numLecon] = {
+                        numLecon: item.numLecon,
+                        titre: '',
+                        matiere: '',
+                        statut: 'à venir',
+                        sujets: []
+                    };
+                }
+
+                // NumExo = 0 = ligne d'en-tête de la leçon
+                if (item.numExo === 0) {
+                    connMap[item.numLecon].titre = item.titreLecon;
+                    connMap[item.numLecon].matiere = item.matiere;
+                    connMap[item.numLecon].statut = item.statut;
+                } else {
+                    // C'est un sujet
+                    connMap[item.numLecon].sujets.push({
+                        numSujet: item.numExo,
+                        titre: item.titreExo || `Sujet ${item.numExo}`,
+                        statut: item.statut
+                    });
+                }
+            });
+
+            return Object.values(connMap).sort((a, b) => {
+                // Trier par matière puis par numéro de leçon
+                if (a.matiere !== b.matiere) return a.matiere.localeCompare(b.matiere);
+                return a.numLecon.localeCompare(b.numLecon);
+            });
+        }
+
+        // ===== RENDER FILTER BAR =====
+        function renderFilterBar(connList) {
+            // Compter le total de sujets
+            const totalSujets = connList.reduce((sum, conn) => sum + conn.sujets.length, 0);
+            document.getElementById('countAll').textContent = totalSujets;
+            
+            // Générer les items du dropdown
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            let menuHtml = connList.map(conn => {
+                const isLocked = conn.statut !== 'disponible';
+                const icon = getIconForMatiere(conn.matiere);
+                const sujetCount = conn.sujets.length;
+                const shortTitle = conn.titre || conn.numLecon;
+                
+                return `
+                    <div class="dropdown-item ${isLocked ? 'locked' : ''}" 
+                         data-lecon="${conn.numLecon}" 
+                         onclick="${isLocked ? '' : `selectCONN('${conn.numLecon}', '${icon}', '${shortTitle.replace(/'/g, "\\'")}')`}">
+                        <span class="item-icon">${isLocked ? '🔒' : icon}</span>
+                        <div class="item-info">
+                            <div class="item-title">${conn.numLecon} - ${shortTitle}</div>
+                            <div class="item-subtitle">${sujetCount} sujet${sujetCount > 1 ? 's' : ''}</div>
+                        </div>
+                        <span class="item-count">${sujetCount}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            dropdownMenu.innerHTML = menuHtml;
+            document.getElementById('filterBar').style.display = 'flex';
+        }
+
+        // ===== GET ICON FOR MATIERE =====
+        function getIconForMatiere(matiere) {
+            const normalized = matiere.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return MATIERE_ICONS[normalized] || '📋';
+        }
+
+        // ===== TOGGLE DROPDOWN =====
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // ===== CLOSE DROPDOWN =====
+        function closeDropdown() {
+            document.getElementById('dropdown').classList.remove('open');
+        }
+
+        // ===== SELECT CONN FROM DROPDOWN =====
+        function selectCONN(numLecon, icon, title) {
+            currentFilter = numLecon;
+            
+            // Mettre à jour le label du dropdown
+            document.getElementById('dropdownLabel').innerHTML = `${icon} ${numLecon} - ${title}`;
+            document.querySelector('.dropdown-toggle').classList.add('has-selection');
+            
+            // Désactiver le bouton "Tous"
+            document.getElementById('btnAll').classList.remove('active');
+            
+            // Marquer l'item sélectionné dans le dropdown
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('selected');
+                if (item.dataset.lecon === numLecon) {
+                    item.classList.add('selected');
+                }
+            });
+            
+            // Fermer le dropdown
+            closeDropdown();
+            
+            // Filtrer les cartes
+            applyFilter(numLecon);
+        }
+
+        // ===== FILTER CONN (bouton Tous) =====
+        function filterCONN(filter) {
+            if (filter === 'all') {
+                currentFilter = 'all';
+                
+                // Activer le bouton "Tous"
+                document.getElementById('btnAll').classList.add('active');
+                
+                // Réinitialiser le dropdown
+                document.getElementById('dropdownLabel').textContent = 'Choisir une leçon';
+                document.querySelector('.dropdown-toggle').classList.remove('has-selection');
+                
+                // Désélectionner dans le dropdown
+                document.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Fermer le dropdown si ouvert
+                closeDropdown();
+                
+                // Afficher toutes les cartes
+                applyFilter('all');
+            }
+        }
+
+        // ===== APPLY FILTER =====
+        function applyFilter(filter) {
+            document.querySelectorAll('.conn-card').forEach(card => {
+                const cardLecon = card.dataset.lecon;
+                
+                if (filter === 'all') {
+                    card.classList.remove('hidden');
+                    // Fermer tous les accordéons
+                    card.classList.remove('open');
+                } else {
+                    if (cardLecon === filter) {
+                        card.classList.remove('hidden');
+                        // Ouvrir automatiquement la leçon sélectionnée
+                        if (!card.classList.contains('locked')) {
+                            card.classList.add('open');
+                        }
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // ===== CLOSE DROPDOWN ON CLICK OUTSIDE =====
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('dropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // ===== RENDER CONN =====
+        function renderCONN(connList) {
+            const container = document.getElementById('connGrid');
+            container.innerHTML = '';
+
+            connList.forEach(conn => {
+                const card = createCONNCard(conn);
+                container.appendChild(card);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            container.style.display = 'flex';
+        }
+
+        // ===== CREATE CONN CARD =====
+        function createCONNCard(conn) {
+            const card = document.createElement('div');
+            card.className = 'conn-card';
+            card.dataset.lecon = conn.numLecon;
+            
+            const isLocked = conn.statut !== 'disponible';
+            if (isLocked) card.classList.add('locked');
+
+            const sujetCount = conn.sujets.length;
+            const icon = getIconForMatiere(conn.matiere);
+            const matiereClass = conn.matiere.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            card.innerHTML = `
+                <div class="conn-header" onclick="${isLocked ? '' : 'toggleCONN(this.parentElement)'}">
+                    <div class="conn-header-left">
+                        <div class="conn-icon ${matiereClass}">${icon}</div>
+                        <div class="conn-info">
+                            <h3>${conn.titre || conn.numLecon}</h3>
+                            <div class="conn-meta">
+                                <span class="conn-count">
+                                    ${isLocked ? '🔒' : '📝'} ${sujetCount} sujet${sujetCount > 1 ? 's' : ''}
+                                </span>
+                                <span class="conn-status ${isLocked ? 'locked' : 'disponible'}">
+                                    ${isLocked ? '🔒 À venir' : '✅ Disponible'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    ${!isLocked ? '<div class="conn-toggle">▼</div>' : ''}
+                </div>
+                ${!isLocked ? createSujetsList(conn.sujets, conn.numLecon) : ''}
+            `;
+
+            return card;
+        }
+
+        // ===== CREATE SUJETS LIST =====
+        function createSujetsList(sujets, numLecon) {
+            if (sujets.length === 0) {
+                return `
+                    <div class="sujets-list">
+                        <div class="sujets-container">
+                            <p style="color: var(--gray-500); text-align: center; padding: 20px;">
+                                Aucun sujet disponible pour le moment.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            sujets.sort((a, b) => a.numSujet - b.numSujet);
+
+            const items = sujets.map(sujet => {
+                const isLocked = sujet.statut !== 'disponible';
+                
+                // Lien vers la page d'évaluation (à créer plus tard)
+                const href = isLocked ? '#' : `exercices/templates/conn.html?chap=${numLecon}&sujet=${sujet.numSujet}`;
+
+                return `
+                    <a href="${href}" class="sujet-item ${isLocked ? 'locked' : ''}">
+                        <div class="sujet-icon">
+                            ${isLocked ? '🔒' : '✏️'}
+                        </div>
+                        <div class="sujet-info">
+                            <h4>${sujet.titre}</h4>
+                            <div class="sujet-badges">
+                                <span class="sujet-badge">📋 Évaluation de connaissances</span>
+                            </div>
+                        </div>
+                        ${!isLocked ? '<span class="sujet-arrow">→</span>' : ''}
+                    </a>
+                `;
+            }).join('');
+
+            return `
+                <div class="sujets-list">
+                    <div class="sujets-container">
+                        ${items}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== TOGGLE CONN =====
+        function toggleCONN(card) {
+            card.classList.toggle('open');
+        }
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSidebar();
+            loadCONN();
+        });
+    </script>
+</body>
+</html>
