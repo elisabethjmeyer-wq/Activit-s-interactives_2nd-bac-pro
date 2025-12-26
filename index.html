@@ -198,6 +198,21 @@
             color: var(--primary);
         }
 
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+            color: var(--gray-700);
+        }
+
         .sidebar-item .item-icon {
             width: 32px;
             height: 32px;
@@ -211,9 +226,15 @@
             transition: all 0.15s;
         }
 
-        .sidebar-item:hover .item-icon {
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
             background: var(--primary);
             color: white;
+        }
+
+        .sidebar-item.disabled:hover .item-icon {
+            background: var(--gray-100);
+            color: inherit;
         }
 
         .sidebar-item .item-text {
@@ -441,7 +462,7 @@
             margin-bottom: 8px;
         }
 
-        /* ===== RECO CARD - FEATURED STYLE ===== */
+        /* ===== RECO CARD ===== */
         .reco-card {
             background: white;
             border-radius: var(--radius-lg);
@@ -610,7 +631,7 @@
             }
         }
 
-        /* ===== CONTENT POPUP ===== */
+        /* ===== POPUP ===== */
         .popup-overlay {
             position: fixed;
             inset: 0;
@@ -753,11 +774,13 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s;
+            pointer-events: none;
         }
 
         .overlay.visible {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
         }
 
         /* ===== MOBILE ===== */
@@ -779,7 +802,7 @@
 </head>
 <body>
 
-    <!-- OVERLAY (for mobile sidebar) -->
+    <!-- OVERLAY -->
     <div class="overlay" id="overlay"></div>
 
     <!-- HEADER -->
@@ -787,7 +810,7 @@
         <div class="header-inner">
             <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
             
-            <a href="#" class="logo">
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
                 <div class="logo-icon">📚</div>
                 <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
             </a>
@@ -798,102 +821,10 @@
         </div>
     </header>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (chargé dynamiquement) -->
     <aside class="sidebar collapsed" id="sidebar">
-        <div class="sidebar-inner">
-            
-            <!-- Organisation -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>🧰</span> Organisation
-                </div>
-                <a href="pages/emploi-du-temps.html" class="sidebar-item">
-                    <span class="item-icon">📅</span>
-                    <span class="item-text">Emploi du temps</span>
-                </a>
-                <a href="pages/classeur.html" class="sidebar-item">
-                    <span class="item-icon">📁</span>
-                    <span class="item-text">Classeur</span>
-                </a>
-                <a href="pages/notes.html" class="sidebar-item">
-                    <span class="item-icon">📊</span>
-                    <span class="item-text">Notes</span>
-                </a>
-            </div>
-
-            <!-- Cours -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>📚</span> Cours
-                </div>
-                <a href="pages/lecons.html" class="sidebar-item">
-                    <span class="item-icon">📖</span>
-                    <span class="item-text">Leçons</span>
-                </a>
-                <a href="pages/methodologie.html" class="sidebar-item">
-                    <span class="item-icon">🧠</span>
-                    <span class="item-text">Méthodologie</span>
-                </a>
-            </div>
-
-            <!-- Entraînements -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>💪</span> Entraînements
-                </div>
-                <a href="pages/entrainement-connaissances.html" class="sidebar-item">
-                    <span class="item-icon">✅</span>
-                    <span class="item-text">
-                        Connaissances
-                        <span class="item-sub">Apprendre ses leçons</span>
-                    </span>
-                </a>
-                <a href="pages/entrainement-bex.html" class="sidebar-item">
-                    <span class="item-icon">⭐</span>
-                    <span class="item-text">
-                        BEX (lundi)
-                        <span class="item-sub">Maîtriser les savoir-faire</span>
-                    </span>
-                </a>
-                <a href="pages/entrainement-tc.html" class="sidebar-item">
-                    <span class="item-icon">📝</span>
-                    <span class="item-text">
-                        TC (vendredi)
-                        <span class="item-sub">Préparer l'évaluation</span>
-                    </span>
-                </a>
-            </div>
-
-            <!-- Évaluations -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>📝</span> Évaluations
-                </div>
-                <a href="pages/evaluations-connaissances.html" class="sidebar-item">
-                    <span class="item-icon">✅</span>
-                    <span class="item-text">Éval. de connaissances</span>
-                </a>
-                <a href="pages/bonus.html" class="sidebar-item">
-                    <span class="item-icon">🌟</span>
-                    <span class="item-text">Points supplémentaires</span>
-                </a>
-            </div>
-
-            <!-- Communication -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
-                    <span>💬</span> Communication
-                </div>
-                <a href="FAQ.html" class="sidebar-item">
-                    <span class="item-icon">❓</span>
-                    <span class="item-text">Aide / FAQ</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <span class="item-icon">🗣️</span>
-                    <span class="item-text">Espace discussion</span>
-                </a>
-            </div>
-
+        <div class="sidebar-inner" id="sidebarContent">
+            <!-- Chargé par JavaScript -->
         </div>
     </aside>
 
@@ -901,14 +832,13 @@
     <main class="main">
         <div class="main-inner">
             
-            <!-- TOP ROW: Video + This Week -->
+            <!-- TOP ROW -->
             <div class="top-row">
-                
-                <!-- Vidéo de la semaine -->
+                <!-- Vidéo -->
                 <div class="video-card">
                     <div class="card-header">
                         <div class="card-title">🎬 Vidéo de la semaine</div>
-                        <a href="videos_hebdomadaires_archives.html" class="card-link">Voir tout →</a>
+                        <a href="/Activit-s-interactives_2nd-bac-pro/videos_hebdomadaires_archives.html" class="card-link">Voir tout →</a>
                     </div>
                     <div class="video-wrapper" id="videoWrapper">
                         <div class="video-placeholder">
@@ -937,7 +867,7 @@
             <div class="reco-card">
                 <div class="card-header">
                     <div class="card-title">💡 Recommandation de la semaine</div>
-                    <a href="recommandations_archives.html" class="card-link">Voir tout →</a>
+                    <a href="/Activit-s-interactives_2nd-bac-pro/recommandations_archives.html" class="card-link">Voir tout →</a>
                 </div>
                 <div id="recoContainer">
                     <div class="reco-empty">
@@ -970,12 +900,12 @@
 
     <script>
         // ===== CONFIG =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
         const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
 
-        // Current recommendation data (for popup)
         let currentReco = null;
 
-        // ===== SIDEBAR TOGGLE =====
+        // ===== SIDEBAR =====
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
         const overlay = document.getElementById('overlay');
@@ -995,7 +925,22 @@
             menuToggle.classList.add('active');
         }
 
-        // ===== HELPER FUNCTIONS =====
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                if (!response.ok) throw new Error('Sidebar not found');
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
+
+        // ===== HELPERS =====
         function escapeHtml(t) {
             if (!t) return '';
             const d = document.createElement('div');
@@ -1005,15 +950,9 @@
 
         function convertToEmbed(url) {
             if (!url) return null;
-            // Loom
-            if (url.includes('loom.com/share/')) {
-                return url.replace('/share/', '/embed/');
-            }
-            // YouTube
+            if (url.includes('loom.com/share/')) return url.replace('/share/', '/embed/');
             const m = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
-            if (m && m[2].length === 11) {
-                return `https://www.youtube-nocookie.com/embed/${m[2]}`;
-            }
+            if (m && m[2].length === 11) return `https://www.youtube-nocookie.com/embed/${m[2]}`;
             return url;
         }
 
@@ -1036,21 +975,16 @@
         function formatDate(dateStr) {
             if (!dateStr) return '';
             const str = String(dateStr);
-            
-            // Format DD-MM-YYYY ou DD/MM/YYYY
             const match1 = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
             if (match1) {
                 const date = new Date(parseInt(match1[3]), parseInt(match1[2]) - 1, parseInt(match1[1]));
                 return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
             }
-            
-            // Format YYYY-MM-DD
             if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
                 const parts = str.split('-');
                 const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                 return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
             }
-            
             return str;
         }
 
@@ -1073,7 +1007,6 @@
             return 'link';
         }
 
-        // ===== LOAD RAW SHEET DATA (by column index) =====
         async function loadSheetRaw(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             try {
@@ -1088,121 +1021,81 @@
             }
         }
 
-        // ===== UPDATE DATE =====
         function updateDate() {
             const now = new Date();
             const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
             document.getElementById('currentDate').textContent = `Sem. ${getWeekNumber(now)} • ${months[now.getMonth()]} ${now.getFullYear()}`;
         }
 
-        // ===== LOAD VIDEO =====
-        // Colonnes: A=Date, B=Titre, C=Lien
         async function loadVideo() {
             const rows = await loadSheetRaw('📺 VIDEOS');
             const wrapper = document.getElementById('videoWrapper');
-            
-            // Filter valid rows (skip header, empty rows)
             const validRows = rows.filter(row => {
-                if (!row.c || !row.c[2]) return false; // Need Lien (column C)
+                if (!row.c || !row.c[2]) return false;
                 const lien = row.c[2]?.v || '';
                 const titre = row.c[1]?.v || '';
                 if (!lien || lien.toLowerCase().includes('lien')) return false;
                 if (titre.toLowerCase().includes('titre')) return false;
                 return true;
             });
-            
             if (validRows.length > 0) {
-                // Get last video
                 const lastRow = validRows[validRows.length - 1];
                 const lien = lastRow.c[2]?.v || '';
                 const embed = convertToEmbed(lien);
-                
                 if (embed) {
                     wrapper.innerHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
                     return;
                 }
             }
-            
             wrapper.innerHTML = `<div class="video-placeholder"><div class="play">🎬</div><span>Aucune vidéo</span></div>`;
         }
 
-        // ===== LOAD WEEK (TODO only) =====
         async function loadWeek() {
             const todoRows = await loadSheetRaw('🎯TODO');
-            
             let items = [];
-            
-            // TODO: Colonnes: A=Priorité, B=Texte, C=Date, D=Lien, E=Visible
             todoRows.forEach(row => {
                 if (!row.c) return;
-                
                 const priorite = row.c[0]?.v || '';
                 const texte = row.c[1]?.v || '';
                 const date = row.c[2]?.f || row.c[2]?.v || '';
                 const lien = row.c[3]?.v || '';
                 const visible = String(row.c[4]?.v || '').toUpperCase();
-                
-                // Ignorer en-têtes et lignes non visibles
                 if (String(priorite).toLowerCase().includes('priorit')) return;
                 if (!texte || texte.toLowerCase().includes('texte')) return;
                 if (visible !== 'OUI' && visible !== 'TRUE' && visible !== '1') return;
-                
-                items.push({
-                    priority: priorite.toString().toLowerCase(),
-                    text: texte,
-                    date: date,
-                    link: lien || '#'
-                });
+                items.push({ priority: priorite.toString().toLowerCase(), text: texte, date: date, link: lien || '#' });
             });
-
             const container = document.getElementById('weekList');
             const badge = document.getElementById('weekBadge');
-            
             badge.textContent = items.length;
-            
             if (items.length > 0) {
                 container.innerHTML = items.map(item => `
                     <a href="${item.link}" class="week-item">
                         <div class="week-dot ${item.priority}"></div>
-                        <div class="week-content">
-                            <strong>${escapeHtml(item.text)}</strong>
-                        </div>
+                        <div class="week-content"><strong>${escapeHtml(item.text)}</strong></div>
                         ${item.date ? `<div class="week-date">${escapeHtml(item.date)}</div>` : ''}
                         <span class="week-arrow">→</span>
                     </a>
                 `).join('');
             } else {
-                container.innerHTML = `
-                    <div class="week-empty">
-                        <div class="emoji">✨</div>
-                        <p>Rien de prévu cette semaine !</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="week-empty"><div class="emoji">✨</div><p>Rien de prévu cette semaine !</p></div>`;
             }
         }
 
-        // ===== LOAD RECO =====
-        // Colonnes: A=Date, B=Titre, C=Description, D=Lien, E=Image, F=Type, G=Tags
         async function loadReco() {
             const rows = await loadSheetRaw('🎬 RECOS');
             const container = document.getElementById('recoContainer');
-            
-            // Filter valid rows
             const validRows = rows.filter(row => {
                 if (!row.c || !row.c[1]) return false;
                 const titre = row.c[1]?.v || '';
                 if (!titre || titre.toLowerCase().includes('titre')) return false;
                 return true;
             });
-            
             if (validRows.length === 0) {
                 container.innerHTML = `<div class="reco-empty"><div class="emoji">📭</div><p>Pas de recommandation pour le moment</p></div>`;
                 return;
             }
-            
-            // Get last reco
             const row = validRows[validRows.length - 1];
-            
             const reco = {
                 date: row.c[0]?.f || row.c[0]?.v || '',
                 titre: row.c[1]?.v || '',
@@ -1212,26 +1105,14 @@
                 type: (row.c[5]?.v || '').toLowerCase(),
                 tags: row.c[6]?.v || ''
             };
-            
             currentReco = reco;
-            
-            // Determine type
-            let emoji = '🎬';
-            let typeLabel = 'À regarder';
-            
-            if (reco.type.includes('ecouter') || reco.type.includes('écouter') || reco.type.includes('podcast')) {
-                emoji = '🎧';
-                typeLabel = 'À écouter';
-            } else if (reco.type.includes('lire') || reco.type.includes('article')) {
-                emoji = '📖';
-                typeLabel = 'À lire';
-            }
-            
+            let emoji = '🎬', typeLabel = 'À regarder';
+            if (reco.type.includes('ecouter') || reco.type.includes('écouter') || reco.type.includes('podcast')) { emoji = '🎧'; typeLabel = 'À écouter'; }
+            else if (reco.type.includes('lire') || reco.type.includes('article')) { emoji = '📖'; typeLabel = 'À lire'; }
             const imageUrl = convertToImageUrl(reco.image);
             const tags = parseTags(reco.tags);
             const contentType = getContentType(reco.lien, reco.type);
             const playIcon = (contentType === 'link' || contentType === 'article') ? '↗' : '▶';
-            
             container.innerHTML = `
                 <div class="reco-featured" onclick="openRecoPopup()">
                     <div class="reco-image">
@@ -1246,44 +1127,31 @@
                         </div>
                         <h3 class="reco-title">${escapeHtml(reco.titre)}</h3>
                         <p class="reco-desc">${escapeHtml(reco.description)}</p>
-                        ${tags.length > 0 ? `
-                            <div class="reco-tags">
-                                ${tags.map(t => `<span class="reco-tag">${escapeHtml(t)}</span>`).join('')}
-                            </div>
-                        ` : ''}
+                        ${tags.length > 0 ? `<div class="reco-tags">${tags.map(t => `<span class="reco-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
                         <p class="reco-date">${formatDate(reco.date)}</p>
                     </div>
                 </div>
             `;
         }
 
-        // ===== POPUP =====
         function openRecoPopup() {
             if (!currentReco) return;
-            
             const reco = currentReco;
             const contentType = getContentType(reco.lien, reco.type);
             const tags = parseTags(reco.tags);
             const imageUrl = convertToImageUrl(reco.image);
-            
             document.getElementById('popupTitle').textContent = reco.titre;
             document.getElementById('popupDesc').textContent = reco.description;
             document.getElementById('popupDate').textContent = formatDate(reco.date);
             document.getElementById('popupTags').innerHTML = tags.map(t => `<span class="popup-tag">${escapeHtml(t)}</span>`).join('');
-            
             const mediaContainer = document.getElementById('popupMedia');
-            
             if (contentType === 'youtube') {
                 const m = reco.lien.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
-                if (m && m[2]) {
-                    mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[2]}" allowfullscreen></iframe>`;
-                }
+                if (m && m[2]) mediaContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[2]}" allowfullscreen></iframe>`;
             } else if (contentType === 'spotify') {
-                const embedUrl = reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" style="height: 352px;" allow="encrypted-media"></iframe>`;
+                mediaContainer.innerHTML = `<iframe src="${reco.lien.replace('open.spotify.com/', 'open.spotify.com/embed/')}" style="height: 352px;" allow="encrypted-media"></iframe>`;
             } else if (contentType === 'loom') {
-                const embedUrl = reco.lien.replace('/share/', '/embed/');
-                mediaContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+                mediaContainer.innerHTML = `<iframe src="${reco.lien.replace('/share/', '/embed/')}" allowfullscreen></iframe>`;
             } else if (contentType === 'googledoc') {
                 let embedUrl = reco.lien.replace(/\/(edit|view).*$/, '/preview');
                 if (!embedUrl.includes('/preview')) embedUrl += '/preview';
@@ -1297,9 +1165,7 @@
                 }
             } else if (contentType === 'gdrive-image') {
                 const fileId = reco.lien.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1];
-                if (fileId) {
-                    mediaContainer.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w2000">`;
-                }
+                if (fileId) mediaContainer.innerHTML = `<img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w2000">`;
             } else if (contentType === 'image') {
                 mediaContainer.innerHTML = `<img src="${reco.lien}">`;
             } else {
@@ -1307,7 +1173,6 @@
                 html += `<div class="popup-external"><p style="color: var(--gray-500); margin-bottom: 16px;">Ce contenu provient d'un site externe.</p><a href="${reco.lien}" target="_blank" class="popup-external-btn">📖 Ouvrir le lien</a></div>`;
                 mediaContainer.innerHTML = html;
             }
-            
             document.getElementById('popupOverlay').classList.add('visible');
         }
 
@@ -1318,12 +1183,11 @@
             }
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closePopup();
-        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePopup(); });
 
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
+            loadSidebar();
             updateDate();
             loadVideo();
             loadWeek();
