@@ -1225,7 +1225,9 @@
                         obj[headers[i]] = cell ? (cell.v || '') : '';
                     });
                     return obj;
-                }).filter(row => Object.values(row).some(v => v !== ''));
+                })
+                // ✅ CORRECTION : Filtrer les lignes où l'ID est vide ou undefined
+                .filter(row => row.ID && row.ID.toString().trim() !== '');
             } catch (e) {
                 console.error('Erreur chargement', sheetName, e);
                 return [];
@@ -1239,6 +1241,10 @@
             elements = await loadSheet('ELEMENTS');
             evaluations = await loadSheet('EVALUATIONS');
             exercices = await loadSheet('EXERCICES');
+
+            // Debug: voir ce qui est chargé
+            console.log('Banques chargées:', banques);
+            console.log('Elements chargés:', elements);
 
             // Update counts
             document.getElementById('navBankCount').textContent = banques.length;
@@ -1390,7 +1396,11 @@
 
         function updateBanqueSelect() {
             const select = document.getElementById('elementBanque');
-            select.innerHTML = banques.map(b => `<option value="${b.ID}">${b.Nom || b.ID}</option>`).join('');
+            if (banques.length === 0) {
+                select.innerHTML = '<option value="">-- Créez d\'abord une banque --</option>';
+            } else {
+                select.innerHTML = banques.map(b => `<option value="${b.ID}">${b.Nom || b.ID}</option>`).join('');
+            }
         }
 
         // =====================
