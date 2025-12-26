@@ -546,17 +546,17 @@
 
         // Champs du formulaire
         const FIELDS = [
-            { id: 'auteur', label: 'Auteur', col: 7 },
-            { id: 'titre', label: 'Titre', col: 8 },
-            { id: 'partie', label: 'Partie de l\'œuvre', col: 9 },
-            { id: 'dimensions', label: 'Dimensions', col: 10 },
-            { id: 'nature', label: 'Nature du document', col: 11 },
-            { id: 'dateRealisation', label: 'Date de réalisation', col: 12 },
-            { id: 'maison', label: 'Maison d\'édition', col: 13 },
-            { id: 'traducteur', label: 'Traducteur', col: 14 },
-            { id: 'credit', label: 'Crédit photo', col: 15 },
-            { id: 'dateEdition', label: 'Date d\'édition', col: 16 },
-            { id: 'lieu', label: 'Lieu de conservation', col: 17 }
+            { id: 'auteur', label: 'Auteur', col: 6 },
+            { id: 'titre', label: 'Titre', col: 7 },
+            { id: 'partie', label: 'Partie de l\'œuvre', col: 8 },
+            { id: 'dimensions', label: 'Dimensions', col: 9 },
+            { id: 'nature', label: 'Nature du document', col: 10 },
+            { id: 'dateRealisation', label: 'Date de réalisation', col: 11 },
+            { id: 'maison', label: 'Maison d\'édition', col: 12 },
+            { id: 'traducteur', label: 'Traducteur', col: 13 },
+            { id: 'credit', label: 'Crédit photo', col: 14 },
+            { id: 'dateEdition', label: 'Date d\'édition', col: 15 },
+            { id: 'lieu', label: 'Lieu de conservation', col: 16 }
         ];
 
         let exerciseData = null;
@@ -683,9 +683,8 @@
                             titre: row.c[1]?.v || `Exercice ${exoNum}`,
                             temps: row.c[2]?.v || 600,
                             documentTitre: row.c[3]?.v || 'Document',
-                            documentType: row.c[4]?.v || 'gdoc',
-                            documentUrl: row.c[5]?.v || '',
-                            documentLegende: row.c[6]?.v || '',
+                            documentUrl: row.c[4]?.v || '',
+                            documentLegende: row.c[5]?.v || '',
                             answers: answers
                         };
                     }
