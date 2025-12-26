@@ -407,6 +407,49 @@
             return { exo: parseInt(params.get('exo')) || 1 };
         }
 
+        // ===== TRANSFORMATION AUTOMATIQUE DES URLs =====
+        // Tu peux coller n'importe quel lien Google Drive, il sera transformé automatiquement !
+        function transformUrl(url, type) {
+            if (!url) return '';
+            
+            // Détecter si c'est un lien Google Drive
+            const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            const docsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
+            const sheetsMatch = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+            const slidesMatch = url.match(/docs\.google\.com\/presentation\/d\/([a-zA-Z0-9_-]+)/);
+            
+            if (driveMatch) {
+                const fileId = driveMatch[1];
+                // Pour les images, on utilise /preview dans un iframe (plus fiable)
+                // Pour tous les fichiers Drive (PDF, images, sons, vidéos), /preview fonctionne
+                return `https://drive.google.com/file/d/${fileId}/preview`;
+            }
+            
+            if (docsMatch) {
+                const docId = docsMatch[1];
+                return `https://docs.google.com/document/d/${docId}/preview`;
+            }
+            
+            if (sheetsMatch) {
+                const sheetId = sheetsMatch[1];
+                return `https://docs.google.com/spreadsheets/d/${sheetId}/preview`;
+            }
+            
+            if (slidesMatch) {
+                const slideId = slidesMatch[1];
+                return `https://docs.google.com/presentation/d/${slideId}/preview`;
+            }
+            
+            // YouTube
+            const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+            if (youtubeMatch) {
+                return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+            }
+            
+            // Si ce n'est pas un lien spécial, retourner tel quel
+            return url;
+        }
+
         async function loadExerciseData(exoNum) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
             
@@ -449,11 +492,13 @@
             
             timeLeft = data.temps || 600;
 
+            // Transformer l'URL automatiquement
+            const finalUrl = transformUrl(data.documentUrl, data.documentType);
+            
             let documentHtml = '';
-            if (data.documentType === 'image') {
-                documentHtml = `<img src="${data.documentUrl}" alt="${data.documentTitre}">`;
-            } else if (data.documentUrl) {
-                documentHtml = `<iframe src="${data.documentUrl}" title="${data.documentTitre}"></iframe>`;
+            if (finalUrl) {
+                // Utiliser iframe pour tous les types (plus flexible et compatible)
+                documentHtml = `<iframe src="${finalUrl}" title="${data.documentTitre}" allow="autoplay"></iframe>`;
             } else {
                 documentHtml = `<p style="padding: 20px; color: var(--gray-500);">Document non disponible</p>`;
             }
