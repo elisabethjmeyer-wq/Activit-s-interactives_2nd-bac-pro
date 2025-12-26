@@ -490,6 +490,69 @@
             color: #047857;
         }
 
+        /* ===== NAVIGATION EXERCICES ===== */
+        .nav-exercices {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .nav-btn.prev {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--gray-200);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-btn.menu {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .nav-btn.menu:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .nav-info {
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
         /* ===== LOADING & ERROR ===== */
         .loading {
             text-align: center;
@@ -562,6 +625,14 @@
                 padding: 8px;
                 font-size: 13px;
             }
+            .nav-exercices {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -630,6 +701,8 @@
         let exerciseData = null;
         let timeLeft = 600;
         let timerInterval = null;
+        let totalExercises = 0;
+        let currentExoNum = 1;
 
         // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
@@ -709,42 +782,56 @@
                 
                 const rows = data.table.rows;
                 
-                // Trouver la ligne correspondant à l'exercice
+                // Compter le nombre total d'exercices et trouver l'exercice demandé
+                let foundExercise = null;
+                let maxExo = 0;
+                
                 for (let row of rows) {
                     const numExo = row.c[0]?.v;
-                    if (numExo === exoNum) {
-                        return {
-                            numExo: numExo,
-                            titre: row.c[1]?.v || `Exercice ${exoNum}`,
-                            temps: row.c[2]?.v || 600,
-                            dates: [
-                                {
-                                    date: row.c[3]?.v,
-                                    siecle: (row.c[4]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    periode: (row.c[5]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    personnage: (row.c[6]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
-                                },
-                                {
-                                    date: row.c[7]?.v,
-                                    siecle: (row.c[8]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    periode: (row.c[9]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    personnage: (row.c[10]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
-                                },
-                                {
-                                    date: row.c[11]?.v,
-                                    siecle: (row.c[12]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    periode: (row.c[13]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    personnage: (row.c[14]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
-                                },
-                                {
-                                    date: row.c[15]?.v,
-                                    siecle: (row.c[16]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    periode: (row.c[17]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
-                                    personnage: (row.c[18]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
-                                }
-                            ]
-                        };
+                    if (typeof numExo === 'number' && numExo > 0) {
+                        maxExo = Math.max(maxExo, numExo);
+                        
+                        if (numExo === exoNum) {
+                            foundExercise = {
+                                numExo: numExo,
+                                titre: row.c[1]?.v || `Exercice ${exoNum}`,
+                                temps: row.c[2]?.v || 600,
+                                dates: [
+                                    {
+                                        date: row.c[3]?.v,
+                                        siecle: (row.c[4]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        periode: (row.c[5]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        personnage: (row.c[6]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
+                                    },
+                                    {
+                                        date: row.c[7]?.v,
+                                        siecle: (row.c[8]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        periode: (row.c[9]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        personnage: (row.c[10]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
+                                    },
+                                    {
+                                        date: row.c[11]?.v,
+                                        siecle: (row.c[12]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        periode: (row.c[13]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        personnage: (row.c[14]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
+                                    },
+                                    {
+                                        date: row.c[15]?.v,
+                                        siecle: (row.c[16]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        periode: (row.c[17]?.v || '').toString().split(',').map(s => s.trim().toLowerCase()),
+                                        personnage: (row.c[18]?.v || '').toString().split(',').map(s => s.trim().toLowerCase())
+                                    }
+                                ]
+                            };
+                        }
                     }
+                }
+                
+                totalExercises = maxExo;
+                currentExoNum = exoNum;
+                
+                if (foundExercise) {
+                    return foundExercise;
                 }
                 
                 throw new Error(`Exercice ${exoNum} non trouvé`);
@@ -753,6 +840,46 @@
                 console.error('Erreur chargement données:', error);
                 throw error;
             }
+        }
+
+        // ===== RENDER NAVIGATION =====
+        function renderNavigation() {
+            const prevExo = currentExoNum - 1;
+            const nextExo = currentExoNum + 1;
+            const hasPrev = prevExo >= 1;
+            const hasNext = nextExo <= totalExercises;
+
+            const prevLink = hasPrev ? `?exo=${prevExo}` : '#';
+            const nextLink = hasNext ? `?exo=${nextExo}` : '#';
+            const menuLink = `${BASE_PATH}/pages/entrainement-bex.html`;
+
+            return `
+                <nav class="nav-exercices">
+                    ${hasPrev ? `
+                        <a href="${prevLink}" class="nav-btn prev">
+                            ← Exercice ${prevExo}
+                        </a>
+                    ` : `
+                        <a href="${menuLink}" class="nav-btn menu">
+                            ← Retour au menu
+                        </a>
+                    `}
+
+                    <div class="nav-info">
+                        Exercice ${currentExoNum} / ${totalExercises}
+                    </div>
+
+                    ${hasNext ? `
+                        <a href="${nextLink}" class="nav-btn next">
+                            Exercice ${nextExo} →
+                        </a>
+                    ` : `
+                        <a href="${menuLink}" class="nav-btn next">
+                            Terminer ✓
+                        </a>
+                    `}
+                </nav>
+            `;
         }
 
         // ===== AFFICHAGE EXERCICE =====
@@ -809,6 +936,8 @@
                         <p id="resultMessage"></p>
                     </div>
                 </div>
+
+                ${renderNavigation()}
             `;
 
             document.getElementById('content').innerHTML = html;
