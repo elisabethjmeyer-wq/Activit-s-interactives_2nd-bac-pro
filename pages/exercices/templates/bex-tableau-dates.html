@@ -5,18 +5,346 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BEX n°1 | Espace cours</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- CSS partagé du site -->
-    <link rel="stylesheet" href="/Activit-s-interactives_2nd-bac-pro/css/style.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            --accent-yellow: #f59e0b;
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --sidebar-width: 280px;
+            --header-height: 64px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
         /* ============================================
-           STYLES SPÉCIFIQUES À L'EXERCICE BEX
+           HEADER
            ============================================ */
-        
-        /* Timer */
-        .timer-box {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Menu Toggle - Style hamburger */
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--primary-bg);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary);
+        }
+
+        .menu-toggle:hover span {
+            background: white;
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+        }
+
+        .menu-toggle.active span {
+            background: white;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--gray-900);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        .logo-subtitle {
+            color: var(--gray-500);
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        /* ============================================
+           SIDEBAR
+           ============================================ */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            overflow-y: auto;
+            z-index: 90;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            padding: 16px 12px;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        /* Sidebar sections */
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-item:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+        }
+
+        .item-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .item-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .item-sub {
+            font-size: 11px;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        /* ============================================
+           OVERLAY
+           ============================================ */
+        .overlay {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 80;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        .main {
+            margin-top: var(--header-height);
+            padding: 24px;
+            min-height: calc(100vh - var(--header-height));
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Desktop: sidebar always visible */
+        @media (min-width: 1024px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+            .main {
+                margin-left: var(--sidebar-width);
+            }
+            .overlay {
+                display: none;
+            }
+        }
+
+        /* ============================================
+           BREADCRUMB
+           ============================================ */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+        }
+
+        .breadcrumb .separator {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .breadcrumb .current {
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           PAGE HEADER
+           ============================================ */
+        .page-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        /* ============================================
+           TIMER
+           ============================================ */
+        .timer-box {
+            background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
+            color: white;
+            border-radius: var(--radius);
             padding: 16px;
             margin-bottom: 20px;
             text-align: center;
@@ -26,7 +354,7 @@
         }
 
         .timer-box.warning {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
             animation: pulse 1s infinite;
         }
 
@@ -35,35 +363,41 @@
             50% { transform: scale(1.02); }
         }
 
-        /* Instructions */
+        /* ============================================
+           INSTRUCTIONS
+           ============================================ */
         .instructions {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--radius);
             padding: 20px;
             margin-bottom: 20px;
-            border-left: 4px solid #f59e0b;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-yellow);
+            box-shadow: var(--shadow);
         }
 
         .instructions strong {
-            color: #f59e0b;
+            color: var(--accent-yellow);
         }
 
         .instructions p {
-            color: #4b5563;
+            color: var(--gray-600);
             margin-top: 8px;
             line-height: 1.6;
         }
 
-        /* Exercise card */
+        /* ============================================
+           EXERCISE CARD
+           ============================================ */
         .exercise-card {
             background: white;
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: 24px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
         }
 
-        /* Table */
+        /* ============================================
+           TABLE
+           ============================================ */
         .table-container {
             overflow-x: auto;
             margin-bottom: 24px;
@@ -76,7 +410,7 @@
         }
 
         th {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             padding: 14px 12px;
             text-align: center;
@@ -85,81 +419,85 @@
         }
 
         th:first-child {
-            border-radius: 12px 0 0 0;
+            border-radius: var(--radius) 0 0 0;
         }
 
         th:last-child {
-            border-radius: 0 12px 0 0;
+            border-radius: 0 var(--radius) 0 0;
         }
 
         td {
             padding: 12px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--gray-200);
             text-align: center;
         }
 
         td.date-cell {
-            background: #f3f4f6;
+            background: var(--gray-100);
             font-weight: 700;
             font-size: 18px;
-            color: #6366f1;
+            color: var(--primary);
             width: 100px;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 10px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--gray-200);
             border-radius: 8px;
             font-size: 14px;
             text-align: center;
             transition: all 0.3s;
+            font-family: inherit;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #6366f1;
+            border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         input.correct {
-            background: #d1fae5;
-            border-color: #10b981;
+            background: var(--accent-green-light);
+            border-color: var(--accent-green);
             color: #065f46;
         }
 
         input.incorrect {
-            background: #fee2e2;
-            border-color: #ef4444;
+            background: var(--accent-red-light);
+            border-color: var(--accent-red);
             color: #991b1b;
         }
 
-        /* Buttons */
+        /* ============================================
+           BUTTONS
+           ============================================ */
         .buttons {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
         }
 
-        .buttons button {
+        button {
             flex: 1;
             min-width: 150px;
             padding: 14px;
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius);
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            font-family: inherit;
         }
 
-        .buttons button:hover {
+        button:hover {
             transform: translateY(-2px);
         }
 
         .btn-verify {
-            background: linear-gradient(135deg, #10b981, #34d399);
+            background: linear-gradient(135deg, var(--accent-green), #34d399);
             color: white;
         }
 
@@ -169,15 +507,17 @@
         }
 
         .btn-restart {
-            background: linear-gradient(135deg, #6b7280, #9ca3af);
+            background: linear-gradient(135deg, var(--gray-500), var(--gray-400));
             color: white;
         }
 
-        /* Result */
+        /* ============================================
+           RESULT
+           ============================================ */
         .result {
-            background: #d1fae5;
-            border: 2px solid #10b981;
-            border-radius: 12px;
+            background: var(--accent-green-light);
+            border: 2px solid var(--accent-green);
+            border-radius: var(--radius);
             padding: 20px;
             margin-top: 20px;
             display: none;
@@ -196,18 +536,20 @@
             color: #047857;
         }
 
-        /* Loading */
+        /* ============================================
+           LOADING & ERROR
+           ============================================ */
         .loading {
             text-align: center;
             padding: 60px 20px;
-            color: #6b7280;
+            color: var(--gray-500);
         }
 
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid #e5e7eb;
-            border-top-color: #6366f1;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -217,11 +559,10 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Error */
         .error-message {
-            background: #fee2e2;
-            border: 2px solid #ef4444;
-            border-radius: 12px;
+            background: var(--accent-red-light);
+            border: 2px solid var(--accent-red);
+            border-radius: var(--radius);
             padding: 20px;
             text-align: center;
             color: #991b1b;
@@ -231,9 +572,19 @@
             color: #991b1b;
         }
 
-        /* Responsive */
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
-            .buttons button {
+            .main {
+                padding: 16px;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+            }
+
+            button {
                 min-width: 100%;
             }
 
@@ -251,7 +602,7 @@
 </head>
 <body>
     <!-- ============================================
-         HEADER (même structure que les autres pages)
+         HEADER
          ============================================ -->
     <header class="header">
         <div class="header-inner">
@@ -262,14 +613,14 @@
             </button>
             <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
                 <div class="logo-icon">📚</div>
-                <span class="logo-text">Espace cours</span>
+                <span>Espace cours</span>
                 <span class="logo-subtitle">• Mme Meyer</span>
             </a>
         </div>
     </header>
 
     <!-- ============================================
-         SIDEBAR (chargé par sidebar.js)
+         SIDEBAR (chargé dynamiquement)
          ============================================ -->
     <aside class="sidebar" id="sidebar">
         <!-- Contenu chargé depuis components/sidebar.html -->
@@ -297,7 +648,7 @@
             <!-- Page header -->
             <div class="page-header">
                 <h1 id="pageTitle">⏰ BEX n°1</h1>
-                <p class="page-subtitle" id="pageSubtitle">Se repérer dans le temps</p>
+                <p class="page-subtitle">Se repérer dans le temps</p>
             </div>
 
             <!-- Contenu de l'exercice -->
@@ -310,17 +661,11 @@
         </div>
     </main>
 
-    <!-- ============================================
-         SCRIPTS
-         ============================================ -->
-    <!-- Sidebar partagé -->
-    <script src="/Activit-s-interactives_2nd-bac-pro/js/sidebar.js"></script>
-    
-    <!-- Script de l'exercice -->
     <script>
         // ============================================
         // CONFIGURATION
         // ============================================
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
         const SHEET_ID = '1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg';
         const SHEET_NAME = 'BEX1_DATA';
 
@@ -330,6 +675,49 @@
         let exerciseData = null;
         let timeLeft = 600;
         let timerInterval = null;
+
+        // ============================================
+        // SIDEBAR
+        // ============================================
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+
+        // Toggle sidebar
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            menuToggle.classList.toggle('active');
+            overlay.classList.toggle('visible');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            menuToggle.classList.remove('active');
+            overlay.classList.remove('visible');
+        });
+
+        // Charger le sidebar partagé
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                const html = await response.text();
+                sidebar.innerHTML = html;
+                
+                // Marquer la page active (BEX)
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (item.getAttribute('data-page') === 'entrainement-bex') {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Désactiver les liens vides
+                document.querySelectorAll('.sidebar-item.disabled').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
 
         // ============================================
         // RÉCUPÉRATION PARAMÈTRES URL
@@ -473,7 +861,7 @@
                     <h3>❌ Erreur</h3>
                     <p>${message}</p>
                     <p style="margin-top: 12px;">
-                        <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-bex.html">
+                        <a href="${BASE_PATH}/pages/entrainement-bex.html">
                             ← Retour à la liste des exercices
                         </a>
                     </p>
@@ -641,7 +1029,11 @@
         // ============================================
         // INITIALISATION
         // ============================================
-        async function initExercise() {
+        async function init() {
+            // Charger le sidebar
+            await loadSidebar();
+            
+            // Charger l'exercice
             const params = getUrlParams();
             
             try {
@@ -652,9 +1044,8 @@
             }
         }
 
-        // Lancer l'initialisation de l'exercice
-        // (le sidebar est chargé par sidebar.js)
-        document.addEventListener('DOMContentLoaded', initExercise);
+        // Lancer l'initialisation
+        init();
     </script>
 </body>
 </html>
