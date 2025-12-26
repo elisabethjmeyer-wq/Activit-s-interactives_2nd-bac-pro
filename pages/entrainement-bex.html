@@ -101,16 +101,14 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--gray-900);
             text-decoration: none;
+            color: var(--gray-800);
         }
 
         .logo-icon {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -119,66 +117,121 @@
             font-size: 18px;
         }
 
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
         /* ===== SIDEBAR ===== */
         .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
             position: fixed;
             top: var(--header-height);
             left: 0;
-            width: var(--sidebar-width);
-            height: calc(100vh - var(--header-height));
-            background: white;
-            border-right: 1px solid var(--gray-200);
-            padding: 20px 12px;
+            bottom: 0;
             overflow-y: auto;
-            z-index: 90;
+            overflow-x: hidden;
             transition: transform 0.3s ease;
+            z-index: 50;
         }
 
         .sidebar.collapsed {
             transform: translateX(-100%);
         }
 
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .sidebar-inner {
+            padding: 16px 12px;
         }
 
-        .nav-item {
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-radius: 10px;
-            color: var(--gray-600);
             text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
-        .nav-item:hover {
-            background: var(--gray-100);
-            color: var(--gray-900);
-        }
-
-        .nav-item.active {
+        .sidebar-item:hover {
             background: var(--primary-bg);
             color: var(--primary);
         }
 
-        .nav-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
         }
 
-        .nav-section-title {
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+            color: var(--gray-700);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item.disabled:hover .item-icon {
+            background: var(--gray-100);
+            color: inherit;
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
             font-size: 11px;
-            font-weight: 600;
             color: var(--gray-400);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 20px 16px 8px;
+            font-weight: 400;
         }
 
         /* ===== OVERLAY ===== */
@@ -189,7 +242,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.3);
-            z-index: 80;
+            z-index: 40;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -203,15 +256,19 @@
         }
 
         /* ===== MAIN CONTENT ===== */
-        .main-content {
-            margin-left: 0;
-            margin-top: var(--header-height);
+        .main {
+            margin-left: var(--sidebar-width);
             padding: 24px;
-            min-height: calc(100vh - var(--header-height));
+            padding-top: calc(var(--header-height) + 24px);
             transition: margin-left 0.3s ease;
+            min-height: 100vh;
         }
 
-        .page-container {
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
             max-width: 1000px;
             margin: 0 auto;
         }
@@ -235,8 +292,8 @@
             color: var(--primary);
         }
 
-        .breadcrumb span {
-            color: var(--gray-400);
+        .breadcrumb .separator {
+            color: var(--gray-300);
         }
 
         .breadcrumb .current {
@@ -511,13 +568,17 @@
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (min-width: 1024px) {
-            .sidebar:not(.collapsed) ~ .main-content {
-                margin-left: var(--sidebar-width);
-            }
-        }
-
         @media (max-width: 768px) {
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+
             .page-header h1 {
                 font-size: 22px;
             }
@@ -547,63 +608,30 @@
     <header class="header">
         <div class="header-inner">
             <button class="menu-toggle" id="menuToggle">☰</button>
-            <a href="index.html" class="logo">
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
                 <div class="logo-icon">📚</div>
-                <span>Espace cours</span>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
             </a>
         </div>
     </header>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (chargé dynamiquement) -->
     <aside class="sidebar collapsed" id="sidebar">
-        <nav class="sidebar-nav">
-            <a href="index.html" class="nav-item">
-                <span class="nav-icon">🏠</span>
-                Tableau de bord
-            </a>
-            
-            <div class="nav-section-title">Ressources</div>
-            <a href="lecons.html" class="nav-item">
-                <span class="nav-icon">📖</span>
-                Leçons
-            </a>
-            <a href="classeur.html" class="nav-item">
-                <span class="nav-icon">📁</span>
-                Classeur numérique
-            </a>
-            <a href="videos.html" class="nav-item">
-                <span class="nav-icon">🎬</span>
-                Archives vidéos
-            </a>
-            
-            <div class="nav-section-title">Entraînement</div>
-            <a href="bex.html" class="nav-item active">
-                <span class="nav-icon">⭐</span>
-                Entraînement BEX
-            </a>
-            
-            <div class="nav-section-title">Outils</div>
-            <a href="faq.html" class="nav-item">
-                <span class="nav-icon">❓</span>
-                FAQ
-            </a>
-            <a href="emploi-du-temps.html" class="nav-item">
-                <span class="nav-icon">📅</span>
-                Emploi du temps
-            </a>
-        </nav>
+        <div class="sidebar-inner" id="sidebarContent">
+            <!-- Chargé par JavaScript -->
+        </div>
     </aside>
 
     <!-- OVERLAY -->
     <div class="overlay" id="overlay"></div>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <div class="page-container">
+    <main class="main">
+        <div class="main-inner">
             <!-- Breadcrumb -->
             <nav class="breadcrumb">
-                <a href="index.html">🏠 Accueil</a>
-                <span>›</span>
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
                 <span class="current">Entraînement BEX</span>
             </nav>
 
@@ -632,11 +660,11 @@
     </main>
 
     <script>
-        // Configuration Google Sheets
+        // ===== CONFIG =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const CURRENT_PAGE = 'entrainement-bex';
         const SHEET_ID = '1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow';
         const SHEET_NAME = 'EXERCICES';
-
-        // Base URL pour les exercices
         const EXERCICES_BASE_URL = 'exercices/';
 
         // ===== SIDEBAR TOGGLE =====
@@ -668,6 +696,30 @@
             menuToggle.classList.add('active');
         }
 
+        // ===== LOAD SIDEBAR =====
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                if (!response.ok) throw new Error('Sidebar not found');
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                // Marquer la page active
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (item.dataset.page === CURRENT_PAGE) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Désactiver les liens vides
+                document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
+            }
+        }
+
         // ===== LOAD DATA =====
         async function loadBEX() {
             try {
@@ -680,7 +732,6 @@
                     throw new Error('No data');
                 }
 
-                // Parse data - Colonnes: NumBEX | NumExo | TitreBEX | TitreExo | Lien | Statut
                 const data = [];
                 for (let i = 0; i < json.table.rows.length; i++) {
                     const row = json.table.rows[i].c;
@@ -693,7 +744,6 @@
                     const lien = row[4]?.v || '';
                     const statut = String(row[5]?.v || '').toLowerCase();
 
-                    // Skip header row
                     if (String(numBEX).toLowerCase().includes('numbex')) continue;
                     if (numBEX === '' && numExo === '') continue;
 
@@ -706,8 +756,6 @@
                         statut: statut.includes('disponible') ? 'disponible' : 'à venir'
                     });
                 }
-
-                console.log('⭐ BEX data loaded:', data);
 
                 if (data.length === 0) {
                     document.getElementById('loading').style.display = 'none';
@@ -726,7 +774,6 @@
 
         // ===== RENDER BEX =====
         function renderBEX(data) {
-            // Group by BEX number
             const bexMap = {};
             
             data.forEach(item => {
@@ -740,11 +787,9 @@
                 }
 
                 if (item.numExo === 0) {
-                    // BEX definition line
                     bexMap[item.numBEX].titre = item.titreBEX;
                     bexMap[item.numBEX].statut = item.statut;
                 } else {
-                    // Exercice line
                     bexMap[item.numBEX].exercices.push({
                         numExo: item.numExo,
                         titre: item.titreExo || `Exercice n°${item.numExo}`,
@@ -754,10 +799,7 @@
                 }
             });
 
-            // Convert to array and sort
             const bexList = Object.values(bexMap).sort((a, b) => a.numBEX - b.numBEX);
-
-            // Render
             const container = document.getElementById('bexGrid');
             container.innerHTML = '';
 
@@ -818,7 +860,6 @@
                 `;
             }
 
-            // Sort by numExo
             exercices.sort((a, b) => a.numExo - b.numExo);
 
             const items = exercices.map(exo => {
@@ -854,7 +895,10 @@
         }
 
         // ===== INIT =====
-        loadBEX();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSidebar();
+            loadBEX();
+        });
     </script>
 </body>
 </html>
