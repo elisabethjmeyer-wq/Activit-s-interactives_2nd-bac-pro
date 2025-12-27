@@ -141,6 +141,158 @@
             border-radius: 8px;
         }
 
+        /* ===== USER MENU ===== */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--gray-100);
+            border-radius: 20px;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .mode-selector {
+            position: relative;
+        }
+
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--primary-bg);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .mode-toggle:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .mode-toggle.viewing-student {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: white;
+        }
+
+        .mode-toggle.viewing-student:hover {
+            background: #d97706;
+            border-color: #d97706;
+        }
+
+        .mode-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 220px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 1px solid var(--gray-200);
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .mode-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mode-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--gray-700);
+            transition: all 0.15s;
+        }
+
+        .mode-option:hover {
+            background: var(--gray-100);
+        }
+
+        .mode-option.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .mode-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 8px 0;
+        }
+
+        .mode-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            padding: 8px 12px 4px;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .logout-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
         /* ===== SIDEBAR ===== */
         .sidebar {
             width: var(--sidebar-width);
@@ -797,6 +949,15 @@
             .header-date {
                 display: none;
             }
+            .user-name {
+                display: none;
+            }
+            .mode-toggle .mode-text {
+                display: none;
+            }
+            .user-menu {
+                gap: 8px;
+            }
         }
     </style>
 </head>
@@ -818,6 +979,9 @@
             <div class="header-spacer"></div>
             
             <div class="header-date" id="currentDate">Sem. 52 • Déc 2025</div>
+            
+            <!-- User Menu (affiché si connecté) -->
+            <div class="user-menu" id="userMenu" style="display: none;"></div>
         </div>
     </header>
 
@@ -897,7 +1061,8 @@
             </div>
         </div>
     </div>
-<script src="/Activit-s-interactives_2nd-bac-pro/js/auth.js"></script>
+
+    <script src="/Activit-s-interactives_2nd-bac-pro/js/auth.js"></script>
     <script>
         // ===== CONFIG =====
         const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
@@ -939,6 +1104,101 @@
                 console.error('Erreur chargement sidebar:', error);
             }
         }
+
+        // ===== USER MENU =====
+        function initUserMenu() {
+            const userMenuContainer = document.getElementById('userMenu');
+            if (!userMenuContainer) return;
+            
+            // Vérifier si Auth est disponible
+            if (typeof Auth === 'undefined') return;
+            
+            const session = Auth.getSession();
+            if (!session || !session.user) return;
+            
+            const user = session.user;
+            userMenuContainer.style.display = 'flex';
+            
+            // Construire le menu
+            let menuHTML = `
+                <div class="user-info">
+                    <span class="user-avatar">${user.prenom ? user.prenom[0].toUpperCase() : '?'}</span>
+                    <span class="user-name">${user.prenom} ${user.nom}</span>
+                </div>
+            `;
+            
+            // Si c'est un prof, ajouter le sélecteur de mode
+            if (user.role === 'prof') {
+                const eleves = Auth.getEleves();
+                const currentMode = session.viewMode || 'admin';
+                const currentStudent = session.viewAsStudent;
+                
+                let studentName = '';
+                if (currentStudent) {
+                    const student = eleves.find(e => e.id === currentStudent);
+                    if (student) studentName = `${student.prenom} ${student.nom}`;
+                }
+                
+                const isViewingStudent = currentMode === 'eleve' && currentStudent;
+                
+                menuHTML += `
+                    <div class="mode-selector">
+                        <button class="mode-toggle ${isViewingStudent ? 'viewing-student' : ''}" onclick="toggleModeMenu()">
+                            <span>${isViewingStudent ? '👁️' : '👑'}</span>
+                            <span class="mode-text">${isViewingStudent ? 'Vue: ' + studentName : 'Mode Admin'}</span>
+                            <span>▼</span>
+                        </button>
+                        <div class="mode-menu" id="modeMenu">
+                            <div class="mode-option ${!isViewingStudent ? 'active' : ''}" onclick="switchMode('admin')">
+                                <span>👑</span> Mode Admin
+                            </div>
+                            ${eleves.length > 0 ? `
+                                <div class="mode-divider"></div>
+                                <div class="mode-section-title">Voir comme élève</div>
+                                ${eleves.map(e => `
+                                    <div class="mode-option ${currentStudent === e.id ? 'active' : ''}" onclick="switchMode('eleve', '${e.id}')">
+                                        <span>👤</span> ${e.prenom} ${e.nom}
+                                    </div>
+                                `).join('')}
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Bouton déconnexion
+            menuHTML += `
+                <button class="logout-btn" onclick="Auth.logout()" title="Déconnexion">
+                    <span>🚪</span>
+                </button>
+            `;
+            
+            userMenuContainer.innerHTML = menuHTML;
+        }
+
+        function toggleModeMenu() {
+            const menu = document.getElementById('modeMenu');
+            if (menu) menu.classList.toggle('show');
+        }
+
+        function switchMode(mode, studentId = null) {
+            if (mode === 'admin') {
+                Auth.switchToAdminMode();
+                window.location.href = BASE_PATH + '/admin/index.html';
+            } else {
+                Auth.viewAsStudent(studentId);
+                location.reload();
+            }
+        }
+
+        // Fermer le menu au clic extérieur
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('modeMenu');
+            const toggle = e.target.closest('.mode-toggle');
+            if (menu && !toggle && !e.target.closest('.mode-menu')) {
+                menu.classList.remove('show');
+            }
+        });
 
         // ===== HELPERS =====
         function escapeHtml(t) {
@@ -1192,6 +1452,7 @@
             loadVideo();
             loadWeek();
             loadReco();
+            initUserMenu();
         });
     </script>
 </body>
