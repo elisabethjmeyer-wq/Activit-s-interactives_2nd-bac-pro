@@ -436,9 +436,9 @@ function renderLessonNavigation() {
     const prev = currentLessonIndex > 0 ? lessonExercises[currentLessonIndex - 1] : null;
     const next = currentLessonIndex < lessonExercises.length - 1 ? lessonExercises[currentLessonIndex + 1] : null;
     return `<nav class="nav-exercices">
-        ${prev ? `<a href="conn.html?id=${prev.EvalID}" class="nav-btn prev">← ${prev.TitreExo || 'Exo ' + prev.NumExo}</a>` : `<a href="${link}" class="nav-btn menu">← Retour au menu</a>`}
+        ${prev ? `<a href="connaissances.html?id=${prev.EvalID}" class="nav-btn prev">← ${prev.TitreExo || 'Exo ' + prev.NumExo}</a>` : `<a href="${link}" class="nav-btn menu">← Retour au menu</a>`}
         <div class="nav-info">Exercice ${currentLessonIndex + 1} / ${lessonExercises.length}</div>
-        ${next ? `<a href="conn.html?id=${next.EvalID}" class="nav-btn next">${next.TitreExo || 'Exo ' + next.NumExo} →</a>` : `<a href="${link}" class="nav-btn next">Terminer ✓</a>`}
+        ${next ? `<a href="connaissances.html?id=${next.EvalID}" class="nav-btn next">${next.TitreExo || 'Exo ' + next.NumExo} →</a>` : `<a href="${link}" class="nav-btn next">Terminer ✓</a>`}
     </nav>`;
 }
 
