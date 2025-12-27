@@ -1013,8 +1013,9 @@
                     menuLink.textContent = 'Éval. de connaissances';
                 }
                 
-                // Définir le temps
-                timeLeft = parseInt(evaluation.Temps) || 600;
+                // Définir le temps (colonne Durée en minutes, convertir en secondes)
+                const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
+                timeLeft = dureeMinutes * 60;
                 
                 // Afficher le premier exercice
                 showExercise(0);
@@ -1494,7 +1495,8 @@
         // ===== RESTART EXERCISE =====
         function restartExercise() {
             clearInterval(timerInterval);
-            timeLeft = parseInt(evaluation.Temps) || 600;
+            const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
+            timeLeft = dureeMinutes * 60;
             showExercise(currentExerciseIndex);
         }
 
