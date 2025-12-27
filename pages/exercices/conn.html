@@ -5,1261 +5,492 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercice Connaissances | Espace cours</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/Activit-s-interactives_2nd-bac-pro/css/style.css">
     <style>
-        /* ===== STYLES SPÉCIFIQUES À CONN.HTML ===== */
-        
-        /* TIMER */
-        .timer-box {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            color: white;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            --accent-yellow: #f59e0b;
+            --accent-yellow-light: #fef3c7;
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
-        .timer-box.warning {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--gray-100); color: var(--gray-800); line-height: 1.5; overflow-x: hidden; min-height: 100vh; }
 
-        /* STEPS BREADCRUMB */
-        .steps-breadcrumb {
-            background: white;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .steps-breadcrumb .step-label {
-            font-size: 13px;
-            color: #6b7280;
-            font-weight: 500;
-        }
-        .steps-breadcrumb .step-item {
-            font-size: 13px;
-            color: #9ca3af;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-        .steps-breadcrumb .step-item:hover {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-        .steps-breadcrumb .step-item.active {
-            background: #eef2ff;
-            color: #6366f1;
-            font-weight: 600;
-        }
-        .steps-breadcrumb .step-item.completed {
-            color: #10b981;
-        }
-        .steps-breadcrumb .step-item.completed::before {
-            content: "✓ ";
-        }
-        .steps-breadcrumb .step-separator {
-            color: #d1d5db;
-        }
+        /* ===== HEADER (identique classeur.html) ===== */
+        .header { background: white; border-bottom: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); z-index: 100; }
+        .header-inner { height: 100%; padding: 0 20px; display: flex; align-items: center; gap: 16px; }
+        .menu-toggle { width: 42px; height: 42px; background: var(--gray-100); border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gray-600); transition: all 0.2s; flex-shrink: 0; }
+        .menu-toggle:hover { background: var(--primary-bg); color: var(--primary); }
+        .menu-toggle.active { background: var(--primary); color: white; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--gray-800); }
+        .logo-icon { width: 38px; height: 38px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+        .logo-text { font-weight: 700; font-size: 16px; }
+        .logo-text span { color: var(--gray-400); font-weight: 500; }
 
-        /* INSTRUCTIONS */
-        .instructions {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border-left: 4px solid #6366f1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .instructions strong {
-            color: #6366f1;
-        }
-        .instructions p {
-            color: #4b5563;
-            margin-top: 8px;
-            line-height: 1.6;
-        }
+        /* ===== SIDEBAR (identique classeur.html) ===== */
+        .sidebar { width: var(--sidebar-width); background: white; border-right: 1px solid var(--gray-200); position: fixed; top: var(--header-height); left: 0; bottom: 0; overflow-y: auto; overflow-x: hidden; transition: transform 0.3s ease; z-index: 50; }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .sidebar-inner { padding: 16px 12px; }
+        .sidebar-section { margin-bottom: 8px; }
+        .sidebar-section-title { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 12px 8px; display: flex; align-items: center; gap: 8px; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: var(--gray-700); font-size: 14px; font-weight: 500; transition: all 0.15s; }
+        .sidebar-item:hover { background: var(--primary-bg); color: var(--primary); }
+        .sidebar-item.active { background: var(--primary-bg); color: var(--primary); }
+        .sidebar-item.disabled { opacity: 0.5; cursor: not-allowed; }
+        .sidebar-item.disabled:hover { background: transparent; color: var(--gray-700); }
+        .sidebar-item .item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--gray-100); flex-shrink: 0; transition: all 0.15s; }
+        .sidebar-item:hover .item-icon, .sidebar-item.active .item-icon { background: var(--primary); color: white; }
+        .sidebar-item.disabled:hover .item-icon { background: var(--gray-100); color: inherit; }
+        .sidebar-item .item-text { flex: 1; }
+        .sidebar-item .item-sub { display: block; font-size: 11px; color: var(--gray-400); font-weight: 400; }
 
-        /* EXERCISE CARD */
-        .exercise-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            border: 2px solid #e5e7eb;
-            margin-bottom: 24px;
-        }
-        .exercise-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .exercise-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            background: #eef2ff;
-        }
-        .exercise-title h2 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1f2937;
-        }
-        .exercise-title p {
-            font-size: 13px;
-            color: #6b7280;
-        }
+        /* ===== MAIN (identique classeur.html) ===== */
+        .main { margin-left: var(--sidebar-width); padding: 24px; padding-top: calc(var(--header-height) + 24px); transition: margin-left 0.3s ease; min-height: 100vh; }
+        .sidebar.collapsed ~ .main { margin-left: 0; }
+        .main-inner { max-width: 900px; margin: 0 auto; }
 
-        /* TIMELINE */
-        .timeline-instruction {
-            text-align: center;
-            padding: 16px;
-            background: #fef3c7;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            color: #92400e;
-            font-weight: 500;
-        }
-        .timeline-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .timeline-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
-            cursor: grab;
-            transition: all 0.2s;
-            user-select: none;
-        }
-        .timeline-item:hover {
-            border-color: #818cf8;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .timeline-item.dragging {
-            opacity: 0.5;
-            border-color: #6366f1;
-            background: #eef2ff;
-        }
-        .timeline-item .drag-handle {
-            color: #9ca3af;
-            font-size: 20px;
-        }
-        .timeline-item .item-content {
-            flex: 1;
-        }
-        .timeline-item .item-text {
-            font-size: 15px;
-            font-weight: 500;
-            color: #374151;
-        }
-        .timeline-item .item-date {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .timeline-item .order-number {
-            width: 32px;
-            height: 32px;
-            background: #f3f4f6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #6b7280;
-            font-size: 14px;
-        }
-        .timeline-item.correct {
-            border-color: #10b981;
-            background: #d1fae5;
-        }
-        .timeline-item.correct .item-date {
-            color: #10b981;
-        }
-        .timeline-item.incorrect {
-            border-color: #ef4444;
-            background: #fee2e2;
-        }
-        .timeline-item.incorrect .item-date {
-            color: #ef4444;
-        }
+        /* ===== BREADCRUMB (identique classeur.html) ===== */
+        .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 14px; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--gray-500); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb .separator { color: var(--gray-300); }
+        .breadcrumb .current { color: var(--gray-800); font-weight: 600; }
 
-        /* FRISE */
-        .frise-instruction {
-            text-align: center;
-            padding: 16px;
-            background: #eef2ff;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            color: #4f46e5;
-            font-weight: 500;
-        }
-        .frise-events {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .frise-event {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 12px 16px;
-            cursor: grab;
-            transition: all 0.2s;
-            user-select: none;
-            min-width: 150px;
-            text-align: center;
-        }
-        .frise-event:hover {
-            border-color: #6366f1;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .frise-event.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
-        }
-        .frise-event .event-text {
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
-        }
-        .frise-dropzones {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .frise-dropzone {
-            flex: 1;
-            min-width: 150px;
-            padding: 16px;
-            border: 2px dashed #d1d5db;
-            border-radius: 12px;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .frise-dropzone.drag-over {
-            border-color: #6366f1;
-            background: #eef2ff;
-        }
-        .frise-dropzone .date-label {
-            font-size: 18px;
-            font-weight: 700;
-            color: #6366f1;
-            margin-bottom: 8px;
-        }
-        .frise-dropzone .drop-hint {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-        .frise-dropzone.has-event .drop-hint {
-            display: none;
-        }
-        .frise-dropzone .placed-event {
-            background: #6366f1;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .frise-dropzone.correct {
-            border-color: #10b981;
-            background: #d1fae5;
-        }
-        .frise-dropzone.incorrect {
-            border-color: #ef4444;
-            background: #fee2e2;
-        }
+        /* ===== PAGE HEADER (identique classeur.html) ===== */
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; }
+        .page-header p { color: var(--gray-500); font-size: 15px; }
 
-        /* BUTTONS */
-        .buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .buttons button {
-            flex: 1;
-            min-width: 150px;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            font-family: inherit;
-        }
-        .buttons button:hover {
-            transform: translateY(-2px);
-        }
-        .btn-verify {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white;
-        }
-        .btn-solution {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            color: white;
-        }
-        .btn-restart {
-            background: linear-gradient(135deg, #6b7280, #9ca3af);
-            color: white;
-        }
+        /* ===== OVERLAY (identique classeur.html) ===== */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 40; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; }
+        .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
 
-        /* RESULT */
-        .result {
-            background: #d1fae5;
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-        }
-        .result.show {
-            display: block;
-        }
-        .result h3 {
-            color: #065f46;
-            margin-bottom: 8px;
-        }
-        .result p {
-            color: #047857;
-        }
+        /* ===== STYLES SPÉCIFIQUES EXERCICES ===== */
+        .timer-box { background: linear-gradient(135deg, var(--accent-yellow), #fbbf24); color: white; border-radius: var(--radius); padding: 16px; margin-bottom: 24px; text-align: center; font-size: 22px; font-weight: bold; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .timer-box.warning { background: linear-gradient(135deg, var(--accent-red), #dc2626); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-        /* NAV EXERCICES */
-        .nav-exercices {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            font-family: inherit;
-        }
-        .nav-btn.prev {
-            background: #f3f4f6;
-            color: #374151;
-        }
-        .nav-btn.prev:hover {
-            background: #e5e7eb;
-        }
-        .nav-btn.next {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            color: white;
-        }
-        .nav-btn.next:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-        .nav-btn.menu {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-        .nav-btn.menu:hover {
-            background: #eef2ff;
-            color: #6366f1;
-        }
-        .nav-info {
-            text-align: center;
-            color: #6b7280;
-            font-size: 13px;
-        }
+        .steps-breadcrumb { background: white; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; box-shadow: var(--shadow); }
+        .steps-breadcrumb .step-label { font-size: 13px; color: var(--gray-500); font-weight: 500; }
+        .steps-breadcrumb .step-item { font-size: 13px; color: var(--gray-400); padding: 6px 12px; border-radius: 20px; cursor: pointer; border: none; background: none; font-family: inherit; transition: all 0.2s; }
+        .steps-breadcrumb .step-item:hover { background: var(--gray-100); color: var(--gray-600); }
+        .steps-breadcrumb .step-item.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+        .steps-breadcrumb .step-item.completed { color: var(--accent-green); }
+        .steps-breadcrumb .step-item.completed::before { content: "✓ "; }
+        .steps-breadcrumb .step-separator { color: var(--gray-300); }
 
-        /* LOADING & ERROR */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-        }
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e5e7eb;
-            border-top-color: #6366f1;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .error-message {
-            background: #fee2e2;
-            border: 2px solid #ef4444;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            color: #991b1b;
-        }
-        .error-message a {
-            color: #991b1b;
-        }
+        .instructions { background: white; border-radius: var(--radius); padding: 20px; margin-bottom: 24px; border-left: 4px solid var(--primary); box-shadow: var(--shadow); }
+        .instructions strong { color: var(--primary); }
+        .instructions p { color: var(--gray-600); margin-top: 8px; line-height: 1.6; }
 
-        /* RESPONSIVE */
+        .exercise-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border: 2px solid var(--gray-200); margin-bottom: 24px; }
+        .exercise-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-100); }
+        .exercise-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: var(--primary-bg); }
+        .exercise-title h2 { font-size: 18px; font-weight: 700; color: var(--gray-800); }
+        .exercise-title p { font-size: 13px; color: var(--gray-500); }
+
+        .timeline-instruction { text-align: center; padding: 16px; background: var(--accent-yellow-light); border-radius: var(--radius); margin-bottom: 24px; color: #92400e; font-weight: 500; }
+        .timeline-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+        .timeline-item { display: flex; align-items: center; gap: 16px; background: white; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 16px; cursor: grab; transition: all 0.2s; user-select: none; }
+        .timeline-item:hover { border-color: var(--primary-light); box-shadow: var(--shadow-md); }
+        .timeline-item.dragging { opacity: 0.5; border-color: var(--primary); background: var(--primary-bg); }
+        .timeline-item .drag-handle { color: var(--gray-400); font-size: 20px; }
+        .timeline-item .item-content { flex: 1; }
+        .timeline-item .item-text { font-size: 15px; font-weight: 500; color: var(--gray-700); }
+        .timeline-item .item-date { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .timeline-item .order-number { width: 32px; height: 32px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gray-500); font-size: 14px; }
+        .timeline-item.correct { border-color: var(--accent-green); background: var(--accent-green-light); }
+        .timeline-item.correct .item-date { color: var(--accent-green); }
+        .timeline-item.incorrect { border-color: var(--accent-red); background: var(--accent-red-light); }
+        .timeline-item.incorrect .item-date { color: var(--accent-red); }
+
+        .frise-instruction { text-align: center; padding: 16px; background: var(--primary-bg); border-radius: var(--radius); margin-bottom: 24px; color: var(--primary-dark); font-weight: 500; }
+        .frise-events { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+        .frise-event { background: white; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 12px 16px; cursor: grab; transition: all 0.2s; user-select: none; min-width: 150px; text-align: center; }
+        .frise-event:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
+        .frise-event.dragging { opacity: 0.5; cursor: grabbing; }
+        .frise-event .event-text { font-size: 14px; font-weight: 500; color: var(--gray-700); }
+        .frise-dropzones { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .frise-dropzone { flex: 1; min-width: 150px; padding: 16px; border: 2px dashed var(--gray-300); border-radius: var(--radius); min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
+        .frise-dropzone.drag-over { border-color: var(--primary); background: var(--primary-bg); }
+        .frise-dropzone .date-label { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+        .frise-dropzone .drop-hint { font-size: 12px; color: var(--gray-400); }
+        .frise-dropzone.has-event .drop-hint { display: none; }
+        .frise-dropzone .placed-event { background: var(--primary); color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+        .frise-dropzone.correct { border-color: var(--accent-green); background: var(--accent-green-light); }
+        .frise-dropzone.incorrect { border-color: var(--accent-red); background: var(--accent-red-light); }
+
+        .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+        .buttons button { flex: 1; min-width: 150px; padding: 14px; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: var(--shadow); font-family: inherit; }
+        .buttons button:hover { transform: translateY(-2px); }
+        .btn-verify { background: linear-gradient(135deg, var(--accent-green), #34d399); color: white; }
+        .btn-solution { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+        .btn-restart { background: linear-gradient(135deg, var(--gray-500), var(--gray-400)); color: white; }
+
+        .result { background: var(--accent-green-light); border: 2px solid var(--accent-green); border-radius: var(--radius); padding: 20px; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .result h3 { color: #065f46; margin-bottom: 8px; }
+        .result p { color: #047857; }
+
+        .nav-exercices { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px; background: white; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; font-family: inherit; }
+        .nav-btn.prev { background: var(--gray-100); color: var(--gray-700); }
+        .nav-btn.prev:hover { background: var(--gray-200); }
+        .nav-btn.next { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+        .nav-btn.next:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+        .nav-btn.menu { background: var(--gray-100); color: var(--gray-600); }
+        .nav-btn.menu:hover { background: var(--primary-bg); color: var(--primary); }
+        .nav-info { text-align: center; color: var(--gray-500); font-size: 13px; }
+
+        .loading { text-align: center; padding: 60px 20px; color: var(--gray-500); }
+        .loading-spinner { width: 50px; height: 50px; border: 4px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error-message { background: var(--accent-red-light); border: 2px solid var(--accent-red); border-radius: var(--radius); padding: 20px; text-align: center; color: #991b1b; }
+        .error-message a { color: #991b1b; }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .buttons button {
-                min-width: 100%;
-            }
-            .nav-exercices {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .nav-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .frise-dropzones {
-                flex-direction: column;
-            }
+            .sidebar { z-index: 60; }
+            .main { margin-left: 0; }
+            .sidebar.collapsed ~ .main { margin-left: 0; }
+            .buttons button { min-width: 100%; }
+            .nav-exercices { flex-direction: column; gap: 10px; }
+            .nav-btn { width: 100%; justify-content: center; }
+            .frise-dropzones { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <!-- OVERLAY -->
     <div class="overlay" id="overlay"></div>
-
-    <!-- HEADER -->
-    <header class="header" id="header">
-        <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
-        <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
-            <div class="logo-icon">📚</div>
-            <span>Espace cours <span style="color: #9ca3af; font-weight: 500;">• Mme Meyer</span></span>
-        </a>
+    <header class="header">
+        <div class="header-inner">
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
+        </div>
     </header>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <!-- Chargé dynamiquement par sidebar.js -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner" id="sidebarContent"></div>
     </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <div style="max-width: 900px; margin: 0 auto; padding: 24px;">
-            
-            <!-- BREADCRUMB -->
-            <nav class="breadcrumb" style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 14px; flex-wrap: wrap;">
-                <a href="/Activit-s-interactives_2nd-bac-pro/index.html" style="color: #6b7280; text-decoration: none;">🏠 Accueil</a>
-                <span style="color: #d1d5db;">›</span>
-                <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-connaissances.html" id="menuLink" style="color: #6b7280; text-decoration: none;">Entraînement Connaissances</a>
-                <span style="color: #d1d5db;">›</span>
-                <span id="breadcrumbCurrent" style="color: #1f2937; font-weight: 600;">Exercice</span>
+    <main class="main">
+        <div class="main-inner">
+            <nav class="breadcrumb">
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-connaissances.html" id="menuLink">Entraînement Connaissances</a>
+                <span class="separator">›</span>
+                <span class="current" id="breadcrumbCurrent">Exercice</span>
             </nav>
-
-            <!-- PAGE HEADER -->
-            <div style="margin-bottom: 24px;">
-                <h1 id="pageTitle" style="font-size: 26px; font-weight: 800; margin-bottom: 6px;">✅ Exercice de Connaissances</h1>
-                <p id="pageSubtitle" style="color: #6b7280; font-size: 15px;">Évaluation de connaissances</p>
+            <div class="page-header">
+                <h1 id="pageTitle">✅ Exercice de Connaissances</h1>
+                <p id="pageSubtitle">Évaluation de connaissances</p>
             </div>
-
-            <!-- CONTENU DE L'EXERCICE -->
             <div id="content">
                 <div class="loading">
                     <div class="loading-spinner"></div>
                     <p>Chargement de l'exercice...</p>
                 </div>
             </div>
-
         </div>
     </main>
-
-    <!-- SIDEBAR.JS -->
-    <script src="/Activit-s-interactives_2nd-bac-pro/js/sidebar.js"></script>
-
     <script>
-        // ===== CONFIG =====
-        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
-        const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
+const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+const CURRENT_PAGE = 'entrainement-conn';
+const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
 
-        // ===== VARIABLES GLOBALES =====
-        let evaluation = null;
-        let exercices = [];
-        let elements = [];
-        let currentExerciseIndex = 0;
-        let totalExercises = 0;
-        let timeLeft = 600;
-        let timerInterval = null;
-        let currentExerciseData = null;
-        let exerciseResults = [];
+let evaluation = null, exercices = [], elements = [], currentStepIndex = 0, totalSteps = 0;
+let timeLeft = 600, timerInterval = null, currentExerciseData = null, stepResults = [];
+let menuConnData = [], currentMenuEntry = null, lessonExercises = [], currentLessonIndex = 0;
 
-        // ===== AJOUT: Variables pour navigation MENU_CONN =====
-        let menuConnData = [];
-        let currentMenuEntry = null;
-        let lessonExercises = [];
-        let currentLessonIndex = 0;
+const sidebar = document.getElementById('sidebar');
+const menuToggle = document.getElementById('menuToggle');
+const overlay = document.getElementById('overlay');
 
-        // ===== LOAD DATA FROM GOOGLE SHEETS =====
-        async function loadSheet(sheetName) {
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                if (!json.table || !json.table.rows) return [];
-                
-                const headers = json.table.cols.map(col => (col.label || '').trim());
-                const rows = [];
-                
-                for (let i = 0; i < json.table.rows.length; i++) {
-                    const row = json.table.rows[i];
-                    if (!row || !row.c) continue;
-                    
-                    const obj = {};
-                    let hasData = false;
-                    
-                    row.c.forEach((cell, idx) => {
-                        const header = headers[idx];
-                        if (header) {
-                            const value = cell ? (cell.v ?? '') : '';
-                            obj[header] = value;
-                            if (value !== '') hasData = true;
-                        }
-                    });
-                    
-                    if (hasData) {
-                        rows.push(obj);
-                    }
-                }
-                
-                return rows;
-            } catch (e) { 
-                console.error('Erreur chargement', sheetName, e); 
-                return []; 
+function toggleSidebar() {
+    sidebar.classList.toggle('collapsed');
+    menuToggle.classList.toggle('active');
+    if (window.innerWidth <= 768) overlay.classList.toggle('visible');
+    localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+}
+menuToggle.addEventListener('click', toggleSidebar);
+overlay.addEventListener('click', toggleSidebar);
+if (localStorage.getItem('sidebarOpen') === 'true') { sidebar.classList.remove('collapsed'); menuToggle.classList.add('active'); }
+window.addEventListener('resize', () => { if (window.innerWidth > 768) overlay.classList.remove('visible'); });
+
+async function loadSidebar() {
+    try {
+        const r = await fetch(`${BASE_PATH}/components/sidebar.html`);
+        if (!r.ok) throw new Error('Sidebar not found');
+        document.getElementById('sidebarContent').innerHTML = await r.text();
+        document.querySelectorAll('.sidebar-item').forEach(item => { if (item.dataset.page === CURRENT_PAGE) item.classList.add('active'); });
+        document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => link.addEventListener('click', e => e.preventDefault()));
+    } catch (e) { console.error('Sidebar:', e); }
+}
+
+async function loadSheet(name) {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
+    try {
+        const r = await fetch(url), t = await r.text(), j = JSON.parse(t.substring(47, t.length - 2));
+        if (!j.table?.rows) return [];
+        const h = j.table.cols.map(c => (c.label || '').trim());
+        return j.table.rows.filter(r => r?.c).map(r => {
+            const o = {}; let has = false;
+            r.c.forEach((c, i) => { if (h[i]) { o[h[i]] = c?.v ?? ''; if (o[h[i]] !== '') has = true; } });
+            return has ? o : null;
+        }).filter(Boolean);
+    } catch (e) { console.error(name, e); return []; }
+}
+
+async function loadEvaluation(evalId) {
+    try {
+        menuConnData = await loadSheet('MENU_CONN');
+        currentMenuEntry = menuConnData.find(m => m.EvalID === evalId);
+        if (currentMenuEntry) {
+            const lesson = currentMenuEntry.NumLeçon || currentMenuEntry.NumLecon;
+            const type = String(currentMenuEntry.Type || '').toLowerCase();
+            lessonExercises = menuConnData.filter(m => (m.NumLeçon || m.NumLecon) === lesson && String(m.Type || '').toLowerCase() === type).sort((a, b) => (parseInt(a.NumExo) || 0) - (parseInt(b.NumExo) || 0));
+            currentLessonIndex = lessonExercises.findIndex(m => m.EvalID === evalId);
+        }
+        const evals = await loadSheet('EVALUATIONS');
+        evaluation = evals.find(e => e.ID === evalId);
+        if (!evaluation) { renderError(`Évaluation "${evalId}" non trouvée.`); return; }
+        const allEx = await loadSheet('EXERCICES');
+        exercices = allEx.filter(e => e.EvalID === evalId).sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
+        if (!exercices.length) { renderError('Aucune étape trouvée.'); return; }
+        totalSteps = exercices.length;
+        stepResults = new Array(totalSteps).fill(null);
+        elements = await loadSheet('ELEMENTS');
+        const isEval = String(evaluation.Type || '').toLowerCase() === 'evaluation';
+        document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
+        document.getElementById('pageSubtitle').textContent = evaluation.Description || '';
+        document.getElementById('breadcrumbCurrent').textContent = evaluation.Nom || 'Exercice';
+        if (isEval) { document.getElementById('menuLink').href = `${BASE_PATH}/pages/evaluation-connaissances.html`; document.getElementById('menuLink').textContent = 'Éval. de connaissances'; }
+        timeLeft = (parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10) * 60;
+        showStep(0);
+    } catch (e) { console.error(e); renderError('Erreur de chargement.'); }
+}
+
+function renderError(msg) {
+    document.getElementById('content').innerHTML = `<div class="error-message"><h3>❌ Erreur</h3><p>${msg}</p><p style="margin-top:12px"><a href="${BASE_PATH}/pages/entrainement-connaissances.html">← Retour</a></p></div>`;
+}
+
+function formatTime(s) { return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`; }
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const el = document.getElementById('timer');
+        if (el) { el.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`; if (timeLeft <= 120) el.classList.add('warning'); if (timeLeft <= 0) { clearInterval(timerInterval); verifyCurrentStep(); } }
+    }, 1000);
+}
+
+function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+function getStepTypeName(t) { return { timeline: 'Timeline', frise: 'Frise', qcm: 'QCM', ouverte: 'Question' }[t] || t; }
+
+function renderStepsBreadcrumb() {
+    if (totalSteps <= 1) return '';
+    return '<nav class="steps-breadcrumb"><span class="step-label">Étapes :</span>' + exercices.map((ex, i) => {
+        let cls = 'step-item' + (i === currentStepIndex ? ' active' : '') + (stepResults[i] !== null ? ' completed' : '');
+        return (i > 0 ? '<span class="step-separator">›</span>' : '') + `<button class="${cls}" onclick="goToStep(${i})">${i+1}. ${getStepTypeName(ex.Type)}</button>`;
+    }).join('') + '</nav>';
+}
+
+function showStep(idx) {
+    currentStepIndex = idx;
+    const ex = exercices[idx];
+    const banques = ex.Banque ? ex.Banque.split(',').map(b => b.trim()) : [];
+    let els = elements.filter(e => banques.includes(e.Banque));
+    const fmt = { frise: 'Evenement', timeline: 'Evenement' }[ex.Type];
+    if (fmt) els = els.filter(e => e.Format === fmt);
+    const nb = parseInt(ex.Nombre) || 5;
+    if (ex.Mode === 'random' && els.length > nb) els = shuffleArray([...els]).slice(0, nb);
+    else els = els.slice(0, nb);
+    currentExerciseData = { exercise: ex, elements: els };
+    renderStep(ex, els);
+}
+
+function renderStep(ex, els) {
+    const instr = { timeline: 'Remets les événements dans l\'ordre chronologique.', frise: 'Place chaque événement sur la date correspondante.' }[ex.Type] || '';
+    let exHtml = ex.Type === 'timeline' ? renderTimeline(els) : ex.Type === 'frise' ? renderFrise(els) : `<p>Type "${ex.Type}" non implémenté.</p>`;
+    document.getElementById('content').innerHTML = `
+        <div class="timer-box" id="timer">⏱️ Temps restant : ${formatTime(timeLeft)}</div>
+        ${renderStepsBreadcrumb()}
+        <div class="instructions"><strong>📋 Consigne :</strong><p>${instr}</p></div>
+        <div class="exercise-card">${exHtml}
+            <div class="buttons">
+                <button class="btn-verify" onclick="verifyCurrentStep()">✓ Vérifier</button>
+                <button class="btn-solution" onclick="showSolution()">📖 Corrigé</button>
+                <button class="btn-restart" onclick="restartStep()">🔄 Recommencer</button>
+            </div>
+            <div class="result" id="result"><h3>📊 Résultat</h3><p id="resultMessage"></p></div>
+        </div>
+        ${renderLessonNavigation()}`;
+    if (ex.Type === 'timeline') initTimelineDragDrop();
+    else if (ex.Type === 'frise') initFriseDragDrop();
+    startTimer();
+}
+
+function renderTimeline(els) {
+    const sh = shuffleArray([...els]);
+    return `<div class="exercise-header"><div class="exercise-icon">🔀</div><div class="exercise-title"><h2>Timeline</h2><p>Ordre chronologique</p></div></div>
+        <div class="timeline-instruction">↕️ Glissez du plus ancien au plus récent</div>
+        <div class="timeline-list" id="timelineList">${sh.map((e,i) => `<div class="timeline-item" draggable="true" data-id="${e.ID}" data-date="${e.Date}"><span class="drag-handle">☰</span><div class="item-content"><div class="item-text">${e.Evenement}</div></div><div class="order-number">${i+1}</div></div>`).join('')}</div>`;
+}
+
+function initTimelineDragDrop() {
+    const list = document.getElementById('timelineList'); if (!list) return;
+    let dragged = null;
+    list.querySelectorAll('.timeline-item').forEach(item => {
+        item.addEventListener('dragstart', () => { dragged = item; item.classList.add('dragging'); });
+        item.addEventListener('dragend', () => { item.classList.remove('dragging'); updateTimelineNumbers(); });
+        item.addEventListener('dragover', e => {
+            e.preventDefault();
+            const after = [...list.querySelectorAll('.timeline-item:not(.dragging)')].reduce((cl, ch) => {
+                const box = ch.getBoundingClientRect(), off = e.clientY - box.top - box.height/2;
+                return off < 0 && off > cl.off ? {off, el: ch} : cl;
+            }, {off: -Infinity}).el;
+            after ? list.insertBefore(dragged, after) : list.appendChild(dragged);
+        });
+    });
+}
+function updateTimelineNumbers() { document.querySelectorAll('.timeline-item').forEach((it, i) => it.querySelector('.order-number').textContent = i+1); }
+
+function renderFrise(els) {
+    const sorted = [...els].sort((a,b) => parseInt(a.Date) - parseInt(b.Date));
+    const sh = shuffleArray([...els]);
+    return `<div class="exercise-header"><div class="exercise-icon">⏱️</div><div class="exercise-title"><h2>Frise chronologique</h2><p>Placez à la bonne date</p></div></div>
+        <div class="frise-instruction">📌 Glissez-déposez chaque événement</div>
+        <div class="frise-events" id="friseEvents">${sh.map(e => `<div class="frise-event" draggable="true" data-id="${e.ID}" data-date="${e.Date}"><div class="event-text">${e.Evenement}</div></div>`).join('')}</div>
+        <div class="frise-dropzones" id="friseDropzones">${sorted.map(e => `<div class="frise-dropzone" data-expected-date="${e.Date}" data-expected-id="${e.ID}"><div class="date-label">${e.Date}</div><div class="drop-hint">Déposez ici</div></div>`).join('')}</div>`;
+}
+
+function initFriseDragDrop() {
+    document.querySelectorAll('.frise-event').forEach(ev => {
+        ev.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', ev.dataset.id); ev.classList.add('dragging'); });
+        ev.addEventListener('dragend', () => ev.classList.remove('dragging'));
+    });
+    document.querySelectorAll('.frise-dropzone').forEach(z => {
+        z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
+        z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
+        z.addEventListener('drop', e => {
+            e.preventDefault(); z.classList.remove('drag-over');
+            const id = e.dataTransfer.getData('text/plain'), ev = document.querySelector(`.frise-event[data-id="${id}"]`);
+            if (ev && !z.classList.contains('has-event')) {
+                z.classList.add('has-event');
+                const p = document.createElement('div'); p.className = 'placed-event'; p.textContent = ev.querySelector('.event-text').textContent; p.dataset.id = id; p.dataset.date = ev.dataset.date;
+                z.appendChild(p); ev.style.display = 'none';
             }
-        }
+        });
+    });
+}
 
-        // ===== LOAD EVALUATION =====
-        async function loadEvaluation(evalId) {
-            try {
-                console.log('🔍 Recherche évaluation:', evalId);
-                
-                // AJOUT: Charger MENU_CONN pour la navigation entre exercices de la leçon
-                menuConnData = await loadSheet('MENU_CONN');
-                console.log('📋 MENU_CONN chargé:', menuConnData.length, 'entrées');
-                
-                // AJOUT: Trouver l'entrée actuelle dans MENU_CONN
-                currentMenuEntry = menuConnData.find(m => m.EvalID === evalId);
-                
-                if (currentMenuEntry) {
-                    const currentLesson = currentMenuEntry.NumLeçon || currentMenuEntry.NumLecon;
-                    const currentType = String(currentMenuEntry.Type || '').toLowerCase();
-                    
-                    lessonExercises = menuConnData
-                        .filter(m => {
-                            const mLesson = m.NumLeçon || m.NumLecon;
-                            const mType = String(m.Type || '').toLowerCase();
-                            return mLesson === currentLesson && mType === currentType;
-                        })
-                        .sort((a, b) => (parseInt(a.NumExo) || 0) - (parseInt(b.NumExo) || 0));
-                    
-                    currentLessonIndex = lessonExercises.findIndex(m => m.EvalID === evalId);
-                    console.log('📚 Exercices de la leçon:', lessonExercises.length, '| Position:', currentLessonIndex + 1);
-                }
-                
-                // Charger les évaluations
-                const evaluations = await loadSheet('EVALUATIONS');
-                console.log('📋 Évaluations trouvées:', evaluations.map(e => e.ID));
-                
-                evaluation = evaluations.find(e => e.ID === evalId);
-                
-                if (!evaluation) {
-                    console.error('❌ Évaluation non trouvée:', evalId);
-                    renderError(`Évaluation "${evalId}" non trouvée.`);
-                    return;
-                }
-                
-                console.log('✅ Évaluation trouvée:', evaluation);
-                
-                // Charger les exercices
-                const allExercices = await loadSheet('EXERCICES');
-                exercices = allExercices
-                    .filter(ex => ex.EvalID === evalId)
-                    .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
-                
-                console.log('✅ Exercices pour cette éval:', exercices);
-                
-                if (exercices.length === 0) {
-                    renderError(`Aucun exercice trouvé pour cette évaluation.`);
-                    return;
-                }
-                
-                totalExercises = exercices.length;
-                
-                // Charger les éléments
-                elements = await loadSheet('ELEMENTS');
-                console.log('✅ Éléments chargés:', elements.length);
-                
-                // Mettre à jour l'interface
-                const evalType = String(evaluation.Type || '').toLowerCase();
-                const isEvaluation = evalType === 'evaluation';
-                document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
-                document.getElementById('pageSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
-                document.getElementById('breadcrumbCurrent').textContent = evaluation.Nom || 'Exercice';
-                
-                const menuLink = document.getElementById('menuLink');
-                if (isEvaluation) {
-                    menuLink.href = `${BASE_PATH}/pages/evaluation-connaissances.html`;
-                    menuLink.textContent = 'Éval. de connaissances';
-                }
-                
-                // Définir le temps
-                const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
-                timeLeft = dureeMinutes * 60;
-                
-                // Afficher le premier exercice
-                showExercise(0);
-                
-            } catch (e) {
-                console.error('Erreur:', e);
-                renderError('Impossible de charger l\'évaluation.');
-            }
-        }
+function verifyCurrentStep() {
+    clearInterval(timerInterval);
+    const ex = currentExerciseData.exercise;
+    let correct = 0, total = 0;
+    if (ex.Type === 'timeline') {
+        const items = document.querySelectorAll('.timeline-item');
+        const order = [...items].map(i => parseInt(i.dataset.date)), sorted = [...order].sort((a,b) => a - b);
+        total = items.length;
+        items.forEach((it, i) => {
+            const d = parseInt(it.dataset.date), cont = it.querySelector('.item-content');
+            let dd = it.querySelector('.item-date');
+            if (!dd) { dd = document.createElement('div'); dd.className = 'item-date'; cont.insertBefore(dd, cont.firstChild); }
+            dd.textContent = it.dataset.date;
+            if (d === sorted[i]) { correct++; it.classList.add('correct'); it.classList.remove('incorrect'); }
+            else { it.classList.add('incorrect'); it.classList.remove('correct'); }
+            it.draggable = false;
+        });
+    } else if (ex.Type === 'frise') {
+        const zones = document.querySelectorAll('.frise-dropzone');
+        total = zones.length;
+        zones.forEach(z => {
+            const placed = z.querySelector('.placed-event');
+            if (placed && placed.dataset.id === z.dataset.expectedId) { correct++; z.classList.add('correct'); } else z.classList.add('incorrect');
+        });
+        document.querySelectorAll('.frise-event').forEach(e => e.draggable = false);
+    }
+    stepResults[currentStepIndex] = {correct, total};
+    const pct = Math.round(correct/total*100);
+    let msg = pct === 100 ? `🎉 Parfait ! ${correct}/${total}` : pct >= 50 ? `👍 ${correct}/${total} correct` : `📚 ${correct}/${total}`;
+    if (currentStepIndex < totalSteps - 1) msg += ` <button onclick="goToStep(${currentStepIndex+1})" style="margin-left:12px;padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600">Suivant →</button>`;
+    document.getElementById('resultMessage').innerHTML = msg;
+    document.getElementById('result').classList.add('show');
+}
 
-        // ===== RENDER ERROR =====
-        function renderError(message) {
-            document.getElementById('content').innerHTML = `
-                <div class="error-message">
-                    <h3>❌ Erreur</h3>
-                    <p>${message}</p>
-                    <p style="margin-top: 12px;">
-                        <a href="${BASE_PATH}/pages/entrainement-connaissances.html">
-                            ← Retour à la liste des exercices
-                        </a>
-                    </p>
-                </div>
-            `;
-        }
+function showSolution() {
+    clearInterval(timerInterval);
+    const ex = currentExerciseData.exercise;
+    if (ex.Type === 'timeline') {
+        const items = [...document.querySelectorAll('.timeline-item')], list = document.getElementById('timelineList');
+        items.sort((a,b) => parseInt(a.dataset.date) - parseInt(b.dataset.date));
+        items.forEach((it, i) => {
+            list.appendChild(it);
+            const cont = it.querySelector('.item-content');
+            let dd = it.querySelector('.item-date');
+            if (!dd) { dd = document.createElement('div'); dd.className = 'item-date'; cont.insertBefore(dd, cont.firstChild); }
+            dd.textContent = it.dataset.date; dd.style.color = 'var(--accent-green)';
+            it.classList.add('correct'); it.classList.remove('incorrect');
+            it.querySelector('.order-number').textContent = i + 1; it.draggable = false;
+        });
+    } else if (ex.Type === 'frise') {
+        document.querySelectorAll('.frise-dropzone').forEach(z => {
+            const el = currentExerciseData.elements.find(e => e.ID === z.dataset.expectedId);
+            if (el) { const old = z.querySelector('.placed-event'); if (old) old.remove(); z.classList.add('has-event', 'correct'); z.classList.remove('incorrect'); const p = document.createElement('div'); p.className = 'placed-event'; p.textContent = el.Evenement; z.appendChild(p); }
+        });
+        document.querySelectorAll('.frise-event').forEach(e => { e.style.display = 'none'; e.draggable = false; });
+    }
+    document.getElementById('resultMessage').textContent = '📖 Corrigé affiché';
+    document.getElementById('result').classList.add('show');
+}
 
-        // ===== TIMER =====
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m}:${s.toString().padStart(2, '0')}`;
-        }
+function restartStep() { clearInterval(timerInterval); showStep(currentStepIndex); }
+function goToStep(i) { if (i >= 0 && i < totalSteps) { clearInterval(timerInterval); showStep(i); } }
 
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const timerEl = document.getElementById('timer');
-                if (timerEl) {
-                    timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
-                    
-                    if (timeLeft <= 120) {
-                        timerEl.classList.add('warning');
-                    }
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        verifyCurrentExercise();
-                    }
-                }
-            }, 1000);
-        }
+function renderLessonNavigation() {
+    const isEval = String(evaluation.Type || '').toLowerCase() === 'evaluation';
+    const link = isEval ? `${BASE_PATH}/pages/evaluation-connaissances.html` : `${BASE_PATH}/pages/entrainement-connaissances.html`;
+    if (!currentMenuEntry || lessonExercises.length <= 1) return `<nav class="nav-exercices"><a href="${link}" class="nav-btn menu">← Retour</a><div class="nav-info">Exercice</div><a href="${link}" class="nav-btn next">Terminer ✓</a></nav>`;
+    const prev = currentLessonIndex > 0 ? lessonExercises[currentLessonIndex - 1] : null;
+    const next = currentLessonIndex < lessonExercises.length - 1 ? lessonExercises[currentLessonIndex + 1] : null;
+    return `<nav class="nav-exercices">
+        ${prev ? `<a href="conn.html?id=${prev.EvalID}" class="nav-btn prev">← ${prev.TitreExo || 'Exo ' + prev.NumExo}</a>` : `<a href="${link}" class="nav-btn menu">← Retour</a>`}
+        <div class="nav-info">Exercice ${currentLessonIndex + 1} / ${lessonExercises.length}</div>
+        ${next ? `<a href="conn.html?id=${next.EvalID}" class="nav-btn next">${next.TitreExo || 'Exo ' + next.NumExo} →</a>` : `<a href="${link}" class="nav-btn next">Terminer ✓</a>`}
+    </nav>`;
+}
 
-        // ===== AJOUT: Fonctions pour le fil d'Ariane des étapes =====
-        function getStepTypeName(type) {
-            const names = {
-                'timeline': 'Timeline',
-                'frise': 'Frise',
-                'qcm': 'QCM',
-                'ouverte': 'Question'
-            };
-            return names[type] || type;
-        }
-
-        function renderStepsBreadcrumb() {
-            if (totalExercises <= 1) return '';
-            
-            let html = '<nav class="steps-breadcrumb"><span class="step-label">Étapes :</span>';
-            
-            exercices.forEach((ex, i) => {
-                const isActive = i === currentExerciseIndex;
-                const isCompleted = exerciseResults[i] !== undefined;
-                let className = 'step-item';
-                if (isActive) className += ' active';
-                else if (isCompleted) className += ' completed';
-                
-                if (i > 0) {
-                    html += '<span class="step-separator">›</span>';
-                }
-                
-                html += `<button class="${className}" onclick="goToExercise(${i})">${i + 1}. ${getStepTypeName(ex.Type)}</button>`;
-            });
-            
-            html += '</nav>';
-            return html;
-        }
-
-        // ===== SHOW EXERCISE =====
-        function showExercise(index) {
-            currentExerciseIndex = index;
-            const exercise = exercices[index];
-            
-            // Récupérer les éléments pour cet exercice
-            const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
-            const exerciseElements = elements.filter(el => banques.includes(el.Banque));
-            
-            // Filtrer par format
-            const formatMap = {
-                'frise': 'Evenement',
-                'timeline': 'Evenement',
-                'qcm': ['Evenement', 'QuestionReponse'],
-                'ouverte': 'QuestionReponse'
-            };
-            
-            const requiredFormat = formatMap[exercise.Type];
-            let filteredElements = exerciseElements;
-            if (Array.isArray(requiredFormat)) {
-                filteredElements = exerciseElements.filter(el => requiredFormat.includes(el.Format));
-            } else if (requiredFormat) {
-                filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
-            }
-            
-            // Sélectionner le nombre d'éléments
-            const nombre = parseInt(exercise.Nombre) || 5;
-            let selectedElements = filteredElements;
-            
-            if (exercise.Mode === 'random' && filteredElements.length > nombre) {
-                selectedElements = shuffleArray([...filteredElements]).slice(0, nombre);
-            } else {
-                selectedElements = filteredElements.slice(0, nombre);
-            }
-            
-            currentExerciseData = {
-                exercise: exercise,
-                elements: selectedElements,
-                startTime: Date.now()
-            };
-            
-            renderExercise(exercise, selectedElements);
-        }
-
-        // ===== RENDER EXERCISE =====
-        function renderExercise(exercise, selectedElements) {
-            let exerciseHtml = '';
-            
-            switch (exercise.Type) {
-                case 'timeline':
-                    exerciseHtml = renderTimeline(selectedElements);
-                    break;
-                case 'frise':
-                    exerciseHtml = renderFrise(selectedElements);
-                    break;
-                default:
-                    exerciseHtml = `<p>Type d'exercice "${exercise.Type}" non implémenté.</p>`;
-            }
-            
-            const html = `
-                <div class="timer-box" id="timer">
-                    ⏱️ Temps restant : ${formatTime(timeLeft)}
-                </div>
-
-                ${renderStepsBreadcrumb()}
-
-                <div class="instructions">
-                    <strong>📋 Consigne :</strong>
-                    <p>${getInstructionForType(exercise.Type)}</p>
-                </div>
-
-                <div class="exercise-card">
-                    ${exerciseHtml}
-                    
-                    <div class="buttons">
-                        <button class="btn-verify" onclick="verifyCurrentExercise()">✓ Vérifier mes réponses</button>
-                        <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
-                        <button class="btn-restart" onclick="restartExercise()">🔄 Recommencer</button>
-                    </div>
-
-                    <div class="result" id="result">
-                        <h3>📊 Résultat</h3>
-                        <p id="resultMessage"></p>
-                    </div>
-                </div>
-
-                ${renderNavigation()}
-            `;
-
-            document.getElementById('content').innerHTML = html;
-            
-            // Initialiser le drag & drop
-            if (exercise.Type === 'timeline') {
-                initTimelineDragDrop();
-            } else if (exercise.Type === 'frise') {
-                initFriseDragDrop();
-            }
-            
-            startTimer();
-        }
-
-        function getInstructionForType(type) {
-            const instructions = {
-                'timeline': 'Remets les événements dans l\'ordre chronologique, du plus ancien au plus récent.',
-                'frise': 'Place chaque événement sur la date correspondante.',
-                'qcm': 'Sélectionne la bonne réponse pour chaque question.',
-                'ouverte': 'Réponds aux questions suivantes.'
-            };
-            return instructions[type] || 'Complète l\'exercice suivant.';
-        }
-
-        // ===== RENDER TIMELINE =====
-        function renderTimeline(elements) {
-            const shuffledElements = shuffleArray([...elements]);
-            
-            return `
-                <div class="exercise-header">
-                    <div class="exercise-icon">🔀</div>
-                    <div class="exercise-title">
-                        <h2>Timeline</h2>
-                        <p>Remettez les événements dans l'ordre chronologique</p>
-                    </div>
-                </div>
-                
-                <div class="timeline-instruction">
-                    ↕️ Glissez les événements pour les remettre dans l'ordre chronologique (du plus ancien au plus récent)
-                </div>
-                
-                <div class="timeline-list" id="timelineList">
-                    ${shuffledElements.map((el, i) => `
-                        <div class="timeline-item" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
-                            <span class="drag-handle">☰</span>
-                            <div class="item-content">
-                                <div class="item-text">${el.Evenement}</div>
-                            </div>
-                            <div class="order-number">${i + 1}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function initTimelineDragDrop() {
-            const list = document.getElementById('timelineList');
-            if (!list) return;
-            
-            let draggedItem = null;
-            
-            list.querySelectorAll('.timeline-item').forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    draggedItem = item;
-                    item.classList.add('dragging');
-                });
-                
-                item.addEventListener('dragend', () => {
-                    item.classList.remove('dragging');
-                    updateTimelineNumbers();
-                });
-                
-                item.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    const afterElement = getDragAfterElement(list, e.clientY);
-                    if (afterElement == null) {
-                        list.appendChild(draggedItem);
-                    } else {
-                        list.insertBefore(draggedItem, afterElement);
-                    }
-                });
-            });
-        }
-
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.timeline-item:not(.dragging)')];
-            
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-
-        function updateTimelineNumbers() {
-            const items = document.querySelectorAll('.timeline-item');
-            items.forEach((item, i) => {
-                item.querySelector('.order-number').textContent = i + 1;
-            });
-        }
-
-        // ===== RENDER FRISE =====
-        function renderFrise(elements) {
-            const sortedElements = [...elements].sort((a, b) => parseInt(a.Date) - parseInt(b.Date));
-            const shuffledElements = shuffleArray([...elements]);
-            
-            return `
-                <div class="exercise-header">
-                    <div class="exercise-icon">⏱️</div>
-                    <div class="exercise-title">
-                        <h2>Frise chronologique</h2>
-                        <p>Placez chaque événement à la bonne date</p>
-                    </div>
-                </div>
-                
-                <div class="frise-instruction">
-                    📌 Glissez-déposez chaque événement sur la date correspondante
-                </div>
-                
-                <div class="frise-events" id="friseEvents">
-                    ${shuffledElements.map((el, i) => `
-                        <div class="frise-event" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
-                            <div class="event-text">${el.Evenement}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div class="frise-dropzones" id="friseDropzones">
-                    ${sortedElements.map((el, i) => `
-                        <div class="frise-dropzone" data-expected-date="${el.Date}" data-expected-id="${el.ID}">
-                            <div class="date-label">${el.Date}</div>
-                            <div class="drop-hint">Déposez ici</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function initFriseDragDrop() {
-            const events = document.querySelectorAll('.frise-event');
-            const dropzones = document.querySelectorAll('.frise-dropzone');
-            
-            events.forEach(event => {
-                event.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', event.dataset.id);
-                    event.classList.add('dragging');
-                });
-                
-                event.addEventListener('dragend', () => {
-                    event.classList.remove('dragging');
-                });
-            });
-            
-            dropzones.forEach(zone => {
-                zone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    zone.classList.add('drag-over');
-                });
-                
-                zone.addEventListener('dragleave', () => {
-                    zone.classList.remove('drag-over');
-                });
-                
-                zone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    zone.classList.remove('drag-over');
-                    
-                    const eventId = e.dataTransfer.getData('text/plain');
-                    const eventEl = document.querySelector(`.frise-event[data-id="${eventId}"]`);
-                    
-                    if (eventEl && !zone.classList.contains('has-event')) {
-                        zone.classList.add('has-event');
-                        const placedDiv = document.createElement('div');
-                        placedDiv.className = 'placed-event';
-                        placedDiv.textContent = eventEl.querySelector('.event-text').textContent;
-                        placedDiv.dataset.id = eventId;
-                        placedDiv.dataset.date = eventEl.dataset.date;
-                        zone.appendChild(placedDiv);
-                        
-                        eventEl.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // ===== VERIFY EXERCISE =====
-        function verifyCurrentExercise() {
-            clearInterval(timerInterval);
-            
-            const exercise = currentExerciseData.exercise;
-            let correct = 0;
-            let total = 0;
-            
-            if (exercise.Type === 'timeline') {
-                const items = document.querySelectorAll('.timeline-item');
-                const userOrder = [...items].map(item => parseInt(item.dataset.date));
-                const correctOrder = [...userOrder].sort((a, b) => a - b);
-                
-                total = items.length;
-                
-                items.forEach((item, i) => {
-                    const date = parseInt(item.dataset.date);
-                    const itemContent = item.querySelector('.item-content');
-                    
-                    let dateDiv = item.querySelector('.item-date');
-                    if (!dateDiv) {
-                        dateDiv = document.createElement('div');
-                        dateDiv.className = 'item-date';
-                        itemContent.insertBefore(dateDiv, itemContent.firstChild);
-                    }
-                    dateDiv.textContent = item.dataset.date;
-                    
-                    if (date === correctOrder[i]) {
-                        correct++;
-                        item.classList.add('correct');
-                        item.classList.remove('incorrect');
-                    } else {
-                        item.classList.add('incorrect');
-                        item.classList.remove('correct');
-                    }
-                    
-                    item.draggable = false;
-                });
-                
-            } else if (exercise.Type === 'frise') {
-                const dropzones = document.querySelectorAll('.frise-dropzone');
-                total = dropzones.length;
-                
-                dropzones.forEach(zone => {
-                    const expectedId = zone.dataset.expectedId;
-                    const placedEvent = zone.querySelector('.placed-event');
-                    
-                    if (placedEvent && placedEvent.dataset.id === expectedId) {
-                        correct++;
-                        zone.classList.add('correct');
-                        zone.classList.remove('incorrect');
-                    } else {
-                        zone.classList.add('incorrect');
-                        zone.classList.remove('correct');
-                    }
-                });
-                
-                document.querySelectorAll('.frise-event').forEach(el => el.draggable = false);
-            }
-            
-            // Afficher le résultat
-            const percentage = Math.round((correct / total) * 100);
-            let message = '';
-            
-            if (percentage === 100) {
-                message = `🎉 Parfait ! Tu as tout bon ! Score : ${correct}/${total}`;
-            } else if (percentage >= 75) {
-                message = `👍 Très bien ! Tu as trouvé ${correct}/${total} réponses correctes.`;
-            } else if (percentage >= 50) {
-                message = `💪 Pas mal ! Tu as trouvé ${correct}/${total} réponses. Continue à t'entraîner !`;
-            } else {
-                message = `📚 Tu as trouvé ${correct}/${total} réponses. Révise et recommence !`;
-            }
-            
-            // AJOUT: Bouton étape suivante
-            if (currentExerciseIndex < totalExercises - 1) {
-                message += ` <button onclick="goToExercise(${currentExerciseIndex + 1})" style="margin-left: 12px; padding: 8px 16px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Étape suivante →</button>`;
-            }
-            
-            document.getElementById('resultMessage').innerHTML = message;
-            document.getElementById('result').classList.add('show');
-            
-            exerciseResults[currentExerciseIndex] = { correct, total };
-        }
-
-        // ===== SHOW SOLUTION =====
-        function showSolution() {
-            clearInterval(timerInterval);
-            
-            const exercise = currentExerciseData.exercise;
-            
-            if (exercise.Type === 'timeline') {
-                const items = [...document.querySelectorAll('.timeline-item')];
-                const list = document.getElementById('timelineList');
-                
-                items.sort((a, b) => parseInt(a.dataset.date) - parseInt(b.dataset.date));
-                
-                items.forEach((item, i) => {
-                    list.appendChild(item);
-                    
-                    const itemContent = item.querySelector('.item-content');
-                    let dateDiv = item.querySelector('.item-date');
-                    if (!dateDiv) {
-                        dateDiv = document.createElement('div');
-                        dateDiv.className = 'item-date';
-                        itemContent.insertBefore(dateDiv, itemContent.firstChild);
-                    }
-                    dateDiv.textContent = item.dataset.date;
-                    dateDiv.style.color = '#10b981';
-                    
-                    item.classList.add('correct');
-                    item.classList.remove('incorrect');
-                    item.querySelector('.order-number').textContent = i + 1;
-                    item.draggable = false;
-                });
-                
-            } else if (exercise.Type === 'frise') {
-                const dropzones = document.querySelectorAll('.frise-dropzone');
-                const elementsData = currentExerciseData.elements;
-                
-                dropzones.forEach(zone => {
-                    const expectedId = zone.dataset.expectedId;
-                    const element = elementsData.find(el => el.ID === expectedId);
-                    
-                    if (element) {
-                        const oldPlaced = zone.querySelector('.placed-event');
-                        if (oldPlaced) oldPlaced.remove();
-                        
-                        zone.classList.add('has-event', 'correct');
-                        zone.classList.remove('incorrect');
-                        
-                        const placedDiv = document.createElement('div');
-                        placedDiv.className = 'placed-event';
-                        placedDiv.textContent = element.Evenement;
-                        zone.appendChild(placedDiv);
-                    }
-                });
-                
-                document.querySelectorAll('.frise-event').forEach(el => {
-                    el.style.display = 'none';
-                    el.draggable = false;
-                });
-            }
-            
-            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet !';
-            document.getElementById('result').classList.add('show');
-        }
-
-        // ===== RESTART EXERCISE =====
-        function restartExercise() {
-            clearInterval(timerInterval);
-            const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
-            timeLeft = dureeMinutes * 60;
-            showExercise(currentExerciseIndex);
-        }
-
-        // ===== NAVIGATION =====
-        function goToExercise(index) {
-            clearInterval(timerInterval);
-            showExercise(index);
-        }
-
-        // ===== MODIFIÉ: RENDER NAVIGATION (avec MENU_CONN) =====
-        function renderNavigation() {
-            const evalType = String(evaluation.Type || '').toLowerCase();
-            const isEvaluation = evalType === 'evaluation';
-            const menuLink = isEvaluation 
-                ? `${BASE_PATH}/pages/evaluation-connaissances.html`
-                : `${BASE_PATH}/pages/entrainement-connaissances.html`;
-
-            // Si pas de données MENU_CONN ou un seul exercice dans la leçon
-            if (!currentMenuEntry || lessonExercises.length <= 1) {
-                return `
-                    <nav class="nav-exercices">
-                        <a href="${menuLink}" class="nav-btn menu">← Retour au menu</a>
-                        <div class="nav-info">Exercice</div>
-                        <a href="${menuLink}" class="nav-btn next">Terminer ✓</a>
-                    </nav>
-                `;
-            }
-
-            // Navigation entre exercices de la leçon via MENU_CONN
-            const hasPrev = currentLessonIndex > 0;
-            const hasNext = currentLessonIndex < lessonExercises.length - 1;
-            
-            const prevExercise = hasPrev ? lessonExercises[currentLessonIndex - 1] : null;
-            const nextExercise = hasNext ? lessonExercises[currentLessonIndex + 1] : null;
-
-            return `
-                <nav class="nav-exercices">
-                    ${hasPrev ? `
-                        <a href="conn.html?id=${prevExercise.EvalID}" class="nav-btn prev">
-                            ← ${prevExercise.TitreExo || 'Exercice ' + prevExercise.NumExo}
-                        </a>
-                    ` : `
-                        <a href="${menuLink}" class="nav-btn menu">
-                            ← Retour au menu
-                        </a>
-                    `}
-
-                    <div class="nav-info">
-                        Exercice ${currentLessonIndex + 1} / ${lessonExercises.length}
-                    </div>
-
-                    ${hasNext ? `
-                        <a href="conn.html?id=${nextExercise.EvalID}" class="nav-btn next">
-                            ${nextExercise.TitreExo || 'Exercice ' + nextExercise.NumExo} →
-                        </a>
-                    ` : `
-                        <a href="${menuLink}" class="nav-btn next">
-                            Terminer ✓
-                        </a>
-                    `}
-                </nav>
-            `;
-        }
-
-        // ===== UTILS =====
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // ===== INIT =====
-        async function init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const evalId = urlParams.get('id');
-            
-            if (!evalId) {
-                renderError('Aucun ID d\'évaluation fourni.');
-                return;
-            }
-            
-            await loadEvaluation(evalId);
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
+async function init() {
+    await loadSidebar();
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) { renderError('Aucun ID fourni.'); return; }
+    await loadEvaluation(id);
+}
+document.addEventListener('DOMContentLoaded', init);
     </script>
-
 </body>
 </html>
