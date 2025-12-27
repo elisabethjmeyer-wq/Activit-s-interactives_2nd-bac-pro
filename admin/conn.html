@@ -600,7 +600,7 @@
             const selectedBanks = [];
             document.querySelectorAll('#exoBanques input:checked').forEach(cb => selectedBanks.push(cb.value));
             if (selectedBanks.length === 0) { showToast('Sélectionnez une banque', true); return; }
-            currentEvalExercises.push({ ID: 'EX' + Date.now(), EvalID: currentEval.ID, Ordre: currentEvalExercises.length + 1, Type: selectedExerciseType, Mode: selection, Nombre: nombre, Banques: selectedBanks.join(','), Selection: '', Config: '' });
+            currentEvalExercises.push({ ID: 'EX' + Date.now(), EvalID: currentEval.ID, Ordre: currentEvalExercises.length + 1, Type: selectedExerciseType, Mode: selection, Nombre: nombre, Banque: selectedBanks.join(','), Selection: '', Config: '' });
             renderEvalExercises();
             showToast('✓ Exercice ajouté !');
             document.querySelectorAll('#exoBanques input:checked').forEach(cb => cb.checked = false);
@@ -642,8 +642,7 @@
                     // Supprimer l'entrée MENU_CONN existante
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'MENU_CONN', action: 'deleteByEvalId', evalId: currentEval.ID }) });
                 }
-                await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EVALUATIONS', action: 'add', row: [currentEval.ID, currentEval.Nom, currentEval.Description, currentEval.Duree, currentEval.Seuil, currentEval.Tentatives, currentEval.Affichage, '', '', currentEval.Statut] }) });
-                for (const ex of currentEvalExercises) {
+row: [currentEval.ID, currentEval.Nom, currentEval.Description, currentEval.Type, currentEval.Duree, currentEval.Seuil, currentEval.Tentatives, currentEval.Affichage, '', '', currentEval.Statut]                for (const ex of currentEvalExercises) {
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EXERCICES', action: 'add', row: [ex.ID, ex.EvalID, ex.Ordre, ex.Type, ex.Mode, ex.Nombre, ex.Banques, ex.Selection, ex.Config] }) });
                 }
                 
