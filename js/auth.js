@@ -301,6 +301,53 @@ const Auth = (function() {
         `;
     }
     
+    // ===== BARRE FLOTTANTE MODE PROF =====
+    
+    /**
+     * Affiche une barre flottante pour revenir en mode Admin
+     * Visible UNIQUEMENT si prof en mode "voir comme élève"
+     */
+    function renderProfBar() {
+        const session = getSession();
+        
+        // Ne rien afficher si :
+        // - Pas de session
+        // - N'est pas prof
+        // - Est en mode admin
+        if (!session || session.user.role !== 'prof' || session.viewMode === 'admin') {
+            return;
+        }
+        
+        // Récupérer le nom de l'élève simulé
+        let studentName = 'un élève';
+        if (session.viewAsStudent) {
+            const eleves = getEleves();
+            const student = eleves.find(e => e.id === session.viewAsStudent);
+            if (student) {
+                studentName = `${student.prenom} ${student.nom}`;
+            }
+        }
+        
+        // Créer la barre si elle n'existe pas
+        if (document.getElementById('prof-mode-bar')) return;
+        
+        const bar = document.createElement('div');
+        bar.id = 'prof-mode-bar';
+        bar.innerHTML = `
+            <div class="prof-bar-content">
+                <span class="prof-bar-icon">👁️</span>
+                <span class="prof-bar-text">Mode aperçu : <strong>${studentName}</strong></span>
+                <button class="prof-bar-btn" onclick="Auth.switchToAdminMode(); window.location.href='${BASE_PATH}/admin/index.html';">
+                    ← Retour Admin
+                </button>
+                <button class="prof-bar-close" onclick="document.getElementById('prof-mode-bar').style.display='none';" title="Masquer">
+                    ✕
+                </button>
+            </div>
+        `;
+        document.body.appendChild(bar);
+    }
+    
     // ===== CSS pour le user menu =====
     function injectStyles() {
         if (document.getElementById('auth-styles')) return;
@@ -455,6 +502,87 @@ const Auth = (function() {
                     gap: 8px;
                 }
             }
+            
+            /* Barre flottante Mode Prof */
+            #prof-mode-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+                color: white;
+                padding: 12px 20px;
+                z-index: 9999;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            }
+            
+            .prof-bar-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .prof-bar-icon {
+                font-size: 20px;
+            }
+            
+            .prof-bar-text {
+                flex: 1;
+                font-size: 14px;
+            }
+            
+            .prof-bar-text strong {
+                font-weight: 600;
+            }
+            
+            .prof-bar-btn {
+                padding: 8px 16px;
+                background: white;
+                color: #7c3aed;
+                border: none;
+                border-radius: 8px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-family: inherit;
+            }
+            
+            .prof-bar-btn:hover {
+                background: #f0f0f0;
+                transform: translateY(-1px);
+            }
+            
+            .prof-bar-close {
+                width: 32px;
+                height: 32px;
+                background: rgba(255,255,255,0.2);
+                border: none;
+                border-radius: 6px;
+                color: white;
+                cursor: pointer;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s;
+            }
+            
+            .prof-bar-close:hover {
+                background: rgba(255,255,255,0.3);
+            }
+            
+            @media (max-width: 600px) {
+                .prof-bar-text {
+                    font-size: 12px;
+                }
+                .prof-bar-btn {
+                    padding: 6px 12px;
+                    font-size: 12px;
+                }
+            }
         `;
         document.head.appendChild(styles);
     }
@@ -462,6 +590,9 @@ const Auth = (function() {
     // ===== INIT =====
     function init() {
         injectStyles();
+        
+        // Afficher la barre prof si nécessaire
+        renderProfBar();
         
         // Fermer le menu mode au clic extérieur
         document.addEventListener('click', function(e) {
@@ -508,6 +639,7 @@ const Auth = (function() {
         renderModeSelector,
         renderLogoutButton,
         renderUserMenu,
+        renderProfBar,
         toggleModeMenu
     };
     
