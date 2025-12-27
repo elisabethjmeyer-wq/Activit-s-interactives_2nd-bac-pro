@@ -154,90 +154,6 @@
             padding: 16px 12px;
         }
 
-        .sidebar-section {
-            margin-bottom: 8px;
-        }
-
-        .sidebar-section-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--gray-400);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 12px 12px 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--gray-700);
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.15s;
-        }
-
-        .sidebar-item:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
-        }
-
-        .sidebar-item.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-        }
-
-        .sidebar-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .sidebar-item.disabled:hover {
-            background: transparent;
-            color: var(--gray-700);
-        }
-
-        .sidebar-item .item-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            background: var(--gray-100);
-            flex-shrink: 0;
-            transition: all 0.15s;
-        }
-
-        .sidebar-item:hover .item-icon,
-        .sidebar-item.active .item-icon {
-            background: var(--primary);
-            color: white;
-        }
-
-        .sidebar-item.disabled:hover .item-icon {
-            background: var(--gray-100);
-            color: inherit;
-        }
-
-        .sidebar-item .item-text {
-            flex: 1;
-        }
-
-        .sidebar-item .item-sub {
-            display: block;
-            font-size: 11px;
-            color: var(--gray-400);
-            font-weight: 400;
-        }
-
         /* ===== MAIN CONTENT ===== */
         .main {
             margin-left: var(--sidebar-width);
@@ -326,60 +242,62 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
-/* ===== FIL D'ARIANE ÉTAPES ===== */
-.steps-breadcrumb {
-    background: white;
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    box-shadow: var(--shadow);
-}
 
-.steps-breadcrumb .step-label {
-    font-size: 13px;
-    color: var(--gray-500);
-    font-weight: 500;
-}
+        /* ===== FIL D'ARIANE ÉTAPES ===== */
+        .steps-breadcrumb {
+            background: white;
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow);
+        }
 
-.steps-breadcrumb .step-item {
-    font-size: 13px;
-    color: var(--gray-400);
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: inherit;
-    transition: all 0.2s;
-}
+        .steps-breadcrumb .step-label {
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
 
-.steps-breadcrumb .step-item:hover {
-    background: var(--gray-100);
-    color: var(--gray-600);
-}
+        .steps-breadcrumb .step-item {
+            font-size: 13px;
+            color: var(--gray-400);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
 
-.steps-breadcrumb .step-item.active {
-    background: var(--primary-bg);
-    color: var(--primary);
-    font-weight: 600;
-}
+        .steps-breadcrumb .step-item:hover {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
 
-.steps-breadcrumb .step-item.completed {
-    color: var(--accent-green);
-}
+        .steps-breadcrumb .step-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 600;
+        }
 
-.steps-breadcrumb .step-item.completed::before {
-    content: "✓ ";
-}
+        .steps-breadcrumb .step-item.completed {
+            color: var(--accent-green);
+        }
 
-.steps-breadcrumb .step-separator {
-    color: var(--gray-300);
-}
+        .steps-breadcrumb .step-item.completed::before {
+            content: "✓ ";
+        }
+
+        .steps-breadcrumb .step-separator {
+            color: var(--gray-300);
+        }
+
         /* ===== INSTRUCTIONS ===== */
         .instructions {
             background: white;
@@ -802,6 +720,24 @@
             color: #991b1b;
         }
 
+        /* ===== DEBUG INFO ===== */
+        .debug-info {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .debug-info pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
         /* ===== OVERLAY ===== */
         .overlay {
             position: fixed;
@@ -899,93 +835,105 @@
 
         </div>
     </main>
+
 <script>
-    // ===== MODIFICATIONS POUR conn.html =====
-// Remplacer tout le bloc <script>...</script> par ce code
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const CONFIG = {
+    BASE_PATH: '/Activit-s-interactives_2nd-bac-pro',
+    SHEET_ID: '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8',
+    DEBUG: true // Mettre à false en production
+};
 
-// ===== CONFIG =====
-const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
-const CURRENT_PAGE = 'entrainement-conn';
-const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
-
-// ===== VARIABLES GLOBALES =====
+// ============================================================
+// VARIABLES GLOBALES
+// ============================================================
 let evaluation = null;
-let exercices = []; // Étapes de l'exercice en cours (onglet EXERCICES)
+let exercices = [];
 let elements = [];
-let currentStepIndex = 0; // Index de l'étape actuelle (renommé de currentExerciseIndex)
-let totalSteps = 0; // Nombre total d'étapes (renommé de totalExercises)
+let currentStepIndex = 0;
+let totalSteps = 0;
 let timeLeft = 600;
 let timerInterval = null;
 let currentExerciseData = null;
-let stepResults = []; // Résultats par étape
+let stepResults = [];
 
-// Navigation entre exercices de la leçon (NOUVEAU)
-let menuConnData = []; // Données MENU_CONN
-let currentMenuEntry = null; // Entrée actuelle dans MENU_CONN
-let lessonExercises = []; // Exercices de la même leçon
-let currentLessonIndex = 0; // Position dans la leçon
+// Navigation entre exercices de la leçon
+let menuConnData = [];
+let currentMenuEntry = null;
+let lessonExercises = [];
+let currentLessonIndex = 0;
 
-// ===== SIDEBAR TOGGLE =====
-const sidebar = document.getElementById('sidebar');
-const menuToggle = document.getElementById('menuToggle');
-const overlay = document.getElementById('overlay');
-
-function toggleSidebar() {
-    const isCollapsed = sidebar.classList.contains('collapsed');
-    
-    if (isCollapsed) {
-        sidebar.classList.remove('collapsed');
-        menuToggle.classList.add('active');
-        overlay.classList.add('visible');
-    } else {
-        sidebar.classList.add('collapsed');
-        menuToggle.classList.remove('active');
-        overlay.classList.remove('visible');
-    }
-    
-    localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
-}
-
-menuToggle.addEventListener('click', toggleSidebar);
-overlay.addEventListener('click', toggleSidebar);
-
-if (localStorage.getItem('sidebarOpen') === 'true') {
-    sidebar.classList.remove('collapsed');
-    menuToggle.classList.add('active');
-}
-
-// ===== LOAD SIDEBAR =====
-async function loadSidebar() {
-    try {
-        const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
-        if (!response.ok) throw new Error('Sidebar not found');
-        const html = await response.text();
-        document.getElementById('sidebarContent').innerHTML = html;
-        
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.dataset.page === CURRENT_PAGE) {
-                item.classList.add('active');
-            }
-        });
-
-        document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
-            link.addEventListener('click', e => e.preventDefault());
-        });
-    } catch (error) {
-        console.error('Erreur chargement sidebar:', error);
+// ============================================================
+// UTILITAIRES
+// ============================================================
+function log(...args) {
+    if (CONFIG.DEBUG) {
+        console.log('[CONN]', ...args);
     }
 }
 
-// ===== LOAD DATA FROM GOOGLE SHEETS =====
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// ============================================================
+// CHARGEMENT DES DONNÉES GOOGLE SHEETS
+// ============================================================
 async function loadSheet(sheetName) {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    
+    log(`📥 Chargement de l'onglet: ${sheetName}`);
+    
     try {
         const response = await fetch(url);
-        const text = await response.text();
-        const json = JSON.parse(text.substring(47, text.length - 2));
-        if (!json.table || !json.table.rows) return [];
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         
-        const headers = json.table.cols.map(col => (col.label || '').trim());
+        const text = await response.text();
+        
+        // Extraire le JSON de la réponse Google
+        const jsonStart = text.indexOf('{');
+        const jsonEnd = text.lastIndexOf('}') + 1;
+        if (jsonStart === -1 || jsonEnd === 0) {
+            throw new Error('Format de réponse invalide');
+        }
+        
+        const json = JSON.parse(text.substring(jsonStart, jsonEnd));
+        
+        if (!json.table || !json.table.rows) {
+            log(`⚠️ Aucune donnée dans ${sheetName}`);
+            return [];
+        }
+        
+        // Extraire les headers depuis la première ligne
+        // L'API Google peut renvoyer des labels vides, on utilise donc la première ligne de données
+        const cols = json.table.cols;
+        const headers = cols.map((col, idx) => {
+            // Essayer d'abord le label
+            if (col.label && col.label.trim()) {
+                return col.label.trim();
+            }
+            // Sinon utiliser l'ID de colonne (A, B, C...)
+            return String.fromCharCode(65 + idx);
+        });
+        
+        log(`📋 Headers détectés pour ${sheetName}:`, headers);
+        
+        // Convertir les lignes en objets
         const rows = [];
         
         for (let i = 0; i < json.table.rows.length; i++) {
@@ -998,38 +946,187 @@ async function loadSheet(sheetName) {
             row.c.forEach((cell, idx) => {
                 const header = headers[idx];
                 if (header) {
-                    const value = cell ? (cell.v ?? '') : '';
+                    let value = '';
+                    if (cell !== null && cell !== undefined) {
+                        // Gérer les différents types de valeurs
+                        if (cell.v !== null && cell.v !== undefined) {
+                            value = cell.v;
+                        } else if (cell.f) {
+                            value = cell.f; // Valeur formatée
+                        }
+                    }
                     obj[header] = value;
-                    if (value !== '') hasData = true;
+                    if (value !== '' && value !== null) {
+                        hasData = true;
+                    }
                 }
             });
             
+            // Ne pas ajouter les lignes vides
             if (hasData) {
                 rows.push(obj);
             }
         }
         
+        log(`✅ ${sheetName}: ${rows.length} lignes chargées`);
+        if (rows.length > 0) {
+            log(`   Exemple première ligne:`, rows[0]);
+        }
+        
         return rows;
-    } catch (e) { 
-        console.error('Erreur chargement', sheetName, e); 
-        return []; 
+        
+    } catch (error) {
+        console.error(`❌ Erreur chargement ${sheetName}:`, error);
+        return [];
     }
 }
 
-// ===== LOAD EVALUATION =====
+// ============================================================
+// SIDEBAR
+// ============================================================
+function initSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const overlay = document.getElementById('overlay');
+    
+    function toggleSidebar() {
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        
+        if (isCollapsed) {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+            overlay.classList.add('visible');
+        } else {
+            sidebar.classList.add('collapsed');
+            menuToggle.classList.remove('active');
+            overlay.classList.remove('visible');
+        }
+        
+        localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+    }
+    
+    menuToggle.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+    
+    if (localStorage.getItem('sidebarOpen') === 'true') {
+        sidebar.classList.remove('collapsed');
+        menuToggle.classList.add('active');
+    }
+}
+
+async function loadSidebar() {
+    try {
+        const response = await fetch(`${CONFIG.BASE_PATH}/components/sidebar.html`);
+        if (!response.ok) throw new Error('Sidebar not found');
+        const html = await response.text();
+        document.getElementById('sidebarContent').innerHTML = html;
+    } catch (error) {
+        log('Sidebar non chargée:', error.message);
+    }
+}
+
+// ============================================================
+// AFFICHAGE ERREUR
+// ============================================================
+function renderError(message, details = null) {
+    let html = `
+        <div class="error-message">
+            <h3>❌ Erreur</h3>
+            <p>${message}</p>
+            <p style="margin-top: 12px;">
+                <a href="${CONFIG.BASE_PATH}/pages/entrainement-connaissances.html">
+                    ← Retour à la liste des exercices
+                </a>
+            </p>
+        </div>
+    `;
+    
+    if (CONFIG.DEBUG && details) {
+        html += `
+            <div class="debug-info">
+                <strong>Détails de débogage:</strong>
+                <pre>${typeof details === 'object' ? JSON.stringify(details, null, 2) : details}</pre>
+            </div>
+        `;
+    }
+    
+    document.getElementById('content').innerHTML = html;
+}
+
+// ============================================================
+// CHARGEMENT DE L'ÉVALUATION
+// ============================================================
 async function loadEvaluation(evalId) {
     try {
-        console.log('🔍 Recherche évaluation:', evalId);
+        log('🔍 Recherche évaluation:', evalId);
         
-        // NOUVEAU: Charger MENU_CONN pour la navigation entre exercices de la leçon
-        menuConnData = await loadSheet('MENU_CONN');
-        console.log('📋 MENU_CONN chargé:', menuConnData.length, 'entrées');
+        // Charger toutes les données en parallèle
+        const [menuData, evaluationsData, exercicesData, elementsData] = await Promise.all([
+            loadSheet('MENU_CONN'),
+            loadSheet('EVALUATIONS'),
+            loadSheet('EXERCICES'),
+            loadSheet('ELEMENTS')
+        ]);
         
-        // Trouver l'entrée actuelle dans MENU_CONN
+        menuConnData = menuData;
+        
+        // Debug: afficher les données chargées
+        log('📊 Données chargées:', {
+            MENU_CONN: menuConnData.length,
+            EVALUATIONS: evaluationsData.length,
+            EXERCICES: exercicesData.length,
+            ELEMENTS: elementsData.length
+        });
+        
+        // Trouver l'évaluation
+        evaluation = evaluationsData.find(e => e.ID === evalId);
+        
+        if (!evaluation) {
+            // Essayer de trouver avec différentes clés possibles
+            log('⚠️ Évaluation non trouvée avec ID, essai avec autres clés...');
+            log('   IDs disponibles:', evaluationsData.map(e => e.ID));
+            
+            renderError(
+                `Évaluation "${evalId}" non trouvée.`,
+                {
+                    evalIdRecherche: evalId,
+                    evaluationsDisponibles: evaluationsData.map(e => ({ ID: e.ID, Nom: e.Nom }))
+                }
+            );
+            return;
+        }
+        
+        log('✅ Évaluation trouvée:', evaluation);
+        
+        // Trouver les exercices (étapes) pour cette évaluation
+        exercices = exercicesData
+            .filter(ex => ex.EvalID === evalId)
+            .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
+        
+        log('✅ Exercices trouvés:', exercices.length, exercices);
+        
+        if (exercices.length === 0) {
+            renderError(
+                `Aucune étape trouvée pour cette évaluation.`,
+                {
+                    evalId: evalId,
+                    exercicesDisponibles: exercicesData.map(e => ({ ID: e.ID, EvalID: e.EvalID }))
+                }
+            );
+            return;
+        }
+        
+        totalSteps = exercices.length;
+        stepResults = new Array(totalSteps).fill(null);
+        
+        // Charger les éléments
+        elements = elementsData;
+        log('✅ Éléments chargés:', elements.length);
+        
+        // Configurer la navigation entre exercices de la leçon
         currentMenuEntry = menuConnData.find(m => m.EvalID === evalId);
         
         if (currentMenuEntry) {
-            // Trouver tous les exercices de la même leçon et du même type
             const currentLesson = currentMenuEntry.NumLeçon || currentMenuEntry.NumLecon;
             const currentType = String(currentMenuEntry.Type || '').toLowerCase();
             
@@ -1042,157 +1139,54 @@ async function loadEvaluation(evalId) {
                 .sort((a, b) => (parseInt(a.NumExo) || 0) - (parseInt(b.NumExo) || 0));
             
             currentLessonIndex = lessonExercises.findIndex(m => m.EvalID === evalId);
-            console.log('📚 Exercices de la leçon:', lessonExercises.length, '| Position:', currentLessonIndex + 1);
+            log('📚 Navigation leçon:', lessonExercises.length, 'exercices, position:', currentLessonIndex + 1);
         }
-        
-        // Charger les évaluations
-        const evaluations = await loadSheet('EVALUATIONS');
-        evaluation = evaluations.find(e => e.ID === evalId);
-        
-        if (!evaluation) {
-            renderError(`Évaluation "${evalId}" non trouvée.`);
-            return;
-        }
-        
-        console.log('✅ Évaluation trouvée:', evaluation);
-        
-        // Charger les exercices (étapes)
-        const allExercices = await loadSheet('EXERCICES');
-        exercices = allExercices
-            .filter(ex => ex.EvalID === evalId)
-            .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
-        
-        console.log('✅ Étapes pour cette éval:', exercices.length);
-        
-        if (exercices.length === 0) {
-            renderError(`Aucune étape trouvée pour cette évaluation.`);
-            return;
-        }
-        
-        totalSteps = exercices.length;
-        stepResults = new Array(totalSteps).fill(null);
-        
-        // Charger les éléments
-        elements = await loadSheet('ELEMENTS');
         
         // Mettre à jour l'interface
         const evalType = String(evaluation.Type || '').toLowerCase();
         const isEvaluation = evalType === 'evaluation';
+        
         document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
         document.getElementById('pageSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
-        document.getElementById('breadcrumbCurrent').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
+        document.getElementById('breadcrumbCurrent').textContent = evaluation.Nom || 'Exercice';
         
         const menuLink = document.getElementById('menuLink');
         if (isEvaluation) {
-            menuLink.href = `${BASE_PATH}/pages/evaluation-connaissances.html`;
+            menuLink.href = `${CONFIG.BASE_PATH}/pages/evaluation-connaissances.html`;
             menuLink.textContent = 'Éval. de connaissances';
         }
         
-        // Définir le temps
+        // Définir le temps (en minutes dans le sheet)
         const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
         timeLeft = dureeMinutes * 60;
         
         // Afficher la première étape
         showStep(0);
         
-    } catch (e) {
-        console.error('Erreur:', e);
-        renderError('Impossible de charger l\'évaluation.');
+    } catch (error) {
+        console.error('❌ Erreur globale:', error);
+        renderError('Impossible de charger l\'évaluation.', error.message);
     }
 }
 
-// ===== RENDER ERROR =====
-function renderError(message) {
-    document.getElementById('content').innerHTML = `
-        <div class="error-message">
-            <h3>❌ Erreur</h3>
-            <p>${message}</p>
-            <p style="margin-top: 12px;">
-                <a href="${BASE_PATH}/pages/entrainement-connaissances.html">
-                    ← Retour à la liste des exercices
-                </a>
-            </p>
-        </div>
-    `;
-}
-
-// ===== TIMER =====
-function formatTime(seconds) {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
-}
-
-function startTimer() {
-    if (timerInterval) clearInterval(timerInterval);
-    
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        const timerEl = document.getElementById('timer');
-        if (timerEl) {
-            timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
-            
-            if (timeLeft <= 120) {
-                timerEl.classList.add('warning');
-            }
-            
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                verifyCurrentStep();
-            }
-        }
-    }, 1000);
-}
-
-// ===== NOUVEAU: GET STEP TYPE NAME =====
-function getStepTypeName(type) {
-    const names = {
-        'timeline': 'Timeline',
-        'frise': 'Frise',
-        'qcm': 'QCM',
-        'ouverte': 'Question',
-        'dictee': 'Dictée',
-        'erreur': 'Erreur',
-        'carte': 'Carte',
-        'image': 'Image'
-    };
-    return names[type] || type;
-}
-
-// ===== NOUVEAU: RENDER STEPS BREADCRUMB =====
-function renderStepsBreadcrumb() {
-    if (totalSteps <= 1) return ''; // Pas de fil d'Ariane si une seule étape
-    
-    let html = '<nav class="steps-breadcrumb"><span class="step-label">Étapes :</span>';
-    
-    exercices.forEach((ex, i) => {
-        const isActive = i === currentStepIndex;
-        const isCompleted = stepResults[i] !== null;
-        let className = 'step-item';
-        if (isActive) className += ' active';
-        else if (isCompleted) className += ' completed';
-        
-        if (i > 0) {
-            html += '<span class="step-separator">›</span>';
-        }
-        
-        html += `<button class="${className}" onclick="goToStep(${i})">${i + 1}. ${getStepTypeName(ex.Type)}</button>`;
-    });
-    
-    html += '</nav>';
-    return html;
-}
-
-// ===== SHOW STEP (renommé de showExercise) =====
+// ============================================================
+// AFFICHAGE D'UNE ÉTAPE
+// ============================================================
 function showStep(index) {
     currentStepIndex = index;
     const exercise = exercices[index];
     
-    // Récupérer les éléments pour cette étape
-    const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
-    const exerciseElements = elements.filter(el => banques.includes(el.Banque));
+    log(`📖 Affichage étape ${index + 1}/${totalSteps}:`, exercise);
     
-    // Filtrer par format
+    // Récupérer les banques de questions
+    const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
+    log('   Banques:', banques);
+    
+    // Filtrer les éléments par banque
+    const exerciseElements = elements.filter(el => banques.includes(el.Banque));
+    log('   Éléments trouvés pour les banques:', exerciseElements.length);
+    
+    // Filtrer par format selon le type d'exercice
     const formatMap = {
         'frise': 'Evenement',
         'timeline': 'Evenement',
@@ -1202,21 +1196,28 @@ function showStep(index) {
     
     const requiredFormat = formatMap[exercise.Type];
     let filteredElements = exerciseElements;
-    if (Array.isArray(requiredFormat)) {
-        filteredElements = exerciseElements.filter(el => requiredFormat.includes(el.Format));
-    } else if (requiredFormat) {
-        filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
+    
+    if (requiredFormat) {
+        if (Array.isArray(requiredFormat)) {
+            filteredElements = exerciseElements.filter(el => requiredFormat.includes(el.Format));
+        } else {
+            filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
+        }
     }
     
-    // Sélectionner le nombre d'éléments
+    log('   Éléments après filtre format:', filteredElements.length);
+    
+    // Sélectionner le nombre d'éléments demandé
     const nombre = parseInt(exercise.Nombre) || 5;
     let selectedElements = filteredElements;
     
     if (exercise.Mode === 'random' && filteredElements.length > nombre) {
-        selectedElements = shuffleArray([...filteredElements]).slice(0, nombre);
+        selectedElements = shuffleArray(filteredElements).slice(0, nombre);
     } else {
         selectedElements = filteredElements.slice(0, nombre);
     }
+    
+    log('   Éléments sélectionnés:', selectedElements.length, selectedElements);
     
     currentExerciseData = {
         exercise: exercise,
@@ -1227,7 +1228,9 @@ function showStep(index) {
     renderStep(exercise, selectedElements);
 }
 
-// ===== RENDER STEP (renommé de renderExercise) =====
+// ============================================================
+// RENDU D'UNE ÉTAPE
+// ============================================================
 function renderStep(exercise, selectedElements) {
     let exerciseHtml = '';
     
@@ -1294,9 +1297,52 @@ function getInstructionForType(type) {
     return instructions[type] || 'Complète l\'exercice suivant.';
 }
 
-// ===== RENDER TIMELINE =====
+function getStepTypeName(type) {
+    const names = {
+        'timeline': 'Timeline',
+        'frise': 'Frise',
+        'qcm': 'QCM',
+        'ouverte': 'Question',
+        'dictee': 'Dictée',
+        'erreur': 'Erreur',
+        'carte': 'Carte',
+        'image': 'Image'
+    };
+    return names[type] || type;
+}
+
+function renderStepsBreadcrumb() {
+    if (totalSteps <= 1) return '';
+    
+    let html = '<nav class="steps-breadcrumb"><span class="step-label">Étapes :</span>';
+    
+    exercices.forEach((ex, i) => {
+        const isActive = i === currentStepIndex;
+        const isCompleted = stepResults[i] !== null;
+        let className = 'step-item';
+        if (isActive) className += ' active';
+        else if (isCompleted) className += ' completed';
+        
+        if (i > 0) {
+            html += '<span class="step-separator">›</span>';
+        }
+        
+        html += `<button class="${className}" onclick="goToStep(${i})">${i + 1}. ${getStepTypeName(ex.Type)}</button>`;
+    });
+    
+    html += '</nav>';
+    return html;
+}
+
+// ============================================================
+// TIMELINE
+// ============================================================
 function renderTimeline(elements) {
-    const shuffledElements = shuffleArray([...elements]);
+    if (elements.length === 0) {
+        return '<p>⚠️ Aucun événement à afficher pour cet exercice.</p>';
+    }
+    
+    const shuffledElements = shuffleArray(elements);
     
     return `
         <div class="exercise-header">
@@ -1332,7 +1378,7 @@ function initTimelineDragDrop() {
     let draggedItem = null;
     
     list.querySelectorAll('.timeline-item').forEach(item => {
-        item.addEventListener('dragstart', (e) => {
+        item.addEventListener('dragstart', () => {
             draggedItem = item;
             item.classList.add('dragging');
         });
@@ -1375,10 +1421,16 @@ function updateTimelineNumbers() {
     });
 }
 
-// ===== RENDER FRISE =====
+// ============================================================
+// FRISE
+// ============================================================
 function renderFrise(elements) {
+    if (elements.length === 0) {
+        return '<p>⚠️ Aucun événement à afficher pour cet exercice.</p>';
+    }
+    
     const sortedElements = [...elements].sort((a, b) => parseInt(a.Date) - parseInt(b.Date));
-    const shuffledElements = shuffleArray([...elements]);
+    const shuffledElements = shuffleArray(elements);
     
     return `
         <div class="exercise-header">
@@ -1394,7 +1446,7 @@ function renderFrise(elements) {
         </div>
         
         <div class="frise-events" id="friseEvents">
-            ${shuffledElements.map((el, i) => `
+            ${shuffledElements.map(el => `
                 <div class="frise-event" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
                     <div class="event-text">${el.Evenement}</div>
                 </div>
@@ -1402,7 +1454,7 @@ function renderFrise(elements) {
         </div>
         
         <div class="frise-dropzones" id="friseDropzones">
-            ${sortedElements.map((el, i) => `
+            ${sortedElements.map(el => `
                 <div class="frise-dropzone" data-expected-date="${el.Date}" data-expected-id="${el.ID}">
                     <div class="date-label">${el.Date}</div>
                     <div class="drop-hint">Déposez ici</div>
@@ -1459,7 +1511,33 @@ function initFriseDragDrop() {
     });
 }
 
-// ===== VERIFY STEP (renommé de verifyCurrentExercise) =====
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const timerEl = document.getElementById('timer');
+        if (timerEl) {
+            timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+            
+            if (timeLeft <= 120) {
+                timerEl.classList.add('warning');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                verifyCurrentStep();
+            }
+        }
+    }, 1000);
+}
+
+// ============================================================
+// VÉRIFICATION & CORRIGÉ
+// ============================================================
 function verifyCurrentStep() {
     clearInterval(timerInterval);
     
@@ -1523,7 +1601,7 @@ function verifyCurrentStep() {
     stepResults[currentStepIndex] = { correct, total };
     
     // Afficher le résultat
-    const percentage = Math.round((correct / total) * 100);
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     let message = '';
     
     if (percentage === 100) {
@@ -1536,7 +1614,7 @@ function verifyCurrentStep() {
         message = `📚 Tu as trouvé ${correct}/${total} réponses. Révise et recommence !`;
     }
     
-    // Ajouter le bouton étape suivante si pas la dernière
+    // Bouton étape suivante si pas la dernière
     if (currentStepIndex < totalSteps - 1) {
         message += ` <button onclick="goToStep(${currentStepIndex + 1})" style="margin-left: 12px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Étape suivante →</button>`;
     }
@@ -1545,7 +1623,6 @@ function verifyCurrentStep() {
     document.getElementById('result').classList.add('show');
 }
 
-// ===== SHOW SOLUTION =====
 function showSolution() {
     clearInterval(timerInterval);
     
@@ -1578,11 +1655,11 @@ function showSolution() {
         
     } else if (exercise.Type === 'frise') {
         const dropzones = document.querySelectorAll('.frise-dropzone');
-        const elements = currentExerciseData.elements;
+        const elementsData = currentExerciseData.elements;
         
         dropzones.forEach(zone => {
             const expectedId = zone.dataset.expectedId;
-            const element = elements.find(el => el.ID === expectedId);
+            const element = elementsData.find(el => el.ID === expectedId);
             
             if (element) {
                 const oldPlaced = zone.querySelector('.placed-event');
@@ -1608,13 +1685,14 @@ function showSolution() {
     document.getElementById('result').classList.add('show');
 }
 
-// ===== RESTART STEP =====
+// ============================================================
+// NAVIGATION
+// ============================================================
 function restartStep() {
     clearInterval(timerInterval);
     showStep(currentStepIndex);
 }
 
-// ===== GO TO STEP =====
 function goToStep(index) {
     if (index >= 0 && index < totalSteps) {
         clearInterval(timerInterval);
@@ -1622,13 +1700,12 @@ function goToStep(index) {
     }
 }
 
-// ===== NOUVEAU: RENDER LESSON NAVIGATION (style BEX) =====
 function renderLessonNavigation() {
     const evalType = String(evaluation.Type || '').toLowerCase();
     const isEvaluation = evalType === 'evaluation';
     const menuLink = isEvaluation 
-        ? `${BASE_PATH}/pages/evaluation-connaissances.html`
-        : `${BASE_PATH}/pages/entrainement-connaissances.html`;
+        ? `${CONFIG.BASE_PATH}/pages/evaluation-connaissances.html`
+        : `${CONFIG.BASE_PATH}/pages/entrainement-connaissances.html`;
 
     // Si pas de données MENU_CONN, navigation simple
     if (!currentMenuEntry || lessonExercises.length === 0) {
@@ -1676,30 +1753,29 @@ function renderLessonNavigation() {
     `;
 }
 
-// ===== UTILS =====
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-// ===== INIT =====
+// ============================================================
+// INITIALISATION
+// ============================================================
 async function init() {
+    log('🚀 Initialisation de conn.html');
+    
+    initSidebar();
     await loadSidebar();
     
     const urlParams = new URLSearchParams(window.location.search);
     const evalId = urlParams.get('id');
     
+    log('📋 EvalID depuis URL:', evalId);
+    
     if (!evalId) {
-        renderError('Aucun ID d\'évaluation fourni.');
+        renderError('Aucun ID d\'évaluation fourni dans l\'URL.', 'Ajoutez ?id=VOTRE_ID à l\'URL');
         return;
     }
     
     await loadEvaluation(evalId);
 }
 
+// Démarrer quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
