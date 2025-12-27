@@ -3,21 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercice | Espace cours</title>
+    <title>Exercice Connaissances | Espace cours</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
             --primary-dark: #4f46e5;
             --primary-bg: #eef2ff;
-            --success: #10b981;
-            --success-bg: #d1fae5;
-            --error: #ef4444;
-            --error-bg: #fee2e2;
-            --warning: #f59e0b;
-            --warning-bg: #fef3c7;
+            
+            --accent-yellow: #f59e0b;
+            --accent-yellow-light: #fef3c7;
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
             --gray-200: #e5e7eb;
@@ -27,235 +34,760 @@
             --gray-600: #4b5563;
             --gray-700: #374151;
             --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            
             --radius: 12px;
             --radius-lg: 16px;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--gray-100); color: var(--gray-800); min-height: 100vh; }
-        
-        /* Header */
-        .header { background: white; border-bottom: 1px solid var(--gray-200); padding: 16px 24px; position: sticky; top: 0; z-index: 100; }
-        .header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .back-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--gray-200); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gray-600); transition: all 0.2s; text-decoration: none; }
-        .back-btn:hover { background: var(--gray-50); border-color: var(--gray-300); }
-        
-        /* Menu Toggle & Sidebar */
-        .menu-toggle { width: 40px; height: 40px; background: var(--gray-100); border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gray-600); transition: all 0.2s; }
-        .menu-toggle:hover { background: var(--primary-bg); color: var(--primary); }
-        .menu-toggle.active { background: var(--primary); color: white; }
-        .sidebar { width: 260px; background: white; border-right: 1px solid var(--gray-200); position: fixed; top: 73px; left: 0; bottom: 0; overflow-y: auto; transition: transform 0.3s ease; z-index: 50; }
-        .sidebar.collapsed { transform: translateX(-100%); }
-        .sidebar-inner { padding: 16px 12px; }
-        .overlay { position: fixed; top: 73px; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 40; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; }
-        .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
-        
-        /* Sidebar Content Styles */
-        .sidebar-inner a { display: block; padding: 10px 14px; margin: 2px 0; border-radius: 8px; text-decoration: none; color: var(--gray-700); font-size: 14px; transition: all 0.15s; }
-        .sidebar-inner a:hover { background: var(--primary-bg); color: var(--primary); }
-        .sidebar-inner .section-title, .sidebar-inner strong { display: block; padding: 12px 14px 6px; font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
-        
-        .header-info h1 { font-size: 18px; font-weight: 700; color: var(--gray-800); }
-        .header-info p { font-size: 13px; color: var(--gray-500); }
-        
-        /* Progress */
-        .progress-container { display: flex; align-items: center; gap: 12px; }
-        .progress-text { font-size: 13px; font-weight: 600; color: var(--gray-600); white-space: nowrap; }
-        .progress-bar { width: 120px; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; transition: width 0.5s ease; }
-        
-        /* Main */
-        .main { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
-        
-        /* Loading & Error */
-        .loading, .error-state { text-align: center; padding: 80px 20px; }
-        .spinner { width: 48px; height: 48px; border: 4px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .error-state .icon { font-size: 64px; margin-bottom: 16px; }
-        .error-state h2 { font-size: 24px; margin-bottom: 8px; color: var(--gray-800); }
-        .error-state p { color: var(--gray-500); margin-bottom: 24px; }
-        
-        /* Exercise Card */
-        .exercise-card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); overflow: hidden; margin-bottom: 24px; }
-        .exercise-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 16px; }
-        .exercise-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: var(--primary-bg); }
-        .exercise-title h2 { font-size: 18px; font-weight: 700; color: var(--gray-800); }
-        .exercise-title p { font-size: 13px; color: var(--gray-500); }
-        .exercise-body { padding: 24px; }
-        
-        /* Frise Chronologique */
-        .frise-container { position: relative; }
-        .frise-instruction { text-align: center; padding: 16px; background: var(--primary-bg); border-radius: var(--radius); margin-bottom: 24px; color: var(--primary-dark); font-weight: 500; }
-        .frise-line { position: relative; height: 4px; background: var(--gray-200); border-radius: 2px; margin: 60px 0; }
-        .frise-events { display: flex; justify-content: space-around; position: relative; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-        .frise-event { background: white; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 12px 16px; cursor: grab; transition: all 0.2s; user-select: none; min-width: 150px; text-align: center; }
-        .frise-event:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
-        .frise-event.dragging { opacity: 0.5; cursor: grabbing; }
-        .frise-event.placed { background: var(--primary-bg); border-color: var(--primary); }
-        .frise-event .event-text { font-size: 14px; font-weight: 500; color: var(--gray-700); }
-        
-        .frise-dropzones { display: flex; justify-content: space-between; margin-top: 24px; }
-        .frise-dropzone { flex: 1; margin: 0 8px; padding: 16px; border: 2px dashed var(--gray-300); border-radius: var(--radius); min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s; }
-        .frise-dropzone.drag-over { border-color: var(--primary); background: var(--primary-bg); }
-        .frise-dropzone .date-label { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
-        .frise-dropzone .drop-hint { font-size: 12px; color: var(--gray-400); }
-        .frise-dropzone.has-event .drop-hint { display: none; }
-        .frise-dropzone .placed-event { background: var(--primary); color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; }
-        
-        /* Timeline (remettre en ordre) */
-        .timeline-container { }
-        .timeline-instruction { text-align: center; padding: 16px; background: var(--warning-bg); border-radius: var(--radius); margin-bottom: 24px; color: #92400e; font-weight: 500; }
-        .timeline-list { display: flex; flex-direction: column; gap: 12px; }
-        .timeline-item { display: flex; align-items: center; gap: 16px; background: white; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 16px; cursor: grab; transition: all 0.2s; user-select: none; }
-        .timeline-item:hover { border-color: var(--primary-light); }
-        .timeline-item.dragging { opacity: 0.5; border-color: var(--primary); background: var(--primary-bg); }
-        .timeline-item .drag-handle { color: var(--gray-400); font-size: 20px; }
-        .timeline-item .item-content { flex: 1; }
-        .timeline-item .item-date { font-size: 16px; font-weight: 700; color: var(--primary); }
-        .timeline-item .item-text { font-size: 14px; color: var(--gray-700); }
-        .timeline-item .order-number { width: 32px; height: 32px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gray-500); font-size: 14px; }
-        
-        /* QCM */
-        .qcm-container { }
-        .qcm-question { font-size: 18px; font-weight: 600; color: var(--gray-800); margin-bottom: 20px; text-align: center; padding: 20px; background: var(--gray-50); border-radius: var(--radius); }
-        .qcm-options { display: flex; flex-direction: column; gap: 12px; }
-        .qcm-option { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: white; border: 2px solid var(--gray-200); border-radius: var(--radius); cursor: pointer; transition: all 0.2s; }
-        .qcm-option:hover { border-color: var(--primary-light); background: var(--primary-bg); }
-        .qcm-option.selected { border-color: var(--primary); background: var(--primary-bg); }
-        .qcm-option.correct { border-color: var(--success); background: var(--success-bg); }
-        .qcm-option.incorrect { border-color: var(--error); background: var(--error-bg); }
-        .qcm-option .option-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gray-600); }
-        .qcm-option.selected .option-letter { background: var(--primary); color: white; }
-        .qcm-option .option-text { flex: 1; font-size: 15px; }
-        
-        /* Question ouverte */
-        .open-container { }
-        .open-question { font-size: 18px; font-weight: 600; color: var(--gray-800); margin-bottom: 20px; text-align: center; padding: 20px; background: var(--gray-50); border-radius: var(--radius); }
-        .open-input { width: 100%; padding: 16px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 16px; font-family: inherit; transition: all 0.2s; }
-        .open-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-bg); }
-        .open-feedback { margin-top: 16px; padding: 16px; border-radius: var(--radius); display: none; }
-        .open-feedback.correct { display: block; background: var(--success-bg); color: #065f46; }
-        .open-feedback.incorrect { display: block; background: var(--error-bg); color: #991b1b; }
-        
-        /* Buttons */
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .btn-secondary { background: white; color: var(--gray-700); border: 2px solid var(--gray-200); }
-        .btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-300); }
-        .btn-success { background: linear-gradient(135deg, var(--success), #059669); color: white; }
-        
-        .exercise-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-100); }
-        .exercise-actions .left { }
-        .exercise-actions .right { display: flex; gap: 12px; }
-        
-        /* Results */
-        .results-card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; text-align: center; }
-        .results-header { padding: 40px 24px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
-        .results-header .icon { font-size: 64px; margin-bottom: 16px; }
-        .results-header h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-        .results-header p { font-size: 16px; opacity: 0.9; }
-        .results-header.success { background: linear-gradient(135deg, var(--success), #059669); }
-        .results-header.failure { background: linear-gradient(135deg, var(--error), #dc2626); }
-        .results-body { padding: 32px 24px; }
-        .results-stats { display: flex; justify-content: center; gap: 48px; margin-bottom: 32px; }
-        .stat-item { text-align: center; }
-        .stat-value { font-size: 36px; font-weight: 800; color: var(--gray-800); }
-        .stat-label { font-size: 13px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
-        .results-details { text-align: left; background: var(--gray-50); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
-        .results-details h3 { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 12px; text-transform: uppercase; }
-        .detail-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-200); }
-        .detail-item:last-child { border-bottom: none; }
-        .detail-item .status { font-size: 18px; }
-        .detail-item .info { flex: 1; }
-        .detail-item .info strong { font-size: 14px; color: var(--gray-700); }
-        .detail-item .info span { font-size: 12px; color: var(--gray-500); }
-        .detail-item .score { font-weight: 700; color: var(--gray-600); }
-        
-        /* Responsive */
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 100;
+        }
+
+        .header-inner {
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gray-600);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .menu-toggle.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logo-text span {
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-inner {
+            padding: 16px 12px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            padding-top: calc(var(--header-height) + 24px);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.collapsed ~ .main {
+            margin-left: 0;
+        }
+
+        .main-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .separator {
+            color: var(--gray-300);
+        }
+
+        .breadcrumb .current {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            color: var(--gray-500);
+            font-size: 15px;
+        }
+
+        /* ===== TIMER ===== */
+        .timer-box {
+            background: linear-gradient(135deg, var(--accent-yellow), #fbbf24);
+            color: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* ===== INSTRUCTIONS ===== */
+        .instructions {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .instructions strong {
+            color: var(--primary);
+        }
+
+        .instructions p {
+            color: var(--gray-600);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        /* ===== EXERCISE CARD ===== */
+        .exercise-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .exercise-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: var(--primary-bg);
+        }
+
+        .exercise-title h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .exercise-title p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* ===== TIMELINE EXERCISE ===== */
+        .timeline-instruction {
+            text-align: center;
+            padding: 16px;
+            background: var(--accent-yellow-light);
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: grab;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .timeline-item:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .timeline-item.dragging {
+            opacity: 0.5;
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .timeline-item .drag-handle {
+            color: var(--gray-400);
+            font-size: 20px;
+        }
+
+        .timeline-item .item-content {
+            flex: 1;
+        }
+
+        .timeline-item .item-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .timeline-item .item-date {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .timeline-item .order-number {
+            width: 32px;
+            height: 32px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+
+        .timeline-item.correct {
+            border-color: var(--accent-green);
+            background: var(--accent-green-light);
+        }
+
+        .timeline-item.correct .item-date {
+            color: var(--accent-green);
+        }
+
+        .timeline-item.incorrect {
+            border-color: var(--accent-red);
+            background: var(--accent-red-light);
+        }
+
+        .timeline-item.incorrect .item-date {
+            color: var(--accent-red);
+        }
+
+        /* ===== FRISE EXERCISE ===== */
+        .frise-instruction {
+            text-align: center;
+            padding: 16px;
+            background: var(--primary-bg);
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .frise-events {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .frise-event {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            cursor: grab;
+            transition: all 0.2s;
+            user-select: none;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .frise-event:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .frise-event.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .frise-event .event-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .frise-dropzones {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .frise-dropzone {
+            flex: 1;
+            min-width: 150px;
+            padding: 16px;
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .frise-dropzone.drag-over {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .frise-dropzone .date-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .frise-dropzone .drop-hint {
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        .frise-dropzone.has-event .drop-hint {
+            display: none;
+        }
+
+        .frise-dropzone .placed-event {
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .frise-dropzone.correct {
+            border-color: var(--accent-green);
+            background: var(--accent-green-light);
+        }
+
+        .frise-dropzone.incorrect {
+            border-color: var(--accent-red);
+            background: var(--accent-red-light);
+        }
+
+        /* ===== BUTTONS ===== */
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .buttons button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            font-family: inherit;
+        }
+
+        .buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, var(--accent-green), #34d399);
+            color: white;
+        }
+
+        .btn-solution {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, var(--gray-500), var(--gray-400));
+            color: white;
+        }
+
+        /* ===== RESULT ===== */
+        .result {
+            background: var(--accent-green-light);
+            border: 2px solid var(--accent-green);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            color: #047857;
+        }
+
+        /* ===== NAVIGATION EXERCICES ===== */
+        .nav-exercices {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .nav-btn.prev {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--gray-200);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-btn.menu {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .nav-btn.menu:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .nav-info {
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* ===== LOADING & ERROR ===== */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: var(--accent-red-light);
+            border: 2px solid var(--accent-red);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            color: #991b1b;
+        }
+
+        .error-message a {
+            color: #991b1b;
+        }
+
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .header-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
-            .progress-container { width: 100%; }
-            .progress-bar { flex: 1; }
-            .frise-dropzones { flex-direction: column; gap: 12px; }
-            .frise-dropzone { margin: 0; }
-            .results-stats { flex-direction: column; gap: 24px; }
+            .sidebar {
+                z-index: 60;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .sidebar.collapsed ~ .main {
+                margin-left: 0;
+            }
+            .buttons button {
+                min-width: 100%;
+            }
+            .nav-exercices {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .frise-dropzones {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- HEADER -->
     <header class="header">
         <div class="header-inner">
-            <div class="header-left">
-                <button class="menu-toggle" id="menuToggle">☰</button>
-                <a href="javascript:history.back()" class="back-btn">←</a>
-                <div class="header-info">
-                    <h1 id="evalTitle">Chargement...</h1>
-                    <p id="evalSubtitle">Évaluation de connaissances</p>
-                </div>
-            </div>
-            <div class="progress-container">
-                <span class="progress-text" id="progressText">Étape 1/1</span>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                </div>
-            </div>
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
+            
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
+            </a>
         </div>
     </header>
-    
-    <!-- Sidebar -->
+
+    <!-- SIDEBAR (chargé dynamiquement) -->
     <aside class="sidebar collapsed" id="sidebar">
-        <div class="sidebar-inner" id="sidebarContent"></div>
+        <div class="sidebar-inner" id="sidebarContent">
+            <!-- Chargé par JavaScript -->
+        </div>
     </aside>
-    <div class="overlay" id="overlay"></div>
-    
-    <!-- Main Content -->
+
+    <!-- MAIN CONTENT -->
     <main class="main">
-        <!-- Loading -->
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Chargement de l'exercice...</p>
+        <div class="main-inner">
+            
+            <!-- BREADCRUMB -->
+            <nav class="breadcrumb">
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html">🏠 Accueil</a>
+                <span class="separator">›</span>
+                <a href="/Activit-s-interactives_2nd-bac-pro/pages/entrainement-connaissances.html" id="menuLink">Entraînement Connaissances</a>
+                <span class="separator">›</span>
+                <span class="current" id="breadcrumbCurrent">Exercice</span>
+            </nav>
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <h1 id="pageTitle">✅ Exercice de Connaissances</h1>
+                <p id="pageSubtitle">Évaluation de connaissances</p>
+            </div>
+
+            <!-- CONTENU DE L'EXERCICE -->
+            <div id="content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Chargement de l'exercice...</p>
+                </div>
+            </div>
+
         </div>
-        
-        <!-- Error -->
-        <div class="error-state" id="errorState" style="display: none;">
-            <div class="icon">😕</div>
-            <h2>Exercice introuvable</h2>
-            <p>Cet exercice n'existe pas ou n'est plus disponible.</p>
-            <a href="javascript:history.back()" class="btn btn-primary">← Retour</a>
-        </div>
-        
-        <!-- Exercise Container -->
-        <div id="exerciseContainer" style="display: none;"></div>
-        
-        <!-- Results -->
-        <div id="resultsContainer" style="display: none;"></div>
     </main>
 
     <script>
         // ===== CONFIG =====
-        const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
         const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
-        
-        // ===== STATE =====
+        const CURRENT_PAGE = 'entrainement-conn';
+        const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
+
+        // ===== VARIABLES GLOBALES =====
         let evaluation = null;
         let exercices = [];
         let elements = [];
         let currentExerciseIndex = 0;
-        let exerciseResults = [];
+        let totalExercises = 0;
+        let timeLeft = 600;
+        let timerInterval = null;
         let currentExerciseData = null;
-        
-        // ===== SIDEBAR =====
+        let exerciseResults = [];
+
+        // ===== SIDEBAR TOGGLE =====
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
         const overlay = document.getElementById('overlay');
-        
+
         function toggleSidebar() {
             const isCollapsed = sidebar.classList.contains('collapsed');
+            
             if (isCollapsed) {
                 sidebar.classList.remove('collapsed');
                 menuToggle.classList.add('active');
@@ -265,37 +797,44 @@
                 menuToggle.classList.remove('active');
                 overlay.classList.remove('visible');
             }
+            
+            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
         }
-        
+
         menuToggle.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
-        
+
+        // Restaurer l'état du sidebar
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            sidebar.classList.remove('collapsed');
+            menuToggle.classList.add('active');
+        }
+
+        // ===== LOAD SIDEBAR =====
         async function loadSidebar() {
             try {
                 const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
-                if (response.ok) {
-                    const html = await response.text();
-                    document.getElementById('sidebarContent').innerHTML = html;
-                }
-            } catch (e) { console.log('Sidebar non chargée'); }
-        }
-        
-        // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', async () => {
-            loadSidebar();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const evalId = urlParams.get('id');
-            
-            if (!evalId) {
-                showError();
-                return;
+                if (!response.ok) throw new Error('Sidebar not found');
+                const html = await response.text();
+                document.getElementById('sidebarContent').innerHTML = html;
+                
+                // Marquer la page active
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (item.dataset.page === CURRENT_PAGE) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Désactiver les liens vides
+                document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
+                    link.addEventListener('click', e => e.preventDefault());
+                });
+            } catch (error) {
+                console.error('Erreur chargement sidebar:', error);
             }
-            
-            await loadEvaluation(evalId);
-        });
-        
-        // ===== LOAD DATA =====
+        }
+
+        // ===== LOAD DATA FROM GOOGLE SHEETS =====
         async function loadSheet(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             try {
@@ -304,11 +843,9 @@
                 const json = JSON.parse(text.substring(47, text.length - 2));
                 if (!json.table || !json.table.rows) return [];
                 
-                // Récupérer les en-têtes depuis la première ligne
                 const headers = json.table.cols.map(col => (col.label || '').trim());
-                
-                // Parser toutes les lignes et filtrer les vides
                 const rows = [];
+                
                 for (let i = 0; i < json.table.rows.length; i++) {
                     const row = json.table.rows[i];
                     if (!row || !row.c) continue;
@@ -325,104 +862,129 @@
                         }
                     });
                     
-                    // Ne garder que les lignes qui ont au moins une donnée
                     if (hasData && obj['ID']) {
                         rows.push(obj);
                     }
                 }
                 
-                console.log(`📊 ${sheetName}: ${rows.length} lignes chargées`);
                 return rows;
             } catch (e) { 
                 console.error('Erreur chargement', sheetName, e); 
                 return []; 
             }
         }
-        
+
+        // ===== LOAD EVALUATION =====
         async function loadEvaluation(evalId) {
             try {
-                console.log('🔍 Recherche évaluation:', evalId);
-                
                 // Charger les évaluations
                 const evaluations = await loadSheet('EVALUATIONS');
-                console.log('📋 Évaluations trouvées:', evaluations.map(e => e.ID));
-                
                 evaluation = evaluations.find(e => e.ID === evalId);
                 
                 if (!evaluation) {
-                    console.error('❌ Évaluation non trouvée:', evalId);
-                    showError();
+                    renderError(`Évaluation "${evalId}" non trouvée.`);
                     return;
                 }
                 
-                console.log('✅ Évaluation trouvée:', evaluation);
-                
-                // Charger les exercices de cette évaluation
+                // Charger les exercices
                 const allExercices = await loadSheet('EXERCICES');
-                console.log('📋 Tous les exercices:', allExercices.map(e => e.EvalID));
-                
                 exercices = allExercices
                     .filter(ex => ex.EvalID === evalId)
                     .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
                 
-                console.log('✅ Exercices pour cette éval:', exercices);
-                
                 if (exercices.length === 0) {
-                    console.error('❌ Aucun exercice trouvé pour:', evalId);
-                    showError();
+                    renderError(`Aucun exercice trouvé pour cette évaluation.`);
                     return;
                 }
                 
-                // Charger tous les éléments
+                totalExercises = exercices.length;
+                
+                // Charger les éléments
                 elements = await loadSheet('ELEMENTS');
-                console.log('✅ Éléments chargés:', elements.length, elements);
                 
                 // Mettre à jour l'interface
-                document.getElementById('evalTitle').textContent = evaluation.Nom || 'Évaluation';
-                document.getElementById('evalSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
+                const isEvaluation = (evaluation.Type || '').toLowerCase() === 'evaluation';
+                document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
+                document.getElementById('pageSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
+                document.getElementById('breadcrumbCurrent').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
                 
-                // Démarrer le premier exercice
-                document.getElementById('loading').style.display = 'none';
+                // Ajuster le lien retour selon le type
+                const menuLink = document.getElementById('menuLink');
+                if (isEvaluation) {
+                    menuLink.href = `${BASE_PATH}/pages/evaluation-connaissances.html`;
+                    menuLink.textContent = 'Éval. de connaissances';
+                }
+                
+                // Définir le temps
+                timeLeft = parseInt(evaluation.Temps) || 600;
+                
+                // Afficher le premier exercice
                 showExercise(0);
                 
             } catch (e) {
                 console.error('Erreur:', e);
-                showError();
+                renderError('Impossible de charger l\'évaluation.');
             }
         }
-        
-        function showError() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
+
+        // ===== RENDER ERROR =====
+        function renderError(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Erreur</h3>
+                    <p>${message}</p>
+                    <p style="margin-top: 12px;">
+                        <a href="${BASE_PATH}/pages/entrainement-connaissances.html">
+                            ← Retour à la liste des exercices
+                        </a>
+                    </p>
+                </div>
+            `;
         }
-        
+
+        // ===== TIMER =====
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) {
+                    timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+                    
+                    if (timeLeft <= 120) {
+                        timerEl.classList.add('warning');
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        verifyCurrentExercise();
+                    }
+                }
+            }, 1000);
+        }
+
         // ===== SHOW EXERCISE =====
         function showExercise(index) {
             currentExerciseIndex = index;
             const exercise = exercices[index];
             
-            console.log('🎮 Affichage exercice', index + 1, ':', exercise);
-            
-            // Mettre à jour la progression
-            updateProgress();
-            
             // Récupérer les éléments pour cet exercice
             const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
-            console.log('🏦 Banques recherchées:', banques);
-            console.log('📦 Éléments disponibles:', elements.map(e => ({ id: e.ID, banque: e.Banque, format: e.Format })));
-            
             const exerciseElements = elements.filter(el => banques.includes(el.Banque));
-            console.log('✅ Éléments trouvés pour cette banque:', exerciseElements);
             
-            // Filtrer par format selon le type d'exercice
+            // Filtrer par format
             const formatMap = {
                 'frise': 'Evenement',
                 'timeline': 'Evenement',
                 'qcm': ['Evenement', 'QuestionReponse'],
-                'ouverte': 'QuestionReponse',
-                'carte': 'Zone',
-                'dictee': 'Dictee',
-                'erreur': 'Erreur'
+                'ouverte': 'QuestionReponse'
             };
             
             const requiredFormat = formatMap[exercise.Type];
@@ -433,9 +995,7 @@
                 filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
             }
             
-            console.log('🎯 Éléments après filtre format:', filteredElements);
-            
-            // Sélectionner le nombre d'éléments demandé
+            // Sélectionner le nombre d'éléments
             const nombre = parseInt(exercise.Nombre) || 5;
             let selectedElements = filteredElements;
             
@@ -445,99 +1005,199 @@
                 selectedElements = filteredElements.slice(0, nombre);
             }
             
-            console.log('📝 Éléments sélectionnés:', selectedElements);
-            
             currentExerciseData = {
                 exercise: exercise,
                 elements: selectedElements,
-                answers: {},
                 startTime: Date.now()
             };
             
-            // Afficher l'exercice selon son type
-            const container = document.getElementById('exerciseContainer');
-            container.style.display = 'block';
+            // Afficher l'exercice
+            renderExercise(exercise, selectedElements);
+        }
+
+        // ===== RENDER EXERCISE =====
+        function renderExercise(exercise, selectedElements) {
+            let exerciseHtml = '';
             
             switch (exercise.Type) {
-                case 'frise':
-                    renderFrise(container, selectedElements);
-                    break;
                 case 'timeline':
-                    renderTimeline(container, selectedElements);
+                    exerciseHtml = renderTimeline(selectedElements);
                     break;
-                case 'qcm':
-                    renderQCM(container, selectedElements);
-                    break;
-                case 'ouverte':
-                    renderOpenQuestion(container, selectedElements);
+                case 'frise':
+                    exerciseHtml = renderFrise(selectedElements);
                     break;
                 default:
-                    container.innerHTML = `<div class="exercise-card"><div class="exercise-body"><p>Type d'exercice "${exercise.Type}" non encore implémenté.</p></div></div>`;
+                    exerciseHtml = `<p>Type d'exercice "${exercise.Type}" non implémenté.</p>`;
             }
-        }
-        
-        function updateProgress() {
-            const total = exercices.length;
-            const current = currentExerciseIndex + 1;
-            const percent = (current / total) * 100;
             
-            document.getElementById('progressText').textContent = `Étape ${current}/${total}`;
-            document.getElementById('progressFill').style.width = `${percent}%`;
+            const html = `
+                <div class="timer-box" id="timer">
+                    ⏱️ Temps restant : ${formatTime(timeLeft)}
+                </div>
+
+                <div class="instructions">
+                    <strong>📋 Consigne :</strong>
+                    <p>${getInstructionForType(exercise.Type)}</p>
+                </div>
+
+                <div class="exercise-card">
+                    ${exerciseHtml}
+                    
+                    <div class="buttons">
+                        <button class="btn-verify" onclick="verifyCurrentExercise()">✓ Vérifier mes réponses</button>
+                        <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                        <button class="btn-restart" onclick="restartExercise()">🔄 Recommencer</button>
+                    </div>
+
+                    <div class="result" id="result">
+                        <h3>📊 Résultat</h3>
+                        <p id="resultMessage"></p>
+                    </div>
+                </div>
+
+                ${renderNavigation()}
+            `;
+
+            document.getElementById('content').innerHTML = html;
+            
+            // Initialiser le drag & drop
+            if (exercise.Type === 'timeline') {
+                initTimelineDragDrop();
+            } else if (exercise.Type === 'frise') {
+                initFriseDragDrop();
+            }
+            
+            startTimer();
         }
-        
-        // ===== FRISE CHRONOLOGIQUE =====
-        function renderFrise(container, elements) {
+
+        function getInstructionForType(type) {
+            const instructions = {
+                'timeline': 'Remets les événements dans l\'ordre chronologique, du plus ancien au plus récent.',
+                'frise': 'Place chaque événement sur la date correspondante.',
+                'qcm': 'Sélectionne la bonne réponse pour chaque question.',
+                'ouverte': 'Réponds aux questions suivantes.'
+            };
+            return instructions[type] || 'Complète l\'exercice suivant.';
+        }
+
+        // ===== RENDER TIMELINE =====
+        function renderTimeline(elements) {
+            const shuffledElements = shuffleArray([...elements]);
+            
+            return `
+                <div class="exercise-header">
+                    <div class="exercise-icon">🔀</div>
+                    <div class="exercise-title">
+                        <h2>Timeline</h2>
+                        <p>Remettez les événements dans l'ordre chronologique</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-instruction">
+                    ↕️ Glissez les événements pour les remettre dans l'ordre chronologique (du plus ancien au plus récent)
+                </div>
+                
+                <div class="timeline-list" id="timelineList">
+                    ${shuffledElements.map((el, i) => `
+                        <div class="timeline-item" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
+                            <span class="drag-handle">☰</span>
+                            <div class="item-content">
+                                <div class="item-text">${el.Evenement}</div>
+                            </div>
+                            <div class="order-number">${i + 1}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function initTimelineDragDrop() {
+            const list = document.getElementById('timelineList');
+            if (!list) return;
+            
+            let draggedItem = null;
+            
+            list.querySelectorAll('.timeline-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = item;
+                    item.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    updateTimelineNumbers();
+                });
+                
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(draggedItem);
+                    } else {
+                        list.insertBefore(draggedItem, afterElement);
+                    }
+                });
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.timeline-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateTimelineNumbers() {
+            const items = document.querySelectorAll('.timeline-item');
+            items.forEach((item, i) => {
+                item.querySelector('.order-number').textContent = i + 1;
+            });
+        }
+
+        // ===== RENDER FRISE =====
+        function renderFrise(elements) {
             const sortedElements = [...elements].sort((a, b) => parseInt(a.Date) - parseInt(b.Date));
             const shuffledElements = shuffleArray([...elements]);
             
-            container.innerHTML = `
-                <div class="exercise-card">
-                    <div class="exercise-header">
-                        <div class="exercise-icon">⏱️</div>
-                        <div class="exercise-title">
-                            <h2>Frise chronologique</h2>
-                            <p>Placez chaque événement à la bonne date</p>
-                        </div>
-                    </div>
-                    <div class="exercise-body">
-                        <div class="frise-container">
-                            <div class="frise-instruction">
-                                📌 Glissez-déposez chaque événement sur la date correspondante
-                            </div>
-                            
-                            <div class="frise-events" id="friseEvents">
-                                ${shuffledElements.map((el, i) => `
-                                    <div class="frise-event" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
-                                        <div class="event-text">${el.Evenement}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            
-                            <div class="frise-dropzones" id="friseDropzones">
-                                ${sortedElements.map((el, i) => `
-                                    <div class="frise-dropzone" data-expected-date="${el.Date}" data-expected-id="${el.ID}">
-                                        <div class="date-label">${el.Date}</div>
-                                        <div class="drop-hint">Déposez ici</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="exercise-actions">
-                            <div class="left"></div>
-                            <div class="right">
-                                <button class="btn btn-primary" id="validateBtn" onclick="validateFrise()">
-                                    Valider ✓
-                                </button>
-                            </div>
-                        </div>
+            return `
+                <div class="exercise-header">
+                    <div class="exercise-icon">⏱️</div>
+                    <div class="exercise-title">
+                        <h2>Frise chronologique</h2>
+                        <p>Placez chaque événement à la bonne date</p>
                     </div>
                 </div>
+                
+                <div class="frise-instruction">
+                    📌 Glissez-déposez chaque événement sur la date correspondante
+                </div>
+                
+                <div class="frise-events" id="friseEvents">
+                    ${shuffledElements.map((el, i) => `
+                        <div class="frise-event" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
+                            <div class="event-text">${el.Evenement}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="frise-dropzones" id="friseDropzones">
+                    ${sortedElements.map((el, i) => `
+                        <div class="frise-dropzone" data-expected-date="${el.Date}" data-expected-id="${el.ID}">
+                            <div class="date-label">${el.Date}</div>
+                            <div class="drop-hint">Déposez ici</div>
+                        </div>
+                    `).join('')}
+                </div>
             `;
-            
-            initFriseDragDrop();
         }
-        
+
         function initFriseDragDrop() {
             const events = document.querySelectorAll('.frise-event');
             const dropzones = document.querySelectorAll('.frise-dropzone');
@@ -571,10 +1231,6 @@
                     const eventEl = document.querySelector(`.frise-event[data-id="${eventId}"]`);
                     
                     if (eventEl && !zone.classList.contains('has-event')) {
-                        // Retirer l'événement de son emplacement d'origine
-                        const originalParent = eventEl.parentElement;
-                        
-                        // Ajouter à la zone
                         zone.classList.add('has-event');
                         const placedDiv = document.createElement('div');
                         placedDiv.className = 'placed-event';
@@ -583,519 +1239,213 @@
                         placedDiv.dataset.date = eventEl.dataset.date;
                         zone.appendChild(placedDiv);
                         
-                        // Cacher l'événement original
                         eventEl.style.display = 'none';
-                        
-                        // Enregistrer la réponse
-                        currentExerciseData.answers[zone.dataset.expectedId] = eventId;
                     }
                 });
             });
         }
-        
-        function validateFrise() {
-            const dropzones = document.querySelectorAll('.frise-dropzone');
+
+        // ===== VERIFY EXERCISE =====
+        function verifyCurrentExercise() {
+            clearInterval(timerInterval);
+            
+            const exercise = currentExerciseData.exercise;
             let correct = 0;
-            let total = dropzones.length;
+            let total = 0;
             
-            dropzones.forEach(zone => {
-                const expectedId = zone.dataset.expectedId;
-                const placedEvent = zone.querySelector('.placed-event');
+            if (exercise.Type === 'timeline') {
+                const items = document.querySelectorAll('.timeline-item');
+                const userOrder = [...items].map(item => parseInt(item.dataset.date));
+                const correctOrder = [...userOrder].sort((a, b) => a - b);
                 
-                if (placedEvent && placedEvent.dataset.id === expectedId) {
-                    correct++;
-                    zone.style.borderColor = 'var(--success)';
-                    zone.style.background = 'var(--success-bg)';
-                } else if (placedEvent) {
-                    zone.style.borderColor = 'var(--error)';
-                    zone.style.background = 'var(--error-bg)';
-                }
-            });
-            
-            exerciseResults.push({
-                type: 'frise',
-                correct: correct,
-                total: total,
-                time: Date.now() - currentExerciseData.startTime
-            });
-            
-            // Désactiver le drag
-            document.querySelectorAll('.frise-event').forEach(el => el.draggable = false);
-            
-            // Afficher le bouton suivant
-            setTimeout(() => {
-                showNextButton();
-            }, 1500);
-        }
-        
-        // ===== TIMELINE (remettre en ordre) =====
-        function renderTimeline(container, elements) {
-            const shuffledElements = shuffleArray([...elements]);
-            
-            container.innerHTML = `
-                <div class="exercise-card">
-                    <div class="exercise-header">
-                        <div class="exercise-icon">🔀</div>
-                        <div class="exercise-title">
-                            <h2>Timeline</h2>
-                            <p>Remettez les événements dans l'ordre chronologique</p>
-                        </div>
-                    </div>
-                    <div class="exercise-body">
-                        <div class="timeline-container">
-                            <div class="timeline-instruction">
-                                ↕️ Glissez les événements pour les remettre dans l'ordre chronologique (du plus ancien au plus récent)
-                            </div>
-                            
-                            <div class="timeline-list" id="timelineList">
-                                ${shuffledElements.map((el, i) => `
-                                    <div class="timeline-item" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
-                                        <span class="drag-handle">☰</span>
-                                        <div class="item-content">
-                                            <div class="item-text">${el.Evenement}</div>
-                                        </div>
-                                        <div class="order-number">${i + 1}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="exercise-actions">
-                            <div class="left"></div>
-                            <div class="right">
-                                <button class="btn btn-primary" onclick="validateTimeline()">
-                                    Valider ✓
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            initTimelineDragDrop();
-        }
-        
-        function initTimelineDragDrop() {
-            const list = document.getElementById('timelineList');
-            let draggedItem = null;
-            
-            list.querySelectorAll('.timeline-item').forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    draggedItem = item;
-                    item.classList.add('dragging');
-                });
+                total = items.length;
                 
-                item.addEventListener('dragend', () => {
-                    item.classList.remove('dragging');
-                    updateTimelineNumbers();
-                });
-                
-                item.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    const afterElement = getDragAfterElement(list, e.clientY);
-                    if (afterElement == null) {
-                        list.appendChild(draggedItem);
+                items.forEach((item, i) => {
+                    const date = parseInt(item.dataset.date);
+                    const itemContent = item.querySelector('.item-content');
+                    
+                    // Afficher la date
+                    let dateDiv = item.querySelector('.item-date');
+                    if (!dateDiv) {
+                        dateDiv = document.createElement('div');
+                        dateDiv.className = 'item-date';
+                        itemContent.insertBefore(dateDiv, itemContent.firstChild);
+                    }
+                    dateDiv.textContent = item.dataset.date;
+                    
+                    if (date === correctOrder[i]) {
+                        correct++;
+                        item.classList.add('correct');
+                        item.classList.remove('incorrect');
                     } else {
-                        list.insertBefore(draggedItem, afterElement);
+                        item.classList.add('incorrect');
+                        item.classList.remove('correct');
+                    }
+                    
+                    item.draggable = false;
+                });
+                
+            } else if (exercise.Type === 'frise') {
+                const dropzones = document.querySelectorAll('.frise-dropzone');
+                total = dropzones.length;
+                
+                dropzones.forEach(zone => {
+                    const expectedId = zone.dataset.expectedId;
+                    const placedEvent = zone.querySelector('.placed-event');
+                    
+                    if (placedEvent && placedEvent.dataset.id === expectedId) {
+                        correct++;
+                        zone.classList.add('correct');
+                        zone.classList.remove('incorrect');
+                    } else {
+                        zone.classList.add('incorrect');
+                        zone.classList.remove('correct');
                     }
                 });
-            });
-        }
-        
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.timeline-item:not(.dragging)')];
-            
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-        
-        function updateTimelineNumbers() {
-            const items = document.querySelectorAll('.timeline-item');
-            items.forEach((item, i) => {
-                item.querySelector('.order-number').textContent = i + 1;
-            });
-        }
-        
-        function validateTimeline() {
-            const items = document.querySelectorAll('.timeline-item');
-            const userOrder = [...items].map(item => parseInt(item.dataset.date));
-            const correctOrder = [...userOrder].sort((a, b) => a - b);
-            
-            let correct = 0;
-            items.forEach((item, i) => {
-                const date = parseInt(item.dataset.date);
-                const itemContent = item.querySelector('.item-content');
                 
-                // Afficher la date après validation
-                const dateDiv = document.createElement('div');
-                dateDiv.className = 'item-date';
-                dateDiv.textContent = item.dataset.date;
-                dateDiv.style.fontWeight = '700';
-                dateDiv.style.color = date === correctOrder[i] ? 'var(--success)' : 'var(--error)';
-                itemContent.insertBefore(dateDiv, itemContent.firstChild);
+                document.querySelectorAll('.frise-event').forEach(el => el.draggable = false);
+            }
+            
+            // Afficher le résultat
+            const percentage = Math.round((correct / total) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = `🎉 Parfait ! Tu as tout bon ! Score : ${correct}/${total}`;
+            } else if (percentage >= 75) {
+                message = `👍 Très bien ! Tu as trouvé ${correct}/${total} réponses correctes.`;
+            } else if (percentage >= 50) {
+                message = `💪 Pas mal ! Tu as trouvé ${correct}/${total} réponses. Continue à t'entraîner !`;
+            } else {
+                message = `📚 Tu as trouvé ${correct}/${total} réponses. Révise et recommence !`;
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('result').classList.add('show');
+            
+            // Enregistrer le résultat
+            exerciseResults[currentExerciseIndex] = { correct, total };
+        }
+
+        // ===== SHOW SOLUTION =====
+        function showSolution() {
+            clearInterval(timerInterval);
+            
+            const exercise = currentExerciseData.exercise;
+            
+            if (exercise.Type === 'timeline') {
+                const items = [...document.querySelectorAll('.timeline-item')];
+                const list = document.getElementById('timelineList');
                 
-                if (date === correctOrder[i]) {
-                    correct++;
-                    item.style.borderColor = 'var(--success)';
-                    item.style.background = 'var(--success-bg)';
-                } else {
-                    item.style.borderColor = 'var(--error)';
-                    item.style.background = 'var(--error-bg)';
-                }
-            });
-            
-            exerciseResults.push({
-                type: 'timeline',
-                correct: correct,
-                total: items.length,
-                time: Date.now() - currentExerciseData.startTime
-            });
-            
-            // Désactiver le drag
-            items.forEach(item => item.draggable = false);
-            
-            setTimeout(() => {
-                showNextButton();
-            }, 1500);
-        }
-        
-        // ===== QCM =====
-        function renderQCM(container, elements) {
-            currentExerciseData.qcmIndex = 0;
-            currentExerciseData.qcmElements = elements;
-            currentExerciseData.qcmCorrect = 0;
-            
-            renderQCMQuestion(container, 0);
-        }
-        
-        function renderQCMQuestion(container, index) {
-            const elements = currentExerciseData.qcmElements;
-            if (index >= elements.length) {
-                // QCM terminé
-                exerciseResults.push({
-                    type: 'qcm',
-                    correct: currentExerciseData.qcmCorrect,
-                    total: elements.length,
-                    time: Date.now() - currentExerciseData.startTime
-                });
-                showNextButton();
-                return;
-            }
-            
-            const el = elements[index];
-            const isEvent = el.Format === 'Evenement';
-            
-            // Générer les options
-            let correctAnswer, question, options;
-            
-            if (isEvent) {
-                question = `En quelle année a eu lieu : "${el.Evenement}" ?`;
-                correctAnswer = el.Date;
-                // Générer des dates proches comme mauvaises réponses
-                const baseDate = parseInt(el.Date);
-                const wrongDates = [
-                    baseDate + Math.floor(Math.random() * 50) + 10,
-                    baseDate - Math.floor(Math.random() * 50) - 10,
-                    baseDate + Math.floor(Math.random() * 100) + 50
-                ];
-                options = shuffleArray([el.Date, ...wrongDates.map(d => String(d))]);
-            } else {
-                question = el.Question;
-                correctAnswer = el.Reponse;
-                // Utiliser d'autres réponses du même set comme mauvaises réponses
-                const otherAnswers = elements
-                    .filter(e => e.ID !== el.ID && e.Reponse)
-                    .map(e => e.Reponse)
-                    .slice(0, 3);
-                options = shuffleArray([el.Reponse, ...otherAnswers]);
-            }
-            
-            currentExerciseData.currentCorrectAnswer = correctAnswer;
-            
-            const letters = ['A', 'B', 'C', 'D'];
-            
-            container.innerHTML = `
-                <div class="exercise-card">
-                    <div class="exercise-header">
-                        <div class="exercise-icon">🎯</div>
-                        <div class="exercise-title">
-                            <h2>QCM - Question ${index + 1}/${elements.length}</h2>
-                            <p>Sélectionnez la bonne réponse</p>
-                        </div>
-                    </div>
-                    <div class="exercise-body">
-                        <div class="qcm-container">
-                            <div class="qcm-question">${question}</div>
-                            <div class="qcm-options">
-                                ${options.map((opt, i) => `
-                                    <div class="qcm-option" data-value="${opt}" onclick="selectQCMOption(this)">
-                                        <div class="option-letter">${letters[i]}</div>
-                                        <div class="option-text">${opt}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="exercise-actions">
-                            <div class="left">
-                                <span style="color: var(--gray-500); font-size: 14px;">Question ${index + 1} sur ${elements.length}</span>
-                            </div>
-                            <div class="right">
-                                <button class="btn btn-primary" id="qcmValidateBtn" onclick="validateQCMQuestion()" disabled>
-                                    Valider ✓
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function selectQCMOption(el) {
-            // Retirer la sélection précédente
-            document.querySelectorAll('.qcm-option').forEach(opt => opt.classList.remove('selected'));
-            // Ajouter la sélection
-            el.classList.add('selected');
-            currentExerciseData.selectedAnswer = el.dataset.value;
-            // Activer le bouton valider
-            document.getElementById('qcmValidateBtn').disabled = false;
-        }
-        
-        function validateQCMQuestion() {
-            const selected = currentExerciseData.selectedAnswer;
-            const correct = currentExerciseData.currentCorrectAnswer;
-            
-            document.querySelectorAll('.qcm-option').forEach(opt => {
-                if (opt.dataset.value === correct) {
-                    opt.classList.add('correct');
-                } else if (opt.classList.contains('selected')) {
-                    opt.classList.add('incorrect');
-                }
-                opt.onclick = null;
-            });
-            
-            if (selected === correct) {
-                currentExerciseData.qcmCorrect++;
-            }
-            
-            // Passer à la question suivante après un délai
-            setTimeout(() => {
-                currentExerciseData.qcmIndex++;
-                renderQCMQuestion(document.getElementById('exerciseContainer'), currentExerciseData.qcmIndex);
-            }, 1500);
-        }
-        
-        // ===== QUESTION OUVERTE =====
-        function renderOpenQuestion(container, elements) {
-            currentExerciseData.openIndex = 0;
-            currentExerciseData.openElements = elements;
-            currentExerciseData.openCorrect = 0;
-            
-            renderOpenQuestionItem(container, 0);
-        }
-        
-        function renderOpenQuestionItem(container, index) {
-            const elements = currentExerciseData.openElements;
-            if (index >= elements.length) {
-                exerciseResults.push({
-                    type: 'ouverte',
-                    correct: currentExerciseData.openCorrect,
-                    total: elements.length,
-                    time: Date.now() - currentExerciseData.startTime
-                });
-                showNextButton();
-                return;
-            }
-            
-            const el = elements[index];
-            currentExerciseData.currentCorrectAnswer = el.Reponse;
-            
-            container.innerHTML = `
-                <div class="exercise-card">
-                    <div class="exercise-header">
-                        <div class="exercise-icon">❓</div>
-                        <div class="exercise-title">
-                            <h2>Question ouverte - ${index + 1}/${elements.length}</h2>
-                            <p>Tapez votre réponse</p>
-                        </div>
-                    </div>
-                    <div class="exercise-body">
-                        <div class="open-container">
-                            <div class="open-question">${el.Question}</div>
-                            <input type="text" class="open-input" id="openInput" placeholder="Votre réponse..." onkeypress="if(event.key==='Enter')validateOpenQuestion()">
-                            <div class="open-feedback" id="openFeedback"></div>
-                        </div>
-                        
-                        <div class="exercise-actions">
-                            <div class="left">
-                                <span style="color: var(--gray-500); font-size: 14px;">Question ${index + 1} sur ${elements.length}</span>
-                            </div>
-                            <div class="right">
-                                <button class="btn btn-primary" onclick="validateOpenQuestion()">
-                                    Valider ✓
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('openInput').focus();
-        }
-        
-        function validateOpenQuestion() {
-            const input = document.getElementById('openInput');
-            const feedback = document.getElementById('openFeedback');
-            const userAnswer = input.value.trim().toLowerCase();
-            const correctAnswer = currentExerciseData.currentCorrectAnswer.toLowerCase();
-            
-            // Comparaison flexible (accepte les variations mineures)
-            const isCorrect = userAnswer === correctAnswer || 
-                              correctAnswer.includes(userAnswer) || 
-                              userAnswer.includes(correctAnswer) ||
-                              levenshteinDistance(userAnswer, correctAnswer) <= 2;
-            
-            if (isCorrect) {
-                currentExerciseData.openCorrect++;
-                feedback.className = 'open-feedback correct';
-                feedback.innerHTML = `✅ Correct ! La réponse était : <strong>${currentExerciseData.currentCorrectAnswer}</strong>`;
-            } else {
-                feedback.className = 'open-feedback incorrect';
-                feedback.innerHTML = `❌ Incorrect. La bonne réponse était : <strong>${currentExerciseData.currentCorrectAnswer}</strong>`;
-            }
-            
-            input.disabled = true;
-            
-            setTimeout(() => {
-                currentExerciseData.openIndex++;
-                renderOpenQuestionItem(document.getElementById('exerciseContainer'), currentExerciseData.openIndex);
-            }, 2000);
-        }
-        
-        // Distance de Levenshtein pour accepter les petites fautes
-        function levenshteinDistance(a, b) {
-            const matrix = [];
-            for (let i = 0; i <= b.length; i++) {
-                matrix[i] = [i];
-            }
-            for (let j = 0; j <= a.length; j++) {
-                matrix[0][j] = j;
-            }
-            for (let i = 1; i <= b.length; i++) {
-                for (let j = 1; j <= a.length; j++) {
-                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                        matrix[i][j] = matrix[i - 1][j - 1];
-                    } else {
-                        matrix[i][j] = Math.min(
-                            matrix[i - 1][j - 1] + 1,
-                            matrix[i][j - 1] + 1,
-                            matrix[i - 1][j] + 1
-                        );
+                // Trier par date
+                items.sort((a, b) => parseInt(a.dataset.date) - parseInt(b.dataset.date));
+                
+                // Réordonner dans le DOM
+                items.forEach((item, i) => {
+                    list.appendChild(item);
+                    
+                    const itemContent = item.querySelector('.item-content');
+                    let dateDiv = item.querySelector('.item-date');
+                    if (!dateDiv) {
+                        dateDiv = document.createElement('div');
+                        dateDiv.className = 'item-date';
+                        itemContent.insertBefore(dateDiv, itemContent.firstChild);
                     }
-                }
-            }
-            return matrix[b.length][a.length];
-        }
-        
-        // ===== NAVIGATION =====
-        function showNextButton() {
-            const container = document.getElementById('exerciseContainer');
-            const actions = container.querySelector('.exercise-actions .right');
-            
-            if (currentExerciseIndex < exercices.length - 1) {
-                actions.innerHTML = `
-                    <button class="btn btn-primary" onclick="nextExercise()">
-                        Suivant →
-                    </button>
-                `;
-            } else {
-                actions.innerHTML = `
-                    <button class="btn btn-success" onclick="showResults()">
-                        Voir les résultats 🎉
-                    </button>
-                `;
-            }
-        }
-        
-        function nextExercise() {
-            showExercise(currentExerciseIndex + 1);
-        }
-        
-        // ===== RESULTS =====
-        function showResults() {
-            document.getElementById('exerciseContainer').style.display = 'none';
-            const resultsContainer = document.getElementById('resultsContainer');
-            resultsContainer.style.display = 'block';
-            
-            // Calculer le score total
-            const totalCorrect = exerciseResults.reduce((sum, r) => sum + r.correct, 0);
-            const totalQuestions = exerciseResults.reduce((sum, r) => sum + r.total, 0);
-            const percentage = Math.round((totalCorrect / totalQuestions) * 100);
-            const seuil = parseInt(evaluation.Seuil) || 80;
-            const success = percentage >= seuil;
-            
-            const exerciseTypeNames = {
-                'frise': 'Frise chronologique',
-                'timeline': 'Timeline',
-                'qcm': 'QCM',
-                'ouverte': 'Question ouverte',
-                'carte': 'Carte cliquable',
-                'dictee': 'Dictée',
-                'erreur': "Trouve l'erreur"
-            };
-            
-            resultsContainer.innerHTML = `
-                <div class="results-card">
-                    <div class="results-header ${success ? 'success' : 'failure'}">
-                        <div class="icon">${success ? '🎉' : '😕'}</div>
-                        <h2>${success ? 'Félicitations !' : 'Dommage...'}</h2>
-                        <p>${success ? 'Tu as atteint le seuil de validation !' : `Tu n'as pas atteint le seuil de ${seuil}%`}</p>
-                    </div>
-                    <div class="results-body">
-                        <div class="results-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">${totalCorrect}/${totalQuestions}</div>
-                                <div class="stat-label">Bonnes réponses</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">${percentage}%</div>
-                                <div class="stat-label">Score</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">${seuil}%</div>
-                                <div class="stat-label">Seuil requis</div>
-                            </div>
-                        </div>
+                    dateDiv.textContent = item.dataset.date;
+                    dateDiv.style.color = 'var(--accent-green)';
+                    
+                    item.classList.add('correct');
+                    item.classList.remove('incorrect');
+                    item.querySelector('.order-number').textContent = i + 1;
+                    item.draggable = false;
+                });
+                
+            } else if (exercise.Type === 'frise') {
+                const dropzones = document.querySelectorAll('.frise-dropzone');
+                const elements = currentExerciseData.elements;
+                
+                dropzones.forEach(zone => {
+                    const expectedId = zone.dataset.expectedId;
+                    const element = elements.find(el => el.ID === expectedId);
+                    
+                    if (element) {
+                        // Retirer l'ancien élément placé
+                        const oldPlaced = zone.querySelector('.placed-event');
+                        if (oldPlaced) oldPlaced.remove();
                         
-                        <div class="results-details">
-                            <h3>Détail par exercice</h3>
-                            ${exerciseResults.map((r, i) => `
-                                <div class="detail-item">
-                                    <div class="status">${r.correct === r.total ? '✅' : r.correct > 0 ? '⚠️' : '❌'}</div>
-                                    <div class="info">
-                                        <strong>Étape ${i + 1} : ${exerciseTypeNames[r.type] || r.type}</strong>
-                                    </div>
-                                    <div class="score">${r.correct}/${r.total}</div>
-                                </div>
-                            `).join('')}
-                        </div>
+                        zone.classList.add('has-event', 'correct');
+                        zone.classList.remove('incorrect');
                         
-                        <div style="display: flex; gap: 12px; justify-content: center;">
-                            <a href="javascript:location.reload()" class="btn btn-secondary">🔄 Recommencer</a>
-                            <a href="javascript:history.back()" class="btn btn-primary">← Retour au menu</a>
-                        </div>
+                        const placedDiv = document.createElement('div');
+                        placedDiv.className = 'placed-event';
+                        placedDiv.textContent = element.Evenement;
+                        zone.appendChild(placedDiv);
+                    }
+                });
+                
+                document.querySelectorAll('.frise-event').forEach(el => {
+                    el.style.display = 'none';
+                    el.draggable = false;
+                });
+            }
+            
+            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet !';
+            document.getElementById('result').classList.add('show');
+        }
+
+        // ===== RESTART EXERCISE =====
+        function restartExercise() {
+            clearInterval(timerInterval);
+            timeLeft = parseInt(evaluation.Temps) || 600;
+            showExercise(currentExerciseIndex);
+        }
+
+        // ===== RENDER NAVIGATION =====
+        function renderNavigation() {
+            const prevExo = currentExerciseIndex - 1;
+            const nextExo = currentExerciseIndex + 1;
+            const hasPrev = prevExo >= 0;
+            const hasNext = nextExo < totalExercises;
+            
+            const isEvaluation = (evaluation.Type || '').toLowerCase() === 'evaluation';
+            const menuLink = isEvaluation 
+                ? `${BASE_PATH}/pages/evaluation-connaissances.html`
+                : `${BASE_PATH}/pages/entrainement-connaissances.html`;
+
+            return `
+                <nav class="nav-exercices">
+                    ${hasPrev ? `
+                        <button class="nav-btn prev" onclick="goToExercise(${prevExo})">
+                            ← Exercice ${prevExo + 1}
+                        </button>
+                    ` : `
+                        <a href="${menuLink}" class="nav-btn menu">
+                            ← Retour au menu
+                        </a>
+                    `}
+
+                    <div class="nav-info">
+                        Exercice ${currentExerciseIndex + 1} / ${totalExercises}
                     </div>
-                </div>
+
+                    ${hasNext ? `
+                        <button class="nav-btn next" onclick="goToExercise(${nextExo})">
+                            Exercice ${nextExo + 1} →
+                        </button>
+                    ` : `
+                        <a href="${menuLink}" class="nav-btn next">
+                            Terminer ✓
+                        </a>
+                    `}
+                </nav>
             `;
         }
-        
+
+        function goToExercise(index) {
+            clearInterval(timerInterval);
+            showExercise(index);
+        }
+
         // ===== UTILS =====
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -1104,6 +1454,24 @@
             }
             return array;
         }
+
+        // ===== INIT =====
+        async function init() {
+            await loadSidebar();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const evalId = urlParams.get('id');
+            
+            if (!evalId) {
+                renderError('Aucun ID d\'évaluation fourni.');
+                return;
+            }
+            
+            await loadEvaluation(evalId);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
     </script>
+
 </body>
 </html>
