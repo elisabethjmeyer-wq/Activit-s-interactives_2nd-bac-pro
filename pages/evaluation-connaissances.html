@@ -82,11 +82,14 @@
 <body>
     <header class="header">
         <div class="header-inner">
-            <button class="menu-toggle" id="menuToggle">☰</button>
+            <button class="menu-toggle" id="menuToggle" title="Afficher/Masquer le menu">☰</button>
             <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="logo">
                 <div class="logo-icon">📚</div>
                 <div class="logo-text">Espace cours <span>• Mme Meyer</span></div>
             </a>
+            <div class="header-spacer"></div>
+            <div class="header-date" id="currentDate"></div>
+            <div class="user-menu" id="userMenu" style="display: none;"></div>
         </div>
     </header>
     <aside class="sidebar collapsed" id="sidebar">
@@ -128,6 +131,10 @@
             <div class="conn-grid" id="connGrid" style="display: none;"></div>
         </div>
     </main>
+
+    <!-- Scripts partagés -->
+    <script src="/Activit-s-interactives_2nd-bac-pro/js/auth.js"></script>
+    <script src="/Activit-s-interactives_2nd-bac-pro/js/header.js"></script>
 
     <script>
         const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
