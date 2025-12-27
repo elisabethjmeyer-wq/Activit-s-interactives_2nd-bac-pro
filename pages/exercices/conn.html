@@ -154,6 +154,90 @@
             padding: 16px 12px;
         }
 
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 12px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--gray-700);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+            color: var(--gray-700);
+        }
+
+        .sidebar-item .item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: var(--gray-100);
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover .item-icon,
+        .sidebar-item.active .item-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item.disabled:hover .item-icon {
+            background: var(--gray-100);
+            color: inherit;
+        }
+
+        .sidebar-item .item-text {
+            flex: 1;
+        }
+
+        .sidebar-item .item-sub {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
         /* ===== MAIN CONTENT ===== */
         .main {
             margin-left: var(--sidebar-width);
@@ -877,22 +961,34 @@
         // ===== LOAD EVALUATION =====
         async function loadEvaluation(evalId) {
             try {
+                console.log('🔍 Recherche évaluation:', evalId);
+                
                 // Charger les évaluations
                 const evaluations = await loadSheet('EVALUATIONS');
+                console.log('📋 Évaluations trouvées:', evaluations.map(e => e.ID));
+                
                 evaluation = evaluations.find(e => e.ID === evalId);
                 
                 if (!evaluation) {
-                    renderError(`Évaluation "${evalId}" non trouvée.`);
+                    console.error('❌ Évaluation non trouvée:', evalId);
+                    renderError(`Évaluation "${evalId}" non trouvée. Vérifiez que l'ID existe dans l'onglet EVALUATIONS.`);
                     return;
                 }
                 
+                console.log('✅ Évaluation trouvée:', evaluation);
+                
                 // Charger les exercices
                 const allExercices = await loadSheet('EXERCICES');
+                console.log('📋 Tous les exercices:', allExercices.map(e => ({ ID: e.ID, EvalID: e.EvalID })));
+                
                 exercices = allExercices
                     .filter(ex => ex.EvalID === evalId)
                     .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
                 
+                console.log('✅ Exercices pour cette éval:', exercices);
+                
                 if (exercices.length === 0) {
+                    console.error('❌ Aucun exercice trouvé pour:', evalId);
                     renderError(`Aucun exercice trouvé pour cette évaluation.`);
                     return;
                 }
@@ -901,9 +997,11 @@
                 
                 // Charger les éléments
                 elements = await loadSheet('ELEMENTS');
+                console.log('✅ Éléments chargés:', elements.length);
                 
                 // Mettre à jour l'interface
-                const isEvaluation = (evaluation.Type || '').toLowerCase() === 'evaluation';
+                const evalType = String(evaluation.Type || '').toLowerCase();
+                const isEvaluation = evalType === 'evaluation';
                 document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
                 document.getElementById('pageSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
                 document.getElementById('breadcrumbCurrent').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
