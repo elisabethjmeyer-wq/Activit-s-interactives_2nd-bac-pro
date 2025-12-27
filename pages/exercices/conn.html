@@ -1507,7 +1507,8 @@
             const hasPrev = prevExo >= 0;
             const hasNext = nextExo < totalExercises;
             
-            const isEvaluation = (evaluation.Type || '').toLowerCase() === 'evaluation';
+            const evalType = String(evaluation.Type || '').toLowerCase();
+            const isEvaluation = evalType === 'evaluation';
             const menuLink = isEvaluation 
                 ? `${BASE_PATH}/pages/evaluation-connaissances.html`
                 : `${BASE_PATH}/pages/entrainement-connaissances.html`;
