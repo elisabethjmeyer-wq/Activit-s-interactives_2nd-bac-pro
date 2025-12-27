@@ -345,16 +345,30 @@
                 }
 
                 if (item.numExo === 0) {
+                    // Ligne d'en-tête explicite
                     connMap[item.numLecon].titre = item.titreLecon;
                     connMap[item.numLecon].matiere = item.matiere;
                     connMap[item.numLecon].statut = item.statut;
                 } else {
+                    // C'est un exercice
                     connMap[item.numLecon].sujets.push({
                         numSujet: item.numExo,
                         titre: item.titreExo || `Sujet ${item.numExo}`,
                         statut: item.statut,
                         evalId: item.evalId
                     });
+                    
+                    // Si pas encore de titre/matière, utiliser ceux de l'exercice
+                    if (!connMap[item.numLecon].titre && item.titreLecon) {
+                        connMap[item.numLecon].titre = item.titreLecon;
+                    }
+                    if (!connMap[item.numLecon].matiere && item.matiere) {
+                        connMap[item.numLecon].matiere = item.matiere;
+                    }
+                    // La leçon est disponible si au moins un exercice est disponible
+                    if (item.statut === 'disponible') {
+                        connMap[item.numLecon].statut = 'disponible';
+                    }
                 }
             });
 
