@@ -388,6 +388,14 @@
         const exerciseIcons = { frise: '⏱️', timeline: '🔀', qcm: '🎯', ouverte: '❓', carte: '🗺️', image: '🖼️', dictee: '🎧', erreur: '🔍' };
 
         // ===== FONCTION loadSheet CORRIGÉE =====
+        // En-têtes fixes pour chaque onglet (Google ne renvoie pas toujours les labels)
+        const SHEET_HEADERS = {
+            'BANQUES QUESTIONS': ['ID', 'Nom', 'Catégorie', 'Statut'],
+            'ELEMENTS': ['ID', 'Banque', 'Format', 'Date', 'Evenement', 'Question', 'Reponse', 'Image', 'Tag', 'Texte', 'Phrase', 'MotErrone', 'Correction', 'X', 'Y', 'Rayon', 'Statut'],
+            'EVALUATIONS': ['ID', 'Nom', 'Description', 'Type', 'Duree', 'Seuil', 'Tentatives', 'Affichage', 'Ouverture', 'Fermeture', 'Statut'],
+            'EXERCICES': ['ID', 'EvalID', 'Ordre', 'Type', 'Mode', 'Nombre', 'Banque', 'Selection', 'Config']
+        };
+        
         async function loadSheet(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             try {
@@ -396,12 +404,22 @@
                 const json = JSON.parse(text.substring(47, text.length - 2));
                 if (!json.table || !json.table.rows || json.table.rows.length === 0) return [];
                 
-                // CORRECTION: Lire les en-têtes depuis la PREMIÈRE LIGNE de données
-                const firstRow = json.table.rows[0];
-                const headers = firstRow.c.map(cell => cell ? (cell.v || '').toString().trim() : '');
+                // Utiliser les en-têtes fixes
+                const headers = SHEET_HEADERS[sheetName] || [];
+                if (headers.length === 0) {
+                    console.warn('Pas d\'en-têtes définis pour', sheetName);
+                    return [];
+                }
                 
-                // Convertir les lignes suivantes en objets (en sautant la ligne d'en-têtes)
-                return json.table.rows.slice(1).map(row => {
+                // Vérifier si la première ligne est une ligne d'en-têtes ou de données
+                const firstRow = json.table.rows[0];
+                const firstCellValue = firstRow.c[0] ? (firstRow.c[0].v || '').toString().trim() : '';
+                
+                // Si la première cellule est "ID" ou similaire, c'est la ligne d'en-têtes, on la saute
+                const startIndex = (firstCellValue === 'ID' || firstCellValue === 'id') ? 1 : 0;
+                
+                // Convertir les lignes en objets
+                return json.table.rows.slice(startIndex).map(row => {
                     const obj = {};
                     if (row.c) {
                         row.c.forEach((cell, i) => {
