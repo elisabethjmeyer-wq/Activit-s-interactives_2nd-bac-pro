@@ -326,7 +326,60 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
+/* ===== FIL D'ARIANE ÉTAPES ===== */
+.steps-breadcrumb {
+    background: white;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+}
 
+.steps-breadcrumb .step-label {
+    font-size: 13px;
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+.steps-breadcrumb .step-item {
+    font-size: 13px;
+    color: var(--gray-400);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.steps-breadcrumb .step-item:hover {
+    background: var(--gray-100);
+    color: var(--gray-600);
+}
+
+.steps-breadcrumb .step-item.active {
+    background: var(--primary-bg);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.steps-breadcrumb .step-item.completed {
+    color: var(--accent-green);
+}
+
+.steps-breadcrumb .step-item.completed::before {
+    content: "✓ ";
+}
+
+.steps-breadcrumb .step-separator {
+    color: var(--gray-300);
+}
         /* ===== INSTRUCTIONS ===== */
         .instructions {
             background: white;
@@ -846,733 +899,808 @@
 
         </div>
     </main>
+<script>
+    // ===== MODIFICATIONS POUR conn.html =====
+// Remplacer tout le bloc <script>...</script> par ce code
 
-    <script>
-        // ===== CONFIG =====
-        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
-        const CURRENT_PAGE = 'entrainement-conn';
-        const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
+// ===== CONFIG =====
+const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+const CURRENT_PAGE = 'entrainement-conn';
+const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
 
-        // ===== VARIABLES GLOBALES =====
-        let evaluation = null;
-        let exercices = [];
-        let elements = [];
-        let currentExerciseIndex = 0;
-        let totalExercises = 0;
-        let timeLeft = 600;
-        let timerInterval = null;
-        let currentExerciseData = null;
-        let exerciseResults = [];
+// ===== VARIABLES GLOBALES =====
+let evaluation = null;
+let exercices = []; // Étapes de l'exercice en cours (onglet EXERCICES)
+let elements = [];
+let currentStepIndex = 0; // Index de l'étape actuelle (renommé de currentExerciseIndex)
+let totalSteps = 0; // Nombre total d'étapes (renommé de totalExercises)
+let timeLeft = 600;
+let timerInterval = null;
+let currentExerciseData = null;
+let stepResults = []; // Résultats par étape
 
-        // ===== SIDEBAR TOGGLE =====
-        const sidebar = document.getElementById('sidebar');
-        const menuToggle = document.getElementById('menuToggle');
-        const overlay = document.getElementById('overlay');
+// Navigation entre exercices de la leçon (NOUVEAU)
+let menuConnData = []; // Données MENU_CONN
+let currentMenuEntry = null; // Entrée actuelle dans MENU_CONN
+let lessonExercises = []; // Exercices de la même leçon
+let currentLessonIndex = 0; // Position dans la leçon
 
-        function toggleSidebar() {
-            const isCollapsed = sidebar.classList.contains('collapsed');
+// ===== SIDEBAR TOGGLE =====
+const sidebar = document.getElementById('sidebar');
+const menuToggle = document.getElementById('menuToggle');
+const overlay = document.getElementById('overlay');
+
+function toggleSidebar() {
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+        sidebar.classList.remove('collapsed');
+        menuToggle.classList.add('active');
+        overlay.classList.add('visible');
+    } else {
+        sidebar.classList.add('collapsed');
+        menuToggle.classList.remove('active');
+        overlay.classList.remove('visible');
+    }
+    
+    localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+}
+
+menuToggle.addEventListener('click', toggleSidebar);
+overlay.addEventListener('click', toggleSidebar);
+
+if (localStorage.getItem('sidebarOpen') === 'true') {
+    sidebar.classList.remove('collapsed');
+    menuToggle.classList.add('active');
+}
+
+// ===== LOAD SIDEBAR =====
+async function loadSidebar() {
+    try {
+        const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+        if (!response.ok) throw new Error('Sidebar not found');
+        const html = await response.text();
+        document.getElementById('sidebarContent').innerHTML = html;
+        
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            if (item.dataset.page === CURRENT_PAGE) {
+                item.classList.add('active');
+            }
+        });
+
+        document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
+            link.addEventListener('click', e => e.preventDefault());
+        });
+    } catch (error) {
+        console.error('Erreur chargement sidebar:', error);
+    }
+}
+
+// ===== LOAD DATA FROM GOOGLE SHEETS =====
+async function loadSheet(sheetName) {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const json = JSON.parse(text.substring(47, text.length - 2));
+        if (!json.table || !json.table.rows) return [];
+        
+        const headers = json.table.cols.map(col => (col.label || '').trim());
+        const rows = [];
+        
+        for (let i = 0; i < json.table.rows.length; i++) {
+            const row = json.table.rows[i];
+            if (!row || !row.c) continue;
             
-            if (isCollapsed) {
-                sidebar.classList.remove('collapsed');
-                menuToggle.classList.add('active');
-                overlay.classList.add('visible');
+            const obj = {};
+            let hasData = false;
+            
+            row.c.forEach((cell, idx) => {
+                const header = headers[idx];
+                if (header) {
+                    const value = cell ? (cell.v ?? '') : '';
+                    obj[header] = value;
+                    if (value !== '') hasData = true;
+                }
+            });
+            
+            if (hasData) {
+                rows.push(obj);
+            }
+        }
+        
+        return rows;
+    } catch (e) { 
+        console.error('Erreur chargement', sheetName, e); 
+        return []; 
+    }
+}
+
+// ===== LOAD EVALUATION =====
+async function loadEvaluation(evalId) {
+    try {
+        console.log('🔍 Recherche évaluation:', evalId);
+        
+        // NOUVEAU: Charger MENU_CONN pour la navigation entre exercices de la leçon
+        menuConnData = await loadSheet('MENU_CONN');
+        console.log('📋 MENU_CONN chargé:', menuConnData.length, 'entrées');
+        
+        // Trouver l'entrée actuelle dans MENU_CONN
+        currentMenuEntry = menuConnData.find(m => m.EvalID === evalId);
+        
+        if (currentMenuEntry) {
+            // Trouver tous les exercices de la même leçon et du même type
+            const currentLesson = currentMenuEntry.NumLeçon || currentMenuEntry.NumLecon;
+            const currentType = String(currentMenuEntry.Type || '').toLowerCase();
+            
+            lessonExercises = menuConnData
+                .filter(m => {
+                    const mLesson = m.NumLeçon || m.NumLecon;
+                    const mType = String(m.Type || '').toLowerCase();
+                    return mLesson === currentLesson && mType === currentType;
+                })
+                .sort((a, b) => (parseInt(a.NumExo) || 0) - (parseInt(b.NumExo) || 0));
+            
+            currentLessonIndex = lessonExercises.findIndex(m => m.EvalID === evalId);
+            console.log('📚 Exercices de la leçon:', lessonExercises.length, '| Position:', currentLessonIndex + 1);
+        }
+        
+        // Charger les évaluations
+        const evaluations = await loadSheet('EVALUATIONS');
+        evaluation = evaluations.find(e => e.ID === evalId);
+        
+        if (!evaluation) {
+            renderError(`Évaluation "${evalId}" non trouvée.`);
+            return;
+        }
+        
+        console.log('✅ Évaluation trouvée:', evaluation);
+        
+        // Charger les exercices (étapes)
+        const allExercices = await loadSheet('EXERCICES');
+        exercices = allExercices
+            .filter(ex => ex.EvalID === evalId)
+            .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
+        
+        console.log('✅ Étapes pour cette éval:', exercices.length);
+        
+        if (exercices.length === 0) {
+            renderError(`Aucune étape trouvée pour cette évaluation.`);
+            return;
+        }
+        
+        totalSteps = exercices.length;
+        stepResults = new Array(totalSteps).fill(null);
+        
+        // Charger les éléments
+        elements = await loadSheet('ELEMENTS');
+        
+        // Mettre à jour l'interface
+        const evalType = String(evaluation.Type || '').toLowerCase();
+        const isEvaluation = evalType === 'evaluation';
+        document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
+        document.getElementById('pageSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
+        document.getElementById('breadcrumbCurrent').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
+        
+        const menuLink = document.getElementById('menuLink');
+        if (isEvaluation) {
+            menuLink.href = `${BASE_PATH}/pages/evaluation-connaissances.html`;
+            menuLink.textContent = 'Éval. de connaissances';
+        }
+        
+        // Définir le temps
+        const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
+        timeLeft = dureeMinutes * 60;
+        
+        // Afficher la première étape
+        showStep(0);
+        
+    } catch (e) {
+        console.error('Erreur:', e);
+        renderError('Impossible de charger l\'évaluation.');
+    }
+}
+
+// ===== RENDER ERROR =====
+function renderError(message) {
+    document.getElementById('content').innerHTML = `
+        <div class="error-message">
+            <h3>❌ Erreur</h3>
+            <p>${message}</p>
+            <p style="margin-top: 12px;">
+                <a href="${BASE_PATH}/pages/entrainement-connaissances.html">
+                    ← Retour à la liste des exercices
+                </a>
+            </p>
+        </div>
+    `;
+}
+
+// ===== TIMER =====
+function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const timerEl = document.getElementById('timer');
+        if (timerEl) {
+            timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
+            
+            if (timeLeft <= 120) {
+                timerEl.classList.add('warning');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                verifyCurrentStep();
+            }
+        }
+    }, 1000);
+}
+
+// ===== NOUVEAU: GET STEP TYPE NAME =====
+function getStepTypeName(type) {
+    const names = {
+        'timeline': 'Timeline',
+        'frise': 'Frise',
+        'qcm': 'QCM',
+        'ouverte': 'Question',
+        'dictee': 'Dictée',
+        'erreur': 'Erreur',
+        'carte': 'Carte',
+        'image': 'Image'
+    };
+    return names[type] || type;
+}
+
+// ===== NOUVEAU: RENDER STEPS BREADCRUMB =====
+function renderStepsBreadcrumb() {
+    if (totalSteps <= 1) return ''; // Pas de fil d'Ariane si une seule étape
+    
+    let html = '<nav class="steps-breadcrumb"><span class="step-label">Étapes :</span>';
+    
+    exercices.forEach((ex, i) => {
+        const isActive = i === currentStepIndex;
+        const isCompleted = stepResults[i] !== null;
+        let className = 'step-item';
+        if (isActive) className += ' active';
+        else if (isCompleted) className += ' completed';
+        
+        if (i > 0) {
+            html += '<span class="step-separator">›</span>';
+        }
+        
+        html += `<button class="${className}" onclick="goToStep(${i})">${i + 1}. ${getStepTypeName(ex.Type)}</button>`;
+    });
+    
+    html += '</nav>';
+    return html;
+}
+
+// ===== SHOW STEP (renommé de showExercise) =====
+function showStep(index) {
+    currentStepIndex = index;
+    const exercise = exercices[index];
+    
+    // Récupérer les éléments pour cette étape
+    const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
+    const exerciseElements = elements.filter(el => banques.includes(el.Banque));
+    
+    // Filtrer par format
+    const formatMap = {
+        'frise': 'Evenement',
+        'timeline': 'Evenement',
+        'qcm': ['Evenement', 'QuestionReponse'],
+        'ouverte': 'QuestionReponse'
+    };
+    
+    const requiredFormat = formatMap[exercise.Type];
+    let filteredElements = exerciseElements;
+    if (Array.isArray(requiredFormat)) {
+        filteredElements = exerciseElements.filter(el => requiredFormat.includes(el.Format));
+    } else if (requiredFormat) {
+        filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
+    }
+    
+    // Sélectionner le nombre d'éléments
+    const nombre = parseInt(exercise.Nombre) || 5;
+    let selectedElements = filteredElements;
+    
+    if (exercise.Mode === 'random' && filteredElements.length > nombre) {
+        selectedElements = shuffleArray([...filteredElements]).slice(0, nombre);
+    } else {
+        selectedElements = filteredElements.slice(0, nombre);
+    }
+    
+    currentExerciseData = {
+        exercise: exercise,
+        elements: selectedElements,
+        startTime: Date.now()
+    };
+    
+    renderStep(exercise, selectedElements);
+}
+
+// ===== RENDER STEP (renommé de renderExercise) =====
+function renderStep(exercise, selectedElements) {
+    let exerciseHtml = '';
+    
+    switch (exercise.Type) {
+        case 'timeline':
+            exerciseHtml = renderTimeline(selectedElements);
+            break;
+        case 'frise':
+            exerciseHtml = renderFrise(selectedElements);
+            break;
+        default:
+            exerciseHtml = `<p>Type d'exercice "${exercise.Type}" non implémenté.</p>`;
+    }
+    
+    const html = `
+        <div class="timer-box" id="timer">
+            ⏱️ Temps restant : ${formatTime(timeLeft)}
+        </div>
+
+        ${renderStepsBreadcrumb()}
+
+        <div class="instructions">
+            <strong>📋 Consigne :</strong>
+            <p>${getInstructionForType(exercise.Type)}</p>
+        </div>
+
+        <div class="exercise-card">
+            ${exerciseHtml}
+            
+            <div class="buttons">
+                <button class="btn-verify" onclick="verifyCurrentStep()">✓ Vérifier mes réponses</button>
+                <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
+                <button class="btn-restart" onclick="restartStep()">🔄 Recommencer</button>
+            </div>
+
+            <div class="result" id="result">
+                <h3>📊 Résultat</h3>
+                <p id="resultMessage"></p>
+            </div>
+        </div>
+
+        ${renderLessonNavigation()}
+    `;
+
+    document.getElementById('content').innerHTML = html;
+    
+    // Initialiser le drag & drop
+    if (exercise.Type === 'timeline') {
+        initTimelineDragDrop();
+    } else if (exercise.Type === 'frise') {
+        initFriseDragDrop();
+    }
+    
+    startTimer();
+}
+
+function getInstructionForType(type) {
+    const instructions = {
+        'timeline': 'Remets les événements dans l\'ordre chronologique, du plus ancien au plus récent.',
+        'frise': 'Place chaque événement sur la date correspondante.',
+        'qcm': 'Sélectionne la bonne réponse pour chaque question.',
+        'ouverte': 'Réponds aux questions suivantes.'
+    };
+    return instructions[type] || 'Complète l\'exercice suivant.';
+}
+
+// ===== RENDER TIMELINE =====
+function renderTimeline(elements) {
+    const shuffledElements = shuffleArray([...elements]);
+    
+    return `
+        <div class="exercise-header">
+            <div class="exercise-icon">🔀</div>
+            <div class="exercise-title">
+                <h2>Timeline</h2>
+                <p>Remettez les événements dans l'ordre chronologique</p>
+            </div>
+        </div>
+        
+        <div class="timeline-instruction">
+            ↕️ Glissez les événements pour les remettre dans l'ordre chronologique (du plus ancien au plus récent)
+        </div>
+        
+        <div class="timeline-list" id="timelineList">
+            ${shuffledElements.map((el, i) => `
+                <div class="timeline-item" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
+                    <span class="drag-handle">☰</span>
+                    <div class="item-content">
+                        <div class="item-text">${el.Evenement}</div>
+                    </div>
+                    <div class="order-number">${i + 1}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function initTimelineDragDrop() {
+    const list = document.getElementById('timelineList');
+    if (!list) return;
+    
+    let draggedItem = null;
+    
+    list.querySelectorAll('.timeline-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedItem = item;
+            item.classList.add('dragging');
+        });
+        
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            updateTimelineNumbers();
+        });
+        
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(list, e.clientY);
+            if (afterElement == null) {
+                list.appendChild(draggedItem);
             } else {
-                sidebar.classList.add('collapsed');
-                menuToggle.classList.remove('active');
-                overlay.classList.remove('visible');
+                list.insertBefore(draggedItem, afterElement);
             }
-            
-            localStorage.setItem('sidebarOpen', !sidebar.classList.contains('collapsed'));
+        });
+    });
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.timeline-item:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
         }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
 
-        menuToggle.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+function updateTimelineNumbers() {
+    const items = document.querySelectorAll('.timeline-item');
+    items.forEach((item, i) => {
+        item.querySelector('.order-number').textContent = i + 1;
+    });
+}
 
-        // Restaurer l'état du sidebar
-        if (localStorage.getItem('sidebarOpen') === 'true') {
-            sidebar.classList.remove('collapsed');
-            menuToggle.classList.add('active');
-        }
-
-        // ===== LOAD SIDEBAR =====
-        async function loadSidebar() {
-            try {
-                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
-                if (!response.ok) throw new Error('Sidebar not found');
-                const html = await response.text();
-                document.getElementById('sidebarContent').innerHTML = html;
-                
-                // Marquer la page active
-                document.querySelectorAll('.sidebar-item').forEach(item => {
-                    if (item.dataset.page === CURRENT_PAGE) {
-                        item.classList.add('active');
-                    }
-                });
-
-                // Désactiver les liens vides
-                document.querySelectorAll('.sidebar-item.disabled, .sidebar-item[href="#"]').forEach(link => {
-                    link.addEventListener('click', e => e.preventDefault());
-                });
-            } catch (error) {
-                console.error('Erreur chargement sidebar:', error);
-            }
-        }
-
-        // ===== LOAD DATA FROM GOOGLE SHEETS =====
-        async function loadSheet(sheetName) {
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                if (!json.table || !json.table.rows) return [];
-                
-                const headers = json.table.cols.map(col => (col.label || '').trim());
-                const rows = [];
-                
-                for (let i = 0; i < json.table.rows.length; i++) {
-                    const row = json.table.rows[i];
-                    if (!row || !row.c) continue;
-                    
-                    const obj = {};
-                    let hasData = false;
-                    
-                    row.c.forEach((cell, idx) => {
-                        const header = headers[idx];
-                        if (header) {
-                            const value = cell ? (cell.v ?? '') : '';
-                            obj[header] = value;
-                            if (value !== '') hasData = true;
-                        }
-                    });
-                    
-                    if (hasData && obj['ID']) {
-                        rows.push(obj);
-                    }
-                }
-                
-                return rows;
-            } catch (e) { 
-                console.error('Erreur chargement', sheetName, e); 
-                return []; 
-            }
-        }
-
-        // ===== LOAD EVALUATION =====
-        async function loadEvaluation(evalId) {
-            try {
-                console.log('🔍 Recherche évaluation:', evalId);
-                
-                // Charger les évaluations
-                const evaluations = await loadSheet('EVALUATIONS');
-                console.log('📋 Évaluations trouvées:', evaluations.map(e => e.ID));
-                
-                evaluation = evaluations.find(e => e.ID === evalId);
-                
-                if (!evaluation) {
-                    console.error('❌ Évaluation non trouvée:', evalId);
-                    renderError(`Évaluation "${evalId}" non trouvée. Vérifiez que l'ID existe dans l'onglet EVALUATIONS.`);
-                    return;
-                }
-                
-                console.log('✅ Évaluation trouvée:', evaluation);
-                
-                // Charger les exercices
-                const allExercices = await loadSheet('EXERCICES');
-                console.log('📋 Tous les exercices:', allExercices.map(e => ({ ID: e.ID, EvalID: e.EvalID })));
-                
-                exercices = allExercices
-                    .filter(ex => ex.EvalID === evalId)
-                    .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
-                
-                console.log('✅ Exercices pour cette éval:', exercices);
-                
-                if (exercices.length === 0) {
-                    console.error('❌ Aucun exercice trouvé pour:', evalId);
-                    renderError(`Aucun exercice trouvé pour cette évaluation.`);
-                    return;
-                }
-                
-                totalExercises = exercices.length;
-                
-                // Charger les éléments
-                elements = await loadSheet('ELEMENTS');
-                console.log('✅ Éléments chargés:', elements.length);
-                
-                // Mettre à jour l'interface
-                const evalType = String(evaluation.Type || '').toLowerCase();
-                const isEvaluation = evalType === 'evaluation';
-                document.getElementById('pageTitle').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
-                document.getElementById('pageSubtitle').textContent = evaluation.Description || 'Évaluation de connaissances';
-                document.getElementById('breadcrumbCurrent').textContent = `✅ ${evaluation.Nom || 'Exercice'}`;
-                
-                // Ajuster le lien retour selon le type
-                const menuLink = document.getElementById('menuLink');
-                if (isEvaluation) {
-                    menuLink.href = `${BASE_PATH}/pages/evaluation-connaissances.html`;
-                    menuLink.textContent = 'Éval. de connaissances';
-                }
-                
-                // Définir le temps (colonne Durée en minutes, convertir en secondes)
-                const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
-                timeLeft = dureeMinutes * 60;
-                
-                // Afficher le premier exercice
-                showExercise(0);
-                
-            } catch (e) {
-                console.error('Erreur:', e);
-                renderError('Impossible de charger l\'évaluation.');
-            }
-        }
-
-        // ===== RENDER ERROR =====
-        function renderError(message) {
-            document.getElementById('content').innerHTML = `
-                <div class="error-message">
-                    <h3>❌ Erreur</h3>
-                    <p>${message}</p>
-                    <p style="margin-top: 12px;">
-                        <a href="${BASE_PATH}/pages/entrainement-connaissances.html">
-                            ← Retour à la liste des exercices
-                        </a>
-                    </p>
+// ===== RENDER FRISE =====
+function renderFrise(elements) {
+    const sortedElements = [...elements].sort((a, b) => parseInt(a.Date) - parseInt(b.Date));
+    const shuffledElements = shuffleArray([...elements]);
+    
+    return `
+        <div class="exercise-header">
+            <div class="exercise-icon">⏱️</div>
+            <div class="exercise-title">
+                <h2>Frise chronologique</h2>
+                <p>Placez chaque événement à la bonne date</p>
+            </div>
+        </div>
+        
+        <div class="frise-instruction">
+            📌 Glissez-déposez chaque événement sur la date correspondante
+        </div>
+        
+        <div class="frise-events" id="friseEvents">
+            ${shuffledElements.map((el, i) => `
+                <div class="frise-event" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
+                    <div class="event-text">${el.Evenement}</div>
                 </div>
-            `;
-        }
+            `).join('')}
+        </div>
+        
+        <div class="frise-dropzones" id="friseDropzones">
+            ${sortedElements.map((el, i) => `
+                <div class="frise-dropzone" data-expected-date="${el.Date}" data-expected-id="${el.ID}">
+                    <div class="date-label">${el.Date}</div>
+                    <div class="drop-hint">Déposez ici</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
 
-        // ===== TIMER =====
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m}:${s.toString().padStart(2, '0')}`;
-        }
-
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
+function initFriseDragDrop() {
+    const events = document.querySelectorAll('.frise-event');
+    const dropzones = document.querySelectorAll('.frise-dropzone');
+    
+    events.forEach(event => {
+        event.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', event.dataset.id);
+            event.classList.add('dragging');
+        });
+        
+        event.addEventListener('dragend', () => {
+            event.classList.remove('dragging');
+        });
+    });
+    
+    dropzones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+        
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('drag-over');
+        });
+        
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
             
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const timerEl = document.getElementById('timer');
-                if (timerEl) {
-                    timerEl.textContent = `⏱️ Temps restant : ${formatTime(timeLeft)}`;
-                    
-                    if (timeLeft <= 120) {
-                        timerEl.classList.add('warning');
-                    }
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        verifyCurrentExercise();
-                    }
-                }
-            }, 1000);
-        }
-
-        // ===== SHOW EXERCISE =====
-        function showExercise(index) {
-            currentExerciseIndex = index;
-            const exercise = exercices[index];
+            const eventId = e.dataTransfer.getData('text/plain');
+            const eventEl = document.querySelector(`.frise-event[data-id="${eventId}"]`);
             
-            // Récupérer les éléments pour cet exercice
-            const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
-            const exerciseElements = elements.filter(el => banques.includes(el.Banque));
-            
-            // Filtrer par format
-            const formatMap = {
-                'frise': 'Evenement',
-                'timeline': 'Evenement',
-                'qcm': ['Evenement', 'QuestionReponse'],
-                'ouverte': 'QuestionReponse'
-            };
-            
-            const requiredFormat = formatMap[exercise.Type];
-            let filteredElements = exerciseElements;
-            if (Array.isArray(requiredFormat)) {
-                filteredElements = exerciseElements.filter(el => requiredFormat.includes(el.Format));
-            } else if (requiredFormat) {
-                filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
+            if (eventEl && !zone.classList.contains('has-event')) {
+                zone.classList.add('has-event');
+                const placedDiv = document.createElement('div');
+                placedDiv.className = 'placed-event';
+                placedDiv.textContent = eventEl.querySelector('.event-text').textContent;
+                placedDiv.dataset.id = eventId;
+                placedDiv.dataset.date = eventEl.dataset.date;
+                zone.appendChild(placedDiv);
+                
+                eventEl.style.display = 'none';
             }
+        });
+    });
+}
+
+// ===== VERIFY STEP (renommé de verifyCurrentExercise) =====
+function verifyCurrentStep() {
+    clearInterval(timerInterval);
+    
+    const exercise = currentExerciseData.exercise;
+    let correct = 0;
+    let total = 0;
+    
+    if (exercise.Type === 'timeline') {
+        const items = document.querySelectorAll('.timeline-item');
+        const userOrder = [...items].map(item => parseInt(item.dataset.date));
+        const correctOrder = [...userOrder].sort((a, b) => a - b);
+        
+        total = items.length;
+        
+        items.forEach((item, i) => {
+            const date = parseInt(item.dataset.date);
+            const itemContent = item.querySelector('.item-content');
             
-            // Sélectionner le nombre d'éléments
-            const nombre = parseInt(exercise.Nombre) || 5;
-            let selectedElements = filteredElements;
+            let dateDiv = item.querySelector('.item-date');
+            if (!dateDiv) {
+                dateDiv = document.createElement('div');
+                dateDiv.className = 'item-date';
+                itemContent.insertBefore(dateDiv, itemContent.firstChild);
+            }
+            dateDiv.textContent = item.dataset.date;
             
-            if (exercise.Mode === 'random' && filteredElements.length > nombre) {
-                selectedElements = shuffleArray([...filteredElements]).slice(0, nombre);
+            if (date === correctOrder[i]) {
+                correct++;
+                item.classList.add('correct');
+                item.classList.remove('incorrect');
             } else {
-                selectedElements = filteredElements.slice(0, nombre);
+                item.classList.add('incorrect');
+                item.classList.remove('correct');
             }
             
-            currentExerciseData = {
-                exercise: exercise,
-                elements: selectedElements,
-                startTime: Date.now()
-            };
+            item.draggable = false;
+        });
+        
+    } else if (exercise.Type === 'frise') {
+        const dropzones = document.querySelectorAll('.frise-dropzone');
+        total = dropzones.length;
+        
+        dropzones.forEach(zone => {
+            const expectedId = zone.dataset.expectedId;
+            const placedEvent = zone.querySelector('.placed-event');
             
-            // Afficher l'exercice
-            renderExercise(exercise, selectedElements);
-        }
-
-        // ===== RENDER EXERCISE =====
-        function renderExercise(exercise, selectedElements) {
-            let exerciseHtml = '';
-            
-            switch (exercise.Type) {
-                case 'timeline':
-                    exerciseHtml = renderTimeline(selectedElements);
-                    break;
-                case 'frise':
-                    exerciseHtml = renderFrise(selectedElements);
-                    break;
-                default:
-                    exerciseHtml = `<p>Type d'exercice "${exercise.Type}" non implémenté.</p>`;
-            }
-            
-            const html = `
-                <div class="timer-box" id="timer">
-                    ⏱️ Temps restant : ${formatTime(timeLeft)}
-                </div>
-
-                <div class="instructions">
-                    <strong>📋 Consigne :</strong>
-                    <p>${getInstructionForType(exercise.Type)}</p>
-                </div>
-
-                <div class="exercise-card">
-                    ${exerciseHtml}
-                    
-                    <div class="buttons">
-                        <button class="btn-verify" onclick="verifyCurrentExercise()">✓ Vérifier mes réponses</button>
-                        <button class="btn-solution" onclick="showSolution()">📖 Voir le corrigé</button>
-                        <button class="btn-restart" onclick="restartExercise()">🔄 Recommencer</button>
-                    </div>
-
-                    <div class="result" id="result">
-                        <h3>📊 Résultat</h3>
-                        <p id="resultMessage"></p>
-                    </div>
-                </div>
-
-                ${renderNavigation()}
-            `;
-
-            document.getElementById('content').innerHTML = html;
-            
-            // Initialiser le drag & drop
-            if (exercise.Type === 'timeline') {
-                initTimelineDragDrop();
-            } else if (exercise.Type === 'frise') {
-                initFriseDragDrop();
-            }
-            
-            startTimer();
-        }
-
-        function getInstructionForType(type) {
-            const instructions = {
-                'timeline': 'Remets les événements dans l\'ordre chronologique, du plus ancien au plus récent.',
-                'frise': 'Place chaque événement sur la date correspondante.',
-                'qcm': 'Sélectionne la bonne réponse pour chaque question.',
-                'ouverte': 'Réponds aux questions suivantes.'
-            };
-            return instructions[type] || 'Complète l\'exercice suivant.';
-        }
-
-        // ===== RENDER TIMELINE =====
-        function renderTimeline(elements) {
-            const shuffledElements = shuffleArray([...elements]);
-            
-            return `
-                <div class="exercise-header">
-                    <div class="exercise-icon">🔀</div>
-                    <div class="exercise-title">
-                        <h2>Timeline</h2>
-                        <p>Remettez les événements dans l'ordre chronologique</p>
-                    </div>
-                </div>
-                
-                <div class="timeline-instruction">
-                    ↕️ Glissez les événements pour les remettre dans l'ordre chronologique (du plus ancien au plus récent)
-                </div>
-                
-                <div class="timeline-list" id="timelineList">
-                    ${shuffledElements.map((el, i) => `
-                        <div class="timeline-item" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
-                            <span class="drag-handle">☰</span>
-                            <div class="item-content">
-                                <div class="item-text">${el.Evenement}</div>
-                            </div>
-                            <div class="order-number">${i + 1}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function initTimelineDragDrop() {
-            const list = document.getElementById('timelineList');
-            if (!list) return;
-            
-            let draggedItem = null;
-            
-            list.querySelectorAll('.timeline-item').forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    draggedItem = item;
-                    item.classList.add('dragging');
-                });
-                
-                item.addEventListener('dragend', () => {
-                    item.classList.remove('dragging');
-                    updateTimelineNumbers();
-                });
-                
-                item.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    const afterElement = getDragAfterElement(list, e.clientY);
-                    if (afterElement == null) {
-                        list.appendChild(draggedItem);
-                    } else {
-                        list.insertBefore(draggedItem, afterElement);
-                    }
-                });
-            });
-        }
-
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.timeline-item:not(.dragging)')];
-            
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-
-        function updateTimelineNumbers() {
-            const items = document.querySelectorAll('.timeline-item');
-            items.forEach((item, i) => {
-                item.querySelector('.order-number').textContent = i + 1;
-            });
-        }
-
-        // ===== RENDER FRISE =====
-        function renderFrise(elements) {
-            const sortedElements = [...elements].sort((a, b) => parseInt(a.Date) - parseInt(b.Date));
-            const shuffledElements = shuffleArray([...elements]);
-            
-            return `
-                <div class="exercise-header">
-                    <div class="exercise-icon">⏱️</div>
-                    <div class="exercise-title">
-                        <h2>Frise chronologique</h2>
-                        <p>Placez chaque événement à la bonne date</p>
-                    </div>
-                </div>
-                
-                <div class="frise-instruction">
-                    📌 Glissez-déposez chaque événement sur la date correspondante
-                </div>
-                
-                <div class="frise-events" id="friseEvents">
-                    ${shuffledElements.map((el, i) => `
-                        <div class="frise-event" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
-                            <div class="event-text">${el.Evenement}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div class="frise-dropzones" id="friseDropzones">
-                    ${sortedElements.map((el, i) => `
-                        <div class="frise-dropzone" data-expected-date="${el.Date}" data-expected-id="${el.ID}">
-                            <div class="date-label">${el.Date}</div>
-                            <div class="drop-hint">Déposez ici</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function initFriseDragDrop() {
-            const events = document.querySelectorAll('.frise-event');
-            const dropzones = document.querySelectorAll('.frise-dropzone');
-            
-            events.forEach(event => {
-                event.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', event.dataset.id);
-                    event.classList.add('dragging');
-                });
-                
-                event.addEventListener('dragend', () => {
-                    event.classList.remove('dragging');
-                });
-            });
-            
-            dropzones.forEach(zone => {
-                zone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    zone.classList.add('drag-over');
-                });
-                
-                zone.addEventListener('dragleave', () => {
-                    zone.classList.remove('drag-over');
-                });
-                
-                zone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    zone.classList.remove('drag-over');
-                    
-                    const eventId = e.dataTransfer.getData('text/plain');
-                    const eventEl = document.querySelector(`.frise-event[data-id="${eventId}"]`);
-                    
-                    if (eventEl && !zone.classList.contains('has-event')) {
-                        zone.classList.add('has-event');
-                        const placedDiv = document.createElement('div');
-                        placedDiv.className = 'placed-event';
-                        placedDiv.textContent = eventEl.querySelector('.event-text').textContent;
-                        placedDiv.dataset.id = eventId;
-                        placedDiv.dataset.date = eventEl.dataset.date;
-                        zone.appendChild(placedDiv);
-                        
-                        eventEl.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // ===== VERIFY EXERCISE =====
-        function verifyCurrentExercise() {
-            clearInterval(timerInterval);
-            
-            const exercise = currentExerciseData.exercise;
-            let correct = 0;
-            let total = 0;
-            
-            if (exercise.Type === 'timeline') {
-                const items = document.querySelectorAll('.timeline-item');
-                const userOrder = [...items].map(item => parseInt(item.dataset.date));
-                const correctOrder = [...userOrder].sort((a, b) => a - b);
-                
-                total = items.length;
-                
-                items.forEach((item, i) => {
-                    const date = parseInt(item.dataset.date);
-                    const itemContent = item.querySelector('.item-content');
-                    
-                    // Afficher la date
-                    let dateDiv = item.querySelector('.item-date');
-                    if (!dateDiv) {
-                        dateDiv = document.createElement('div');
-                        dateDiv.className = 'item-date';
-                        itemContent.insertBefore(dateDiv, itemContent.firstChild);
-                    }
-                    dateDiv.textContent = item.dataset.date;
-                    
-                    if (date === correctOrder[i]) {
-                        correct++;
-                        item.classList.add('correct');
-                        item.classList.remove('incorrect');
-                    } else {
-                        item.classList.add('incorrect');
-                        item.classList.remove('correct');
-                    }
-                    
-                    item.draggable = false;
-                });
-                
-            } else if (exercise.Type === 'frise') {
-                const dropzones = document.querySelectorAll('.frise-dropzone');
-                total = dropzones.length;
-                
-                dropzones.forEach(zone => {
-                    const expectedId = zone.dataset.expectedId;
-                    const placedEvent = zone.querySelector('.placed-event');
-                    
-                    if (placedEvent && placedEvent.dataset.id === expectedId) {
-                        correct++;
-                        zone.classList.add('correct');
-                        zone.classList.remove('incorrect');
-                    } else {
-                        zone.classList.add('incorrect');
-                        zone.classList.remove('correct');
-                    }
-                });
-                
-                document.querySelectorAll('.frise-event').forEach(el => el.draggable = false);
-            }
-            
-            // Afficher le résultat
-            const percentage = Math.round((correct / total) * 100);
-            let message = '';
-            
-            if (percentage === 100) {
-                message = `🎉 Parfait ! Tu as tout bon ! Score : ${correct}/${total}`;
-            } else if (percentage >= 75) {
-                message = `👍 Très bien ! Tu as trouvé ${correct}/${total} réponses correctes.`;
-            } else if (percentage >= 50) {
-                message = `💪 Pas mal ! Tu as trouvé ${correct}/${total} réponses. Continue à t'entraîner !`;
+            if (placedEvent && placedEvent.dataset.id === expectedId) {
+                correct++;
+                zone.classList.add('correct');
+                zone.classList.remove('incorrect');
             } else {
-                message = `📚 Tu as trouvé ${correct}/${total} réponses. Révise et recommence !`;
+                zone.classList.add('incorrect');
+                zone.classList.remove('correct');
             }
-            
-            document.getElementById('resultMessage').textContent = message;
-            document.getElementById('result').classList.add('show');
-            
-            // Enregistrer le résultat
-            exerciseResults[currentExerciseIndex] = { correct, total };
-        }
+        });
+        
+        document.querySelectorAll('.frise-event').forEach(el => el.draggable = false);
+    }
+    
+    // Enregistrer le résultat
+    stepResults[currentStepIndex] = { correct, total };
+    
+    // Afficher le résultat
+    const percentage = Math.round((correct / total) * 100);
+    let message = '';
+    
+    if (percentage === 100) {
+        message = `🎉 Parfait ! Tu as tout bon ! Score : ${correct}/${total}`;
+    } else if (percentage >= 75) {
+        message = `👍 Très bien ! Tu as trouvé ${correct}/${total} réponses correctes.`;
+    } else if (percentage >= 50) {
+        message = `💪 Pas mal ! Tu as trouvé ${correct}/${total} réponses. Continue à t'entraîner !`;
+    } else {
+        message = `📚 Tu as trouvé ${correct}/${total} réponses. Révise et recommence !`;
+    }
+    
+    // Ajouter le bouton étape suivante si pas la dernière
+    if (currentStepIndex < totalSteps - 1) {
+        message += ` <button onclick="goToStep(${currentStepIndex + 1})" style="margin-left: 12px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Étape suivante →</button>`;
+    }
+    
+    document.getElementById('resultMessage').innerHTML = message;
+    document.getElementById('result').classList.add('show');
+}
 
-        // ===== SHOW SOLUTION =====
-        function showSolution() {
-            clearInterval(timerInterval);
+// ===== SHOW SOLUTION =====
+function showSolution() {
+    clearInterval(timerInterval);
+    
+    const exercise = currentExerciseData.exercise;
+    
+    if (exercise.Type === 'timeline') {
+        const items = [...document.querySelectorAll('.timeline-item')];
+        const list = document.getElementById('timelineList');
+        
+        items.sort((a, b) => parseInt(a.dataset.date) - parseInt(b.dataset.date));
+        
+        items.forEach((item, i) => {
+            list.appendChild(item);
             
-            const exercise = currentExerciseData.exercise;
-            
-            if (exercise.Type === 'timeline') {
-                const items = [...document.querySelectorAll('.timeline-item')];
-                const list = document.getElementById('timelineList');
-                
-                // Trier par date
-                items.sort((a, b) => parseInt(a.dataset.date) - parseInt(b.dataset.date));
-                
-                // Réordonner dans le DOM
-                items.forEach((item, i) => {
-                    list.appendChild(item);
-                    
-                    const itemContent = item.querySelector('.item-content');
-                    let dateDiv = item.querySelector('.item-date');
-                    if (!dateDiv) {
-                        dateDiv = document.createElement('div');
-                        dateDiv.className = 'item-date';
-                        itemContent.insertBefore(dateDiv, itemContent.firstChild);
-                    }
-                    dateDiv.textContent = item.dataset.date;
-                    dateDiv.style.color = 'var(--accent-green)';
-                    
-                    item.classList.add('correct');
-                    item.classList.remove('incorrect');
-                    item.querySelector('.order-number').textContent = i + 1;
-                    item.draggable = false;
-                });
-                
-            } else if (exercise.Type === 'frise') {
-                const dropzones = document.querySelectorAll('.frise-dropzone');
-                const elements = currentExerciseData.elements;
-                
-                dropzones.forEach(zone => {
-                    const expectedId = zone.dataset.expectedId;
-                    const element = elements.find(el => el.ID === expectedId);
-                    
-                    if (element) {
-                        // Retirer l'ancien élément placé
-                        const oldPlaced = zone.querySelector('.placed-event');
-                        if (oldPlaced) oldPlaced.remove();
-                        
-                        zone.classList.add('has-event', 'correct');
-                        zone.classList.remove('incorrect');
-                        
-                        const placedDiv = document.createElement('div');
-                        placedDiv.className = 'placed-event';
-                        placedDiv.textContent = element.Evenement;
-                        zone.appendChild(placedDiv);
-                    }
-                });
-                
-                document.querySelectorAll('.frise-event').forEach(el => {
-                    el.style.display = 'none';
-                    el.draggable = false;
-                });
+            const itemContent = item.querySelector('.item-content');
+            let dateDiv = item.querySelector('.item-date');
+            if (!dateDiv) {
+                dateDiv = document.createElement('div');
+                dateDiv.className = 'item-date';
+                itemContent.insertBefore(dateDiv, itemContent.firstChild);
             }
+            dateDiv.textContent = item.dataset.date;
+            dateDiv.style.color = 'var(--accent-green)';
             
-            document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet !';
-            document.getElementById('result').classList.add('show');
-        }
-
-        // ===== RESTART EXERCISE =====
-        function restartExercise() {
-            clearInterval(timerInterval);
-            const dureeMinutes = parseInt(evaluation.Durée) || parseInt(evaluation.Duree) || 10;
-            timeLeft = dureeMinutes * 60;
-            showExercise(currentExerciseIndex);
-        }
-
-        // ===== RENDER NAVIGATION =====
-        function renderNavigation() {
-            const prevExo = currentExerciseIndex - 1;
-            const nextExo = currentExerciseIndex + 1;
-            const hasPrev = prevExo >= 0;
-            const hasNext = nextExo < totalExercises;
+            item.classList.add('correct');
+            item.classList.remove('incorrect');
+            item.querySelector('.order-number').textContent = i + 1;
+            item.draggable = false;
+        });
+        
+    } else if (exercise.Type === 'frise') {
+        const dropzones = document.querySelectorAll('.frise-dropzone');
+        const elements = currentExerciseData.elements;
+        
+        dropzones.forEach(zone => {
+            const expectedId = zone.dataset.expectedId;
+            const element = elements.find(el => el.ID === expectedId);
             
-            const evalType = String(evaluation.Type || '').toLowerCase();
-            const isEvaluation = evalType === 'evaluation';
-            const menuLink = isEvaluation 
-                ? `${BASE_PATH}/pages/evaluation-connaissances.html`
-                : `${BASE_PATH}/pages/entrainement-connaissances.html`;
-
-            return `
-                <nav class="nav-exercices">
-                    ${hasPrev ? `
-                        <button class="nav-btn prev" onclick="goToExercise(${prevExo})">
-                            ← Exercice ${prevExo + 1}
-                        </button>
-                    ` : `
-                        <a href="${menuLink}" class="nav-btn menu">
-                            ← Retour au menu
-                        </a>
-                    `}
-
-                    <div class="nav-info">
-                        Exercice ${currentExerciseIndex + 1} / ${totalExercises}
-                    </div>
-
-                    ${hasNext ? `
-                        <button class="nav-btn next" onclick="goToExercise(${nextExo})">
-                            Exercice ${nextExo + 1} →
-                        </button>
-                    ` : `
-                        <a href="${menuLink}" class="nav-btn next">
-                            Terminer ✓
-                        </a>
-                    `}
-                </nav>
-            `;
-        }
-
-        function goToExercise(index) {
-            clearInterval(timerInterval);
-            showExercise(index);
-        }
-
-        // ===== UTILS =====
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+            if (element) {
+                const oldPlaced = zone.querySelector('.placed-event');
+                if (oldPlaced) oldPlaced.remove();
+                
+                zone.classList.add('has-event', 'correct');
+                zone.classList.remove('incorrect');
+                
+                const placedDiv = document.createElement('div');
+                placedDiv.className = 'placed-event';
+                placedDiv.textContent = element.Evenement;
+                zone.appendChild(placedDiv);
             }
-            return array;
-        }
+        });
+        
+        document.querySelectorAll('.frise-event').forEach(el => {
+            el.style.display = 'none';
+            el.draggable = false;
+        });
+    }
+    
+    document.getElementById('resultMessage').textContent = '📖 Voici le corrigé complet !';
+    document.getElementById('result').classList.add('show');
+}
 
-        // ===== INIT =====
-        async function init() {
-            await loadSidebar();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const evalId = urlParams.get('id');
-            
-            if (!evalId) {
-                renderError('Aucun ID d\'évaluation fourni.');
-                return;
-            }
-            
-            await loadEvaluation(evalId);
-        }
+// ===== RESTART STEP =====
+function restartStep() {
+    clearInterval(timerInterval);
+    showStep(currentStepIndex);
+}
 
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+// ===== GO TO STEP =====
+function goToStep(index) {
+    if (index >= 0 && index < totalSteps) {
+        clearInterval(timerInterval);
+        showStep(index);
+    }
+}
 
+// ===== NOUVEAU: RENDER LESSON NAVIGATION (style BEX) =====
+function renderLessonNavigation() {
+    const evalType = String(evaluation.Type || '').toLowerCase();
+    const isEvaluation = evalType === 'evaluation';
+    const menuLink = isEvaluation 
+        ? `${BASE_PATH}/pages/evaluation-connaissances.html`
+        : `${BASE_PATH}/pages/entrainement-connaissances.html`;
+
+    // Si pas de données MENU_CONN, navigation simple
+    if (!currentMenuEntry || lessonExercises.length === 0) {
+        return `
+            <nav class="nav-exercices">
+                <a href="${menuLink}" class="nav-btn menu">← Retour au menu</a>
+                <div class="nav-info">Exercice</div>
+                <a href="${menuLink}" class="nav-btn next">Terminer ✓</a>
+            </nav>
+        `;
+    }
+
+    const hasPrev = currentLessonIndex > 0;
+    const hasNext = currentLessonIndex < lessonExercises.length - 1;
+    
+    const prevExercise = hasPrev ? lessonExercises[currentLessonIndex - 1] : null;
+    const nextExercise = hasNext ? lessonExercises[currentLessonIndex + 1] : null;
+
+    return `
+        <nav class="nav-exercices">
+            ${hasPrev ? `
+                <a href="conn.html?id=${prevExercise.EvalID}" class="nav-btn prev">
+                    ← ${prevExercise.TitreExo || 'Exercice ' + prevExercise.NumExo}
+                </a>
+            ` : `
+                <a href="${menuLink}" class="nav-btn menu">
+                    ← Retour au menu
+                </a>
+            `}
+
+            <div class="nav-info">
+                Exercice ${currentLessonIndex + 1} / ${lessonExercises.length}
+            </div>
+
+            ${hasNext ? `
+                <a href="conn.html?id=${nextExercise.EvalID}" class="nav-btn next">
+                    ${nextExercise.TitreExo || 'Exercice ' + nextExercise.NumExo} →
+                </a>
+            ` : `
+                <a href="${menuLink}" class="nav-btn next">
+                    Terminer ✓
+                </a>
+            `}
+        </nav>
+    `;
+}
+
+// ===== UTILS =====
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// ===== INIT =====
+async function init() {
+    await loadSidebar();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const evalId = urlParams.get('id');
+    
+    if (!evalId) {
+        renderError('Aucun ID d\'évaluation fourni.');
+        return;
+    }
+    
+    await loadEvaluation(evalId);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
