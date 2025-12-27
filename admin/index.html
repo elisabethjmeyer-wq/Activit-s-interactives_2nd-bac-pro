@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-yellow: #f59e0b;
+            --accent-yellow-light: #fef3c7;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #dbeafe;
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #ede9fe;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--gray-800);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .logo-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-site {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-site:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* ===== WELCOME ===== */
+        .welcome {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            color: white;
+            margin-bottom: 32px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.red { background: var(--accent-red-light); }
+        .stat-icon.yellow { background: var(--accent-yellow-light); }
+        .stat-icon.blue { background: var(--accent-blue-light); }
+        .stat-icon.green { background: var(--accent-green-light); }
+
+        .stat-info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .stat-info p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* ===== MODULES ===== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 2px solid transparent;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .module-card.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .module-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .module-icon.purple { background: var(--accent-purple-light); }
+        .module-icon.blue { background: var(--accent-blue-light); }
+        .module-icon.green { background: var(--accent-green-light); }
+        .module-icon.yellow { background: var(--accent-yellow-light); }
+        .module-icon.red { background: var(--accent-red-light); }
+        .module-icon.gray { background: var(--gray-100); }
+
+        .module-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .module-desc {
+            font-size: 14px;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        .module-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .module-badge.ready {
+            background: var(--accent-green-light);
+            color: var(--accent-green);
+        }
+
+        .module-badge.partial {
+            background: var(--accent-yellow-light);
+            color: var(--accent-yellow);
+        }
+
+        .module-badge.todo {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        /* ===== QUICK ACTIONS ===== */
+        .quick-actions {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-actions h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 16px;
+        }
+
+        .actions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main {
+                padding: 20px 16px;
+            }
+
+            .welcome {
+                padding: 24px;
+            }
+
+            .welcome h1 {
+                font-size: 22px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 0 16px;
+            }
+
+            .logo-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <a href="/Activit-s-interactives_2nd-bac-pro/admin/index.html" class="logo">
+                <div class="logo-icon">⚙️</div>
+                <div class="logo-text">Admin <span>• Espace cours</span></div>
+            </a>
+        </div>
+        <div class="header-right" id="headerRight">
+            <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="btn-site">
+                <span>🌐</span> Voir le site
+            </a>
+            <!-- User menu injecté par JS -->
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+        
+        <!-- WELCOME -->
+        <div class="welcome">
+            <h1>👋 Bonjour !</h1>
+            <p>Bienvenue dans l'espace d'administration de ton site.</p>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <a href="#" class="stat-card">
+                <div class="stat-icon red">❓</div>
+                <div class="stat-info">
+                    <h3 id="statQuestions">-</h3>
+                    <p>Questions en attente</p>
+                </div>
+            </a>
+            <a href="#" class="stat-card">
+                <div class="stat-icon yellow">🐛</div>
+                <div class="stat-info">
+                    <h3 id="statBugs">-</h3>
+                    <p>Bugs signalés</p>
+                </div>
+            </a>
+            <a href="#" class="stat-card">
+                <div class="stat-icon blue">💬</div>
+                <div class="stat-info">
+                    <h3 id="statMessages">-</h3>
+                    <p>Messages non lus</p>
+                </div>
+            </a>
+            <a href="#" class="stat-card">
+                <div class="stat-icon green">👥</div>
+                <div class="stat-info">
+                    <h3 id="statEleves">-</h3>
+                    <p>Élèves inscrits</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- MODULES -->
+        <h2 class="section-title">📦 Modules</h2>
+        <div class="modules-grid">
+            
+            <a href="conn.html" class="module-card">
+                <div class="module-header">
+                    <div class="module-icon purple">🧠</div>
+                    <div class="module-title">Exercices CONN</div>
+                </div>
+                <p class="module-desc">Créer et gérer les exercices de connaissances (timeline, frise, QCM...)</p>
+                <span class="module-badge partial">⚠️ Partiel</span>
+            </a>
+
+            <a href="bex.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon blue">⭐</div>
+                    <div class="module-title">Exercices BEX</div>
+                </div>
+                <p class="module-desc">Créer et gérer les exercices de savoir-faire (tableau, carte, paratexte...)</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+            <a href="cours.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon green">📚</div>
+                    <div class="module-title">Cours</div>
+                </div>
+                <p class="module-desc">Gérer les leçons et fiches méthodologiques</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+            <a href="faq.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon yellow">❓</div>
+                    <div class="module-title">FAQ</div>
+                </div>
+                <p class="module-desc">Répondre aux questions et gérer les réponses publiées</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+            <a href="medias.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon red">🎬</div>
+                    <div class="module-title">Médias</div>
+                </div>
+                <p class="module-desc">Gérer les recommandations et vidéos de la semaine</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+            <a href="eleves.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon gray">👥</div>
+                    <div class="module-title">Élèves</div>
+                </div>
+                <p class="module-desc">Liste des élèves, notes, remarques personnalisées</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+            <a href="navigation.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon gray">🧭</div>
+                    <div class="module-title">Navigation</div>
+                </div>
+                <p class="module-desc">Configurer le menu latéral du site</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+            <a href="discussions.html" class="module-card disabled">
+                <div class="module-header">
+                    <div class="module-icon gray">💬</div>
+                    <div class="module-title">Discussions</div>
+                </div>
+                <p class="module-desc">Espace de communication avec les élèves</p>
+                <span class="module-badge todo">📋 À créer</span>
+            </a>
+
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions">
+            <h2>⚡ Actions rapides</h2>
+            <div class="actions-list">
+                <a href="conn.html" class="action-btn primary">
+                    <span>➕</span> Nouvel exercice CONN
+                </a>
+                <a href="/Activit-s-interactives_2nd-bac-pro/index.html" class="action-btn">
+                    <span>👁️</span> Prévisualiser le site
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8/edit" target="_blank" class="action-btn">
+                    <span>📊</span> Ouvrir Sheet CONN
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/1voGqAzl_sgsa8ZKs_uDEFBanNUTBfkNz9Hq5wI1Vlzg/edit" target="_blank" class="action-btn">
+                    <span>📊</span> Ouvrir Sheet BEX
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/1imYDD3NPS9_ZqFewDrJcyqQV6fCq2kKL_YUC26hJJow/edit" target="_blank" class="action-btn">
+                    <span>📊</span> Ouvrir Sheet CONTENU
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- AUTH SCRIPT -->
+    <script src="/Activit-s-interactives_2nd-bac-pro/js/auth.js"></script>
+    <script>
+        // ===== VÉRIFICATION AUTH =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier que l'utilisateur est connecté et est prof
+            if (!Auth.requireAuth({ requireProf: true, requireAdmin: true })) {
+                return;
+            }
+
+            // Injecter le user menu dans le header
+            const headerRight = document.getElementById('headerRight');
+            headerRight.innerHTML += Auth.renderUserMenu();
+
+            // Personnaliser le message d'accueil
+            const user = Auth.getUser();
+            if (user) {
+                document.querySelector('.welcome h1').textContent = `👋 Bonjour ${user.prenom} !`;
+            }
+
+            // Charger les stats (à implémenter avec les vrais sheets)
+            loadStats();
+        });
+
+        // ===== CHARGER STATS =====
+        async function loadStats() {
+            // TODO: Charger depuis les Google Sheets
+            // Pour l'instant, valeurs de démo
+            document.getElementById('statQuestions').textContent = '3';
+            document.getElementById('statBugs').textContent = '1';
+            document.getElementById('statMessages').textContent = '2';
+            document.getElementById('statEleves').textContent = '25';
+        }
+    </script>
+
+</body>
+</html>
