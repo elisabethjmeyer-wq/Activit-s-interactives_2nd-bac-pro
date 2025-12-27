@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | Espace cours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-bg: #eef2ff;
+            
+            --accent-green: #10b981;
+            --accent-green-light: #d1fae5;
+            --accent-red: #ef4444;
+            --accent-red-light: #fee2e2;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 32px;
+            text-align: center;
+            color: white;
+        }
+
+        .login-logo {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 16px;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .login-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .login-body {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--gray-400);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 14px 14px 46px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--gray-50);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-login .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .btn-login.loading .spinner {
+            display: block;
+        }
+
+        .btn-login.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: var(--accent-red-light);
+            border: 1px solid var(--accent-red);
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .error-message .error-icon {
+            font-size: 18px;
+        }
+
+        .login-footer {
+            text-align: center;
+            padding: 20px 32px 32px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .login-footer p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 24px;
+            }
+            .login-body {
+                padding: 24px;
+            }
+            .login-header h1 {
+                font-size: 20px;
+            }
+        }
+
+        /* Animation d'entrée */
+        .login-card {
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Capslock warning */
+        .capslock-warning {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--accent-red);
+            margin-top: 6px;
+        }
+
+        .capslock-warning.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">📚</div>
+                <h1>Espace cours</h1>
+                <p>Mme Meyer • Histoire-Géographie</p>
+            </div>
+
+            <div class="login-body">
+                <div class="error-message" id="errorMessage">
+                    <span class="error-icon">⚠️</span>
+                    <span class="error-text">Identifiant ou mot de passe incorrect</span>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="identifiant">Identifiant</label>
+                        <div class="input-wrapper">
+                            <span class="icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="identifiant" 
+                                name="identifiant" 
+                                placeholder="Ton identifiant"
+                                autocomplete="username"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <div class="input-wrapper">
+                            <span class="icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Ton mot de passe"
+                                autocomplete="current-password"
+                                required
+                            >
+                        </div>
+                        <div class="capslock-warning" id="capslockWarning">
+                            ⚠️ Verrouillage majuscule activé
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="btnLogin">
+                        <span class="spinner"></span>
+                        <span class="btn-text">Se connecter</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="login-footer">
+                <p>Un problème de connexion ? <a href="mailto:contact@exemple.fr">Contacte ton professeur</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIG =====
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
+        const SHEET_ID = ''; // À CONFIGURER : ID du Sheet UTILISATEURS
+        const SHEET_NAME = 'UTILISATEURS';
+        
+        // Clé de stockage session
+        const SESSION_KEY = 'espace_cours_session';
+
+        // ===== VÉRIFIER SI DÉJÀ CONNECTÉ =====
+        function checkExistingSession() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (session) {
+                try {
+                    const data = JSON.parse(session);
+                    if (data.user && data.user.id) {
+                        // Rediriger selon le rôle
+                        redirectAfterLogin(data.user.role);
+                    }
+                } catch (e) {
+                    localStorage.removeItem(SESSION_KEY);
+                }
+            }
+        }
+
+        // ===== CHARGER UTILISATEURS DEPUIS SHEET =====
+        async function loadUsers() {
+            if (!SHEET_ID) {
+                console.warn('SHEET_ID non configuré - mode démo');
+                // Données de démo pour tester
+                return [
+                    { id: 'PROF', identifiant: 'emeyer', motdepasse: 'prof2024', role: 'prof', nom: 'Meyer', prenom: 'E.', classe: '' },
+                    { id: 'E001', identifiant: 'martin.lea', motdepasse: 'music2024', role: 'eleve', nom: 'Martin', prenom: 'Léa', classe: '2GA' },
+                    { id: 'E002', identifiant: 'dupont.theo', motdepasse: 'sport2024', role: 'eleve', nom: 'Dupont', prenom: 'Théo', classe: '2GA' }
+                ];
+            }
+
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+            
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const data = JSON.parse(text.substring(jsonStart, jsonEnd));
+                
+                const users = [];
+                const rows = data.table.rows;
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row) continue;
+                    
+                    const id = row[0]?.v;
+                    if (!id || String(id).toLowerCase() === 'id') continue; // Skip header
+                    
+                    users.push({
+                        id: String(row[0]?.v || ''),
+                        identifiant: String(row[1]?.v || '').toLowerCase().trim(),
+                        motdepasse: String(row[2]?.v || ''),
+                        role: String(row[3]?.v || 'eleve').toLowerCase(),
+                        nom: String(row[4]?.v || ''),
+                        prenom: String(row[5]?.v || ''),
+                        classe: String(row[6]?.v || '')
+                    });
+                }
+                
+                return users;
+            } catch (error) {
+                console.error('Erreur chargement utilisateurs:', error);
+                throw new Error('Impossible de charger les données');
+            }
+        }
+
+        // ===== AUTHENTIFICATION =====
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('btnLogin');
+            const errorEl = document.getElementById('errorMessage');
+            
+            const identifiant = document.getElementById('identifiant').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
+            
+            // État loading
+            btn.classList.add('loading');
+            btn.disabled = true;
+            errorEl.classList.remove('show');
+            
+            try {
+                const users = await loadUsers();
+                
+                // Chercher l'utilisateur
+                const user = users.find(u => 
+                    u.identifiant === identifiant && u.motdepasse === password
+                );
+                
+                if (!user) {
+                    throw new Error('Identifiants incorrects');
+                }
+                
+                // Créer la session
+                const session = {
+                    user: {
+                        id: user.id,
+                        identifiant: user.identifiant,
+                        role: user.role,
+                        nom: user.nom,
+                        prenom: user.prenom,
+                        classe: user.classe
+                    },
+                    viewMode: user.role === 'prof' ? 'admin' : 'eleve',
+                    viewAsStudent: null,
+                    loginTime: new Date().toISOString()
+                };
+                
+                // Stocker la session
+                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                
+                // Si prof, stocker aussi la liste des élèves pour le mode "voir comme"
+                if (user.role === 'prof') {
+                    const eleves = users.filter(u => u.role === 'eleve');
+                    localStorage.setItem('espace_cours_eleves', JSON.stringify(eleves));
+                }
+                
+                // Redirection
+                redirectAfterLogin(user.role);
+                
+            } catch (error) {
+                errorEl.querySelector('.error-text').textContent = error.message;
+                errorEl.classList.add('show');
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        // ===== REDIRECTION APRÈS LOGIN =====
+        function redirectAfterLogin(role) {
+            if (role === 'prof') {
+                // Rediriger vers le dashboard admin
+                window.location.href = `${BASE_PATH}/admin/index.html`;
+            } else {
+                // Rediriger vers l'accueil élève
+                window.location.href = `${BASE_PATH}/index.html`;
+            }
+        }
+
+        // ===== DÉTECTION CAPSLOCK =====
+        document.getElementById('password').addEventListener('keyup', function(e) {
+            const warning = document.getElementById('capslockWarning');
+            if (e.getModifierState && e.getModifierState('CapsLock')) {
+                warning.classList.add('show');
+            } else {
+                warning.classList.remove('show');
+            }
+        });
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            checkExistingSession();
+            document.getElementById('identifiant').focus();
+        });
+    </script>
+
+</body>
+</html>
