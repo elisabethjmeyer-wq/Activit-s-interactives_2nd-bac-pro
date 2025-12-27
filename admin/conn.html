@@ -38,12 +38,14 @@
         .logo-text { font-weight: 700; font-size: 16px; color: var(--text); }
         .logo-text span { display: block; font-size: 11px; font-weight: 400; color: var(--text-muted); }
         .nav-section { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 20px 16px 8px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500; text-decoration: none; }
         .nav-item:hover { background: var(--bg-hover); color: var(--text); }
         .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
         .nav-item .icon { font-size: 18px; }
         .nav-item .badge { margin-left: auto; background: var(--bg-hover); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
         .nav-item.active .badge { background: rgba(255,255,255,0.25); color: white; }
+        .nav-back { background: var(--bg-hover); margin-bottom: 16px; }
+        .nav-back:hover { background: var(--border); }
         .main { padding: 32px; max-width: 1400px; }
         .header { margin-bottom: 32px; }
         .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; color: var(--text); }
@@ -162,45 +164,22 @@
         .step { flex: 1; padding: 12px; background: var(--bg-light); border: 2px solid var(--border); border-radius: var(--radius-sm); text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
         .step.active { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
         .step.done { border-color: var(--success); color: var(--success); background: var(--success-bg); }
-        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f8f9fc 0%, #eef2ff 100%); }
-        .login-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 48px; text-align: center; max-width: 420px; width: 90%; box-shadow: var(--shadow); }
-        .login-icon { width: 72px; height: 72px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 28px; box-shadow: 0 8px 24px var(--primary-glow); }
-        .login-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-        .login-subtitle { color: var(--text-muted); margin-bottom: 36px; font-size: 15px; }
-        .login-form .form-group { text-align: left; }
-        .login-error { color: var(--danger); margin-top: 16px; font-size: 14px; font-weight: 500; display: none; }
         @media (max-width: 1024px) { .format-grid { grid-template-columns: repeat(3, 1fr); } .exercise-grid { grid-template-columns: repeat(2, 1fr); } .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; } .two-cols { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } .format-grid, .exercise-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
-    <div id="loginScreen" class="login-container">
-        <div class="login-box">
-            <div class="login-icon">🔐</div>
-            <h1 class="login-title">Admin CONN</h1>
-            <p class="login-subtitle">Espace réservé à l'enseignant</p>
-            <div class="login-form">
-                <div class="form-group">
-                    <label class="form-label">Identifiant</label>
-                    <input type="text" id="loginUsername" class="form-input" placeholder="Votre identifiant" autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mot de passe</label>
-                    <input type="password" id="loginPassword" class="form-input" placeholder="Votre mot de passe" autocomplete="current-password" onkeypress="if(event.key==='Enter')checkLogin()">
-                </div>
-                <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="checkLogin()">Connexion</button>
-            </div>
-            <p id="loginError" class="login-error">Identifiant ou mot de passe incorrect</p>
-        </div>
-    </div>
 
-    <div class="layout" style="display:none;" id="mainApp">
+    <div class="layout" id="mainApp">
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-icon">📝</div>
                 <div class="logo-text">Admin CONN<span>Évaluations de connaissances</span></div>
             </div>
             <nav>
+                <!-- Bouton retour au dashboard -->
+                <a href="index.html" class="nav-item nav-back"><span class="icon">←</span>Retour au dashboard</a>
+                
                 <div class="nav-section">Banques</div>
                 <div class="nav-item active" onclick="showPage('banks')"><span class="icon">🗃️</span>Mes banques<span class="badge" id="navBankCount">0</span></div>
                 <div class="nav-item" onclick="showPage('new-element')"><span class="icon">➕</span>Nouvel élément</div>
@@ -210,7 +189,6 @@
                 <div class="nav-section">Système</div>
                 <div class="nav-item" onclick="loadAllData()"><span class="icon">🔄</span>Rafraîchir</div>
                 <div class="nav-item" onclick="openModal('modalHelp')"><span class="icon">❓</span>Aide</div>
-                <div class="nav-item" onclick="logout()"><span class="icon">🚪</span>Déconnexion</div>
             </nav>
         </aside>
         <main class="main">
@@ -350,6 +328,8 @@
             </div>
         </main>
     </div>
+
+    <!-- MODALS -->
     <div class="modal-overlay" id="modalNewBank">
         <div class="modal">
             <div class="modal-header"><h2>➕ Nouvelle banque</h2><button class="modal-close" onclick="closeModal('modalNewBank')">✕</button></div>
@@ -384,9 +364,22 @@
         </div>
     </div>
     <div class="toast" id="toast"></div>
+
+    <!-- SCRIPTS -->
+    <script src="/Activit-s-interactives_2nd-bac-pro/js/auth.js"></script>
     <script>
-        const ADMIN_USERNAME = 'emeyer20';
-        const ADMIN_PASSWORD = 'TEST';
+        // ===== VÉRIFICATION AUTH =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier que l'utilisateur est connecté et est prof
+            if (!Auth.requireAuth({ requireProf: true })) {
+                return; // Redirige vers login si pas connecté
+            }
+            
+            // Charger les données
+            loadAllData();
+        });
+
+        // ===== CONFIG =====
         const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
         const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzyqkUjiZBuS7MR-fo9qbb2Vrbw7JuIuBXczzNIT0qXUE6BZUu9XmJ3zVR-UmzC8SCQ/exec';
 
@@ -397,33 +390,6 @@
         const exerciseFormats = { frise: ['Evenement'], timeline: ['Evenement'], qcm: ['Evenement', 'QuestionReponse'], ouverte: ['QuestionReponse'], carte: ['Zone'], image: ['QuestionReponse'], dictee: ['Dictee'], erreur: ['Erreur'] };
         const exerciseNames = { frise: 'Frise chronologique', timeline: 'Timeline', qcm: 'QCM', ouverte: 'Question ouverte', carte: 'Carte cliquable', image: 'Identification image', dictee: 'Dictée', erreur: "Trouve l'erreur" };
         const exerciseIcons = { frise: '⏱️', timeline: '🔀', qcm: '🎯', ouverte: '❓', carte: '🗺️', image: '🖼️', dictee: '🎧', erreur: '🔍' };
-
-        function checkLogin() {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'grid';
-                sessionStorage.setItem('conn_admin_auth', 'true');
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginPassword').value = '';
-            }
-        }
-
-        function logout() {
-            sessionStorage.removeItem('conn_admin_auth');
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').style.display = 'none';
-        }
-
-        if (sessionStorage.getItem('conn_admin_auth') === 'true') {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'grid';
-        }
 
         async function loadSheet(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -533,7 +499,7 @@
             document.getElementById('page-' + pageId).style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             const navMap = { banks: 0, 'new-element': 1, evaluations: 2, 'new-eval': 3, 'edit-eval': 2 };
-            const navItems = document.querySelectorAll('.nav-item');
+            const navItems = document.querySelectorAll('.sidebar nav .nav-item:not(.nav-back)');
             if (navMap[pageId] !== undefined && navItems[navMap[pageId]]) navItems[navMap[pageId]].classList.add('active');
         }
 
@@ -607,7 +573,7 @@
                 Type: selectedExerciseType, 
                 Mode: selection, 
                 Nombre: nombre, 
-                Banque: selectedBanks.join(','),  // CORRIGÉ: Banque au lieu de Banques
+                Banque: selectedBanks.join(','),
                 Selection: '', 
                 Config: '' 
             });
@@ -653,7 +619,6 @@
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'MENU_CONN', action: 'deleteByEvalId', evalId: currentEval.ID }) });
                 }
                 
-                // EVALUATIONS: ID, Nom, Description, Type, Durée, Seuil, Tentatives, Affichage, Ouverture, Fermeture, Statut
                 await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 
                     sheet: 'EVALUATIONS', 
                     action: 'add', 
@@ -672,7 +637,6 @@
                     ] 
                 }) });
                 
-                // EXERCICES: ID, EvalID, Ordre, Type, Mode, Nombre, Banque, Selection, Config
                 for (const ex of currentEvalExercises) {
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 
                         sheet: 'EXERCICES', 
@@ -684,19 +648,17 @@
                             ex.Type, 
                             ex.Mode, 
                             ex.Nombre, 
-                            ex.Banque,  // CORRIGÉ: Banque au lieu de Banques
+                            ex.Banque,
                             ex.Selection || '', 
                             ex.Config || ''
                         ] 
                     }) });
                 }
                 
-                // Si publication, écrire dans MENU_CONN
                 if (statut === 'Publie') {
                     const existingForLecon = await getExistingNumExoForLecon(currentEval.NumLecon);
                     const numExo = existingForLecon + 1;
                     
-                    // MENU_CONN: NumLeçon, NumExo, TitreLeçon, TitreExo, Matière, Statut, Type, EvalID
                     const menuRow = [
                         currentEval.NumLecon,
                         numExo,
@@ -838,8 +800,7 @@
             toast.className = 'toast visible' + (isError ? ' error' : '');
             setTimeout(() => toast.classList.remove('visible'), 3000);
         }
-
-        loadAllData();
     </script>
+
 </body>
 </html>
