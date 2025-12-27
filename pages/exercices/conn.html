@@ -51,6 +51,12 @@
         .sidebar-inner { padding: 16px 12px; }
         .overlay { position: fixed; top: 73px; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 40; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; }
         .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+        
+        /* Sidebar Content Styles */
+        .sidebar-inner a { display: block; padding: 10px 14px; margin: 2px 0; border-radius: 8px; text-decoration: none; color: var(--gray-700); font-size: 14px; transition: all 0.15s; }
+        .sidebar-inner a:hover { background: var(--primary-bg); color: var(--primary); }
+        .sidebar-inner .section-title, .sidebar-inner strong { display: block; padding: 12px 14px 6px; font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
+        
         .header-info h1 { font-size: 18px; font-weight: 700; color: var(--gray-800); }
         .header-info p { font-size: 13px; color: var(--gray-500); }
         
@@ -646,7 +652,6 @@
                                     <div class="timeline-item" draggable="true" data-id="${el.ID}" data-date="${el.Date}">
                                         <span class="drag-handle">☰</span>
                                         <div class="item-content">
-                                            <div class="item-date">${el.Date}</div>
                                             <div class="item-text">${el.Evenement}</div>
                                         </div>
                                         <div class="order-number">${i + 1}</div>
@@ -726,6 +731,16 @@
             let correct = 0;
             items.forEach((item, i) => {
                 const date = parseInt(item.dataset.date);
+                const itemContent = item.querySelector('.item-content');
+                
+                // Afficher la date après validation
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'item-date';
+                dateDiv.textContent = item.dataset.date;
+                dateDiv.style.fontWeight = '700';
+                dateDiv.style.color = date === correctOrder[i] ? 'var(--success)' : 'var(--error)';
+                itemContent.insertBefore(dateDiv, itemContent.firstChild);
+                
                 if (date === correctOrder[i]) {
                     correct++;
                     item.style.borderColor = 'var(--success)';
