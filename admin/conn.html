@@ -177,7 +177,6 @@
                 <div class="logo-text">Admin CONN<span>Évaluations de connaissances</span></div>
             </div>
             <nav>
-                <!-- Bouton retour au dashboard -->
                 <a href="index.html" class="nav-item nav-back"><span class="icon">←</span>Retour au dashboard</a>
                 
                 <div class="nav-section">Banques</div>
@@ -370,12 +369,9 @@
     <script>
         // ===== VÉRIFICATION AUTH =====
         document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier que l'utilisateur est connecté et est prof
             if (!Auth.requireAuth({ requireProf: true })) {
-                return; // Redirige vers login si pas connecté
+                return;
             }
-            
-            // Charger les données
             loadAllData();
         });
 
@@ -391,20 +387,39 @@
         const exerciseNames = { frise: 'Frise chronologique', timeline: 'Timeline', qcm: 'QCM', ouverte: 'Question ouverte', carte: 'Carte cliquable', image: 'Identification image', dictee: 'Dictée', erreur: "Trouve l'erreur" };
         const exerciseIcons = { frise: '⏱️', timeline: '🔀', qcm: '🎯', ouverte: '❓', carte: '🗺️', image: '🖼️', dictee: '🎧', erreur: '🔍' };
 
+        // ===== FONCTION loadSheet CORRIGÉE =====
         async function loadSheet(sheetName) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
             try {
                 const response = await fetch(url);
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47, text.length - 2));
-                if (!json.table || !json.table.rows) return [];
-                const headers = json.table.cols.map(col => col.label || '');
-                return json.table.rows.map(row => {
+                if (!json.table || !json.table.rows || json.table.rows.length === 0) return [];
+                
+                // CORRECTION: Lire les en-têtes depuis la PREMIÈRE LIGNE de données
+                const firstRow = json.table.rows[0];
+                const headers = firstRow.c.map(cell => cell ? (cell.v || '').toString().trim() : '');
+                
+                // Convertir les lignes suivantes en objets (en sautant la ligne d'en-têtes)
+                return json.table.rows.slice(1).map(row => {
                     const obj = {};
-                    row.c.forEach((cell, i) => { obj[headers[i]] = cell ? (cell.v || '') : ''; });
+                    if (row.c) {
+                        row.c.forEach((cell, i) => {
+                            if (headers[i]) {
+                                obj[headers[i]] = cell ? (cell.v !== null && cell.v !== undefined ? cell.v : '') : '';
+                            }
+                        });
+                    }
                     return obj;
-                }).filter(row => row.ID && row.ID.toString().trim() !== '');
-            } catch (e) { console.error('Erreur chargement', sheetName, e); return []; }
+                }).filter(row => {
+                    // Filtrer les lignes vides (pas d'ID ou ID vide)
+                    const id = row.ID || row.Id || row.id || '';
+                    return id.toString().trim() !== '';
+                });
+            } catch (e) { 
+                console.error('Erreur chargement', sheetName, e); 
+                return []; 
+            }
         }
 
         async function loadAllData() {
@@ -413,6 +428,8 @@
             elements = await loadSheet('ELEMENTS');
             evaluations = await loadSheet('EVALUATIONS');
             exercices = await loadSheet('EXERCICES');
+            console.log('Banques chargées:', banques);
+            console.log('Elements chargés:', elements);
             document.getElementById('navBankCount').textContent = banques.length;
             document.getElementById('navEvalCount').textContent = evaluations.length;
             renderBanks(); renderEvaluations(); updateBanqueSelect(); updateExoBanquesCheckboxes();
@@ -425,7 +442,8 @@
             container.innerHTML = banques.map(b => {
                 const count = elements.filter(e => e.Banque === b.ID).length;
                 const icons = { Histoire: '📜', Géographie: '🌍', EMC: '⚖️', Révision: '🔄' };
-                return `<div class="list-item ${selectedBanque === b.ID ? 'active' : ''}" onclick="selectBanque('${b.ID}')"><div class="list-icon">${icons[b['Catégorie']] || '📂'}</div><div class="list-info"><h4>${b.Nom || b.ID}</h4><p>${b['Catégorie'] || ''} • ${count} éléments</p></div></div>`;
+                const cat = b['Catégorie'] || b.Categorie || '';
+                return `<div class="list-item ${selectedBanque === b.ID ? 'active' : ''}" onclick="selectBanque('${b.ID}')"><div class="list-icon">${icons[cat] || '📂'}</div><div class="list-info"><h4>${b.Nom || b.ID}</h4><p>${cat} • ${count} éléments</p></div></div>`;
             }).join('');
         }
 
@@ -433,7 +451,7 @@
 
         function renderElements() {
             const container = document.getElementById('elementsList'), title = document.getElementById('elementsTitle'), filters = document.getElementById('elementsFilters'), btnAdd = document.getElementById('btnAddElement');
-            if (!selectedBanque) { container.innerHTML = '<div class="empty"><div class="icon">👈</div><p>Sélectionnez une banque</p></div>'; filters.style.display = 'none'; btnAdd.style.display = 'none'; return; }
+            if (!selectedBanque) { container.innerHTML = '<div class="empty"><div class="icon">👈</div><p>Sélectionnez une banque à gauche</p></div>'; filters.style.display = 'none'; btnAdd.style.display = 'none'; return; }
             const banque = banques.find(b => b.ID === selectedBanque);
             title.textContent = banque ? banque.Nom : selectedBanque;
             btnAdd.style.display = 'block';
@@ -456,13 +474,13 @@
             const container = document.getElementById('elementsList');
             if (list.length === 0) { container.innerHTML = '<div class="empty"><div class="icon">📭</div><p>Aucun élément</p></div>'; return; }
             container.innerHTML = list.map(e => {
-                const iconClass = e.Format.toLowerCase().replace('questionreponse', 'qr');
+                const iconClass = (e.Format || '').toLowerCase().replace('questionreponse', 'qr');
                 let content = '';
-                if (e.Format === 'Evenement') content = `<span class="element-date">${e.Date}</span><div class="element-text">${e.Evenement}</div>`;
-                else if (e.Format === 'QuestionReponse') content = `<div class="element-text">${e.Question}<div class="element-sub">→ ${e.Reponse}</div></div>`;
-                else if (e.Format === 'Dictee') content = `<div class="element-text">${e.Texte}<div class="element-sub">🔊 Audio auto</div></div>`;
-                else if (e.Format === 'Erreur') content = `<div class="element-text">${e.Phrase}<div class="element-sub">${e.MotErrone} → ${e.Correction}</div></div>`;
-                else if (e.Format === 'Zone') content = `<div class="element-text">${e.Question || 'Zone'}<div class="element-sub">📍 (${e.X}, ${e.Y})</div></div>`;
+                if (e.Format === 'Evenement') content = `<span class="element-date">${e.Date || ''}</span><div class="element-text">${e.Evenement || ''}</div>`;
+                else if (e.Format === 'QuestionReponse') content = `<div class="element-text">${e.Question || ''}<div class="element-sub">→ ${e.Reponse || ''}</div></div>`;
+                else if (e.Format === 'Dictee') content = `<div class="element-text">${e.Texte || ''}<div class="element-sub">🔊 Audio auto</div></div>`;
+                else if (e.Format === 'Erreur') content = `<div class="element-text">${e.Phrase || ''}<div class="element-sub">${e.MotErrone || ''} → ${e.Correction || ''}</div></div>`;
+                else if (e.Format === 'Zone') content = `<div class="element-text">${e.Question || 'Zone'}<div class="element-sub">📍 (${e.X || 0}, ${e.Y || 0})</div></div>`;
                 return `<div class="element-row"><div class="element-icon ${iconClass}">${formatIcon(e.Format)}</div><div class="element-content">${content}</div><span class="badge badge-${iconClass}">${e.Tag || e.Format}</span><button class="btn-icon danger" onclick="prepareDelete('element','${e.ID}')">🗑️</button></div>`;
             }).join('');
         }
@@ -474,7 +492,8 @@
             if (evaluations.length === 0) { container.innerHTML = '<tr><td colspan="6" class="empty"><div class="icon">📭</div><p>Aucune évaluation</p></td></tr>'; return; }
             container.innerHTML = evaluations.map(e => {
                 const exCount = exercices.filter(ex => ex.EvalID === e.ID).length;
-                return `<tr><td><strong>${e.Nom || e.ID}</strong><br><span style="font-size:12px;color:var(--text-muted)">${e.Description || ''}</span></td><td>${exCount}</td><td>${e.Durée || e.Duree || '-'} min</td><td>${e.Seuil || '-'}%</td><td><span class="badge ${e.Statut === 'Publie' ? 'badge-success' : 'badge-warning'}">${e.Statut || 'Brouillon'}</span></td><td><button class="btn-icon" onclick="editEval('${e.ID}')">✏️</button><button class="btn-icon danger" onclick="prepareDelete('eval','${e.ID}')">🗑️</button></td></tr>`;
+                const duree = e.Durée || e.Duree || '-';
+                return `<tr><td><strong>${e.Nom || e.ID}</strong><br><span style="font-size:12px;color:var(--text-muted)">${e.Description || ''}</span></td><td>${exCount}</td><td>${duree} min</td><td>${e.Seuil || '-'}%</td><td><span class="badge ${e.Statut === 'Publie' ? 'badge-success' : 'badge-warning'}">${e.Statut || 'Brouillon'}</span></td><td><button class="btn-icon" onclick="editEval('${e.ID}')">✏️</button><button class="btn-icon danger" onclick="prepareDelete('eval','${e.ID}')">🗑️</button></td></tr>`;
             }).join('');
         }
 
