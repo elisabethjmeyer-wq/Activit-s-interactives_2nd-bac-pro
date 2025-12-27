@@ -41,6 +41,16 @@
         .header-left { display: flex; align-items: center; gap: 16px; }
         .back-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--gray-200); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gray-600); transition: all 0.2s; text-decoration: none; }
         .back-btn:hover { background: var(--gray-50); border-color: var(--gray-300); }
+        
+        /* Menu Toggle & Sidebar */
+        .menu-toggle { width: 40px; height: 40px; background: var(--gray-100); border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gray-600); transition: all 0.2s; }
+        .menu-toggle:hover { background: var(--primary-bg); color: var(--primary); }
+        .menu-toggle.active { background: var(--primary); color: white; }
+        .sidebar { width: 260px; background: white; border-right: 1px solid var(--gray-200); position: fixed; top: 73px; left: 0; bottom: 0; overflow-y: auto; transition: transform 0.3s ease; z-index: 50; }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .sidebar-inner { padding: 16px 12px; }
+        .overlay { position: fixed; top: 73px; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 40; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; }
+        .overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
         .header-info h1 { font-size: 18px; font-weight: 700; color: var(--gray-800); }
         .header-info p { font-size: 13px; color: var(--gray-500); }
         
@@ -175,6 +185,7 @@
     <header class="header">
         <div class="header-inner">
             <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">☰</button>
                 <a href="javascript:history.back()" class="back-btn">←</a>
                 <div class="header-info">
                     <h1 id="evalTitle">Chargement...</h1>
@@ -189,6 +200,12 @@
             </div>
         </div>
     </header>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-inner" id="sidebarContent"></div>
+    </aside>
+    <div class="overlay" id="overlay"></div>
     
     <!-- Main Content -->
     <main class="main">
@@ -216,6 +233,7 @@
     <script>
         // ===== CONFIG =====
         const SHEET_ID = '1zn0MzEEz-nq-KoVSqghztMA_JZV36PECO4h35xM9or8';
+        const BASE_PATH = '/Activit-s-interactives_2nd-bac-pro';
         
         // ===== STATE =====
         let evaluation = null;
@@ -225,8 +243,41 @@
         let exerciseResults = [];
         let currentExerciseData = null;
         
+        // ===== SIDEBAR =====
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const overlay = document.getElementById('overlay');
+        
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            if (isCollapsed) {
+                sidebar.classList.remove('collapsed');
+                menuToggle.classList.add('active');
+                overlay.classList.add('visible');
+            } else {
+                sidebar.classList.add('collapsed');
+                menuToggle.classList.remove('active');
+                overlay.classList.remove('visible');
+            }
+        }
+        
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+        
+        async function loadSidebar() {
+            try {
+                const response = await fetch(`${BASE_PATH}/components/sidebar.html`);
+                if (response.ok) {
+                    const html = await response.text();
+                    document.getElementById('sidebarContent').innerHTML = html;
+                }
+            } catch (e) { console.log('Sidebar non chargée'); }
+        }
+        
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', async () => {
+            loadSidebar();
+            
             const urlParams = new URLSearchParams(window.location.search);
             const evalId = urlParams.get('id');
             
@@ -246,14 +297,36 @@
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47, text.length - 2));
                 if (!json.table || !json.table.rows) return [];
-                const headers = json.table.cols.map(col => col.label || '');
-                return json.table.rows.map(row => {
+                
+                // Récupérer les en-têtes depuis la première ligne
+                const headers = json.table.cols.map(col => (col.label || '').trim());
+                
+                // Parser toutes les lignes et filtrer les vides
+                const rows = [];
+                for (let i = 0; i < json.table.rows.length; i++) {
+                    const row = json.table.rows[i];
+                    if (!row || !row.c) continue;
+                    
                     const obj = {};
-                    row.c.forEach((cell, i) => { 
-                        if (headers[i]) obj[headers[i]] = cell ? (cell.v ?? '') : ''; 
+                    let hasData = false;
+                    
+                    row.c.forEach((cell, idx) => {
+                        const header = headers[idx];
+                        if (header) {
+                            const value = cell ? (cell.v ?? '') : '';
+                            obj[header] = value;
+                            if (value !== '') hasData = true;
+                        }
                     });
-                    return obj;
-                });
+                    
+                    // Ne garder que les lignes qui ont au moins une donnée
+                    if (hasData && obj['ID']) {
+                        rows.push(obj);
+                    }
+                }
+                
+                console.log(`📊 ${sheetName}: ${rows.length} lignes chargées`);
+                return rows;
             } catch (e) { 
                 console.error('Erreur chargement', sheetName, e); 
                 return []; 
@@ -262,28 +335,41 @@
         
         async function loadEvaluation(evalId) {
             try {
+                console.log('🔍 Recherche évaluation:', evalId);
+                
                 // Charger les évaluations
                 const evaluations = await loadSheet('EVALUATIONS');
+                console.log('📋 Évaluations trouvées:', evaluations.map(e => e.ID));
+                
                 evaluation = evaluations.find(e => e.ID === evalId);
                 
                 if (!evaluation) {
+                    console.error('❌ Évaluation non trouvée:', evalId);
                     showError();
                     return;
                 }
                 
+                console.log('✅ Évaluation trouvée:', evaluation);
+                
                 // Charger les exercices de cette évaluation
                 const allExercices = await loadSheet('EXERCICES');
+                console.log('📋 Tous les exercices:', allExercices.map(e => e.EvalID));
+                
                 exercices = allExercices
                     .filter(ex => ex.EvalID === evalId)
                     .sort((a, b) => (parseInt(a.Ordre) || 0) - (parseInt(b.Ordre) || 0));
                 
+                console.log('✅ Exercices pour cette éval:', exercices);
+                
                 if (exercices.length === 0) {
+                    console.error('❌ Aucun exercice trouvé pour:', evalId);
                     showError();
                     return;
                 }
                 
                 // Charger tous les éléments
                 elements = await loadSheet('ELEMENTS');
+                console.log('✅ Éléments chargés:', elements.length, elements);
                 
                 // Mettre à jour l'interface
                 document.getElementById('evalTitle').textContent = evaluation.Nom || 'Évaluation';
@@ -309,12 +395,18 @@
             currentExerciseIndex = index;
             const exercise = exercices[index];
             
+            console.log('🎮 Affichage exercice', index + 1, ':', exercise);
+            
             // Mettre à jour la progression
             updateProgress();
             
             // Récupérer les éléments pour cet exercice
-            const banques = exercise.Banques ? exercise.Banques.split(',') : [];
+            const banques = exercise.Banque ? exercise.Banque.split(',').map(b => b.trim()) : [];
+            console.log('🏦 Banques recherchées:', banques);
+            console.log('📦 Éléments disponibles:', elements.map(e => ({ id: e.ID, banque: e.Banque, format: e.Format })));
+            
             const exerciseElements = elements.filter(el => banques.includes(el.Banque));
+            console.log('✅ Éléments trouvés pour cette banque:', exerciseElements);
             
             // Filtrer par format selon le type d'exercice
             const formatMap = {
@@ -335,16 +427,19 @@
                 filteredElements = exerciseElements.filter(el => el.Format === requiredFormat);
             }
             
+            console.log('🎯 Éléments après filtre format:', filteredElements);
+            
             // Sélectionner le nombre d'éléments demandé
             const nombre = parseInt(exercise.Nombre) || 5;
             let selectedElements = filteredElements;
             
             if (exercise.Mode === 'random' && filteredElements.length > nombre) {
-                // Sélection aléatoire
                 selectedElements = shuffleArray([...filteredElements]).slice(0, nombre);
             } else {
                 selectedElements = filteredElements.slice(0, nombre);
             }
+            
+            console.log('📝 Éléments sélectionnés:', selectedElements);
             
             currentExerciseData = {
                 exercise: exercise,
