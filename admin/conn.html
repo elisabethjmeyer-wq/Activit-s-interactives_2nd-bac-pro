@@ -309,7 +309,7 @@
                     <div class="card-body">
                         <div class="form-row form-row-3"><div class="form-group"><label class="form-label">N° Leçon</label><input type="text" class="form-input" id="evalNumLecon" placeholder="Ex: L4"></div><div class="form-group"><label class="form-label">Titre (pour le menu)</label><input type="text" class="form-input" id="evalNom" placeholder="Ex: Sujet 1"></div><div class="form-group"><label class="form-label">Description</label><input type="text" class="form-input" id="evalDesc" placeholder="Ex: Mise en relation du monde"></div></div>
                         <div class="form-row form-row-3"><div class="form-group"><label class="form-label">Matière</label><select class="form-select" id="evalMatiere"><option value="Histoire">📜 Histoire</option><option value="Géographie">🌍 Géographie</option><option value="EMC">⚖️ EMC</option></select></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="evalType"><option value="entrainement">🏋️ Entraînement</option><option value="evaluation">📝 Évaluation</option></select></div><div class="form-group"><label class="form-label">Durée (min)</label><input type="number" class="form-input" id="evalDuree" value="15"></div></div>
-                        <div class="form-row form-row-3"><div class="form-group"><label class="form-label">Seuil (%)</label><input type="number" class="form-input" id="evalSeuil" value="80"></div><div class="form-group"><label class="form-label">Tentatives</label><select class="form-select" id="evalTentatives"><option value="0">Illimitées</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><div class="form-group"><label class="form-label">Affichage</label><select class="form-select" id="evalAffichage"><option value="all">Tout d'un coup</option><option value="1">1 par page</option><option value="5">5 par page</option></select></div></div>
+                        <div class="form-row form-row-3"><div class="form-group"><label class="form-label">Seuil (%)</label><input type="number" class="form-input" id="evalSeuil" value="80"></div><div class="form-group"><label class="form-label">Tentatives</label><select class="form-select" id="evalTentatives"><option value="illimité">Illimitées</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><div class="form-group"><label class="form-label">Affichage</label><select class="form-select" id="evalAffichage"><option value="all">Tout d'un coup</option><option value="1">1 par page</option><option value="5">5 par page</option></select></div></div>
                         <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;"><button class="btn btn-secondary" onclick="showPage('evaluations')">Annuler</button><button class="btn btn-primary" onclick="goToStep2()">Suivant : Exercices →</button></div>
                     </div>
                 </div>
@@ -508,7 +508,7 @@
             if (evaluations.length === 0) { container.innerHTML = '<tr><td colspan="6" class="empty"><div class="icon">📭</div><p>Aucune évaluation</p></td></tr>'; return; }
             container.innerHTML = evaluations.map(e => {
                 const exCount = exercices.filter(ex => ex.EvalID === e.ID).length;
-                return `<tr><td><strong>${e.Nom || e.ID}</strong><br><span style="font-size:12px;color:var(--text-muted)">${e.Description || ''}</span></td><td>${exCount}</td><td>${e.Duree || '-'} min</td><td>${e.Seuil || '-'}%</td><td><span class="badge ${e.Statut === 'Publie' ? 'badge-success' : 'badge-warning'}">${e.Statut || 'Brouillon'}</span></td><td><button class="btn-icon" onclick="editEval('${e.ID}')">✏️</button><button class="btn-icon danger" onclick="prepareDelete('eval','${e.ID}')">🗑️</button></td></tr>`;
+                return `<tr><td><strong>${e.Nom || e.ID}</strong><br><span style="font-size:12px;color:var(--text-muted)">${e.Description || ''}</span></td><td>${exCount}</td><td>${e.Durée || e.Duree || '-'} min</td><td>${e.Seuil || '-'}%</td><td><span class="badge ${e.Statut === 'Publie' ? 'badge-success' : 'badge-warning'}">${e.Statut || 'Brouillon'}</span></td><td><button class="btn-icon" onclick="editEval('${e.ID}')">✏️</button><button class="btn-icon danger" onclick="prepareDelete('eval','${e.ID}')">🗑️</button></td></tr>`;
             }).join('');
         }
 
@@ -545,15 +545,15 @@
             currentEval = { 
                 ID: currentEval?.ID || 'EVAL' + Date.now(), 
                 Nom: nom, 
-                Description: document.getElementById('evalDesc').value, 
+                Description: document.getElementById('evalDesc').value,
+                Type: document.getElementById('evalType').value,
                 Duree: document.getElementById('evalDuree').value, 
                 Seuil: document.getElementById('evalSeuil').value, 
                 Tentatives: document.getElementById('evalTentatives').value, 
                 Affichage: document.getElementById('evalAffichage').value, 
                 Statut: 'Brouillon',
                 NumLecon: numLecon,
-                Matiere: document.getElementById('evalMatiere').value,
-                Type: document.getElementById('evalType').value
+                Matiere: document.getElementById('evalMatiere').value
             };
             document.getElementById('editEvalTitle').textContent = currentEval.Nom;
             showPage('edit-eval');
@@ -580,7 +580,7 @@
             currentEvalExercises = exercices.filter(ex => ex.EvalID === evalId).map(ex => ({...ex}));
             document.getElementById('evalNom').value = ev.Nom || '';
             document.getElementById('evalDesc').value = ev.Description || '';
-            document.getElementById('evalDuree').value = ev.Duree || 15;
+            document.getElementById('evalDuree').value = ev.Durée || ev.Duree || 15;
             document.getElementById('evalSeuil').value = ev.Seuil || 80;
             document.getElementById('editEvalTitle').textContent = ev.Nom;
             showPage('edit-eval');
@@ -600,7 +600,17 @@
             const selectedBanks = [];
             document.querySelectorAll('#exoBanques input:checked').forEach(cb => selectedBanks.push(cb.value));
             if (selectedBanks.length === 0) { showToast('Sélectionnez une banque', true); return; }
-            currentEvalExercises.push({ ID: 'EX' + Date.now(), EvalID: currentEval.ID, Ordre: currentEvalExercises.length + 1, Type: selectedExerciseType, Mode: selection, Nombre: nombre, Banque: selectedBanks.join(','), Selection: '', Config: '' });
+            currentEvalExercises.push({ 
+                ID: 'EX' + Date.now(), 
+                EvalID: currentEval.ID, 
+                Ordre: currentEvalExercises.length + 1, 
+                Type: selectedExerciseType, 
+                Mode: selection, 
+                Nombre: nombre, 
+                Banque: selectedBanks.join(','),  // CORRIGÉ: Banque au lieu de Banques
+                Selection: '', 
+                Config: '' 
+            });
             renderEvalExercises();
             showToast('✓ Exercice ajouté !');
             document.querySelectorAll('#exoBanques input:checked').forEach(cb => cb.checked = false);
@@ -611,7 +621,8 @@
             document.getElementById('exerciseCount').textContent = currentEvalExercises.length;
             if (currentEvalExercises.length === 0) { container.innerHTML = '<div class="empty" style="padding:40px;"><div class="icon">📭</div><p>Aucun exercice</p></div>'; return; }
             container.innerHTML = currentEvalExercises.map((ex, i) => {
-                const bankNames = ex.Banques.split(',').map(id => { const b = banques.find(b => b.ID === id); return b ? b.Nom : id; }).join(', ');
+                const banqueField = ex.Banque || ex.Banques || '';
+                const bankNames = banqueField.split(',').map(id => { const b = banques.find(b => b.ID === id); return b ? b.Nom : id; }).join(', ');
                 return `<div class="exercise-item"><div class="order">${i + 1}</div><div class="info"><h4>${exerciseIcons[ex.Type]} ${exerciseNames[ex.Type]}</h4><p>${ex.Nombre} questions • ${bankNames}</p></div><div class="actions"><button class="btn-icon" onclick="moveExercise(${i},-1)" ${i === 0 ? 'disabled' : ''}>⬆️</button><button class="btn-icon" onclick="moveExercise(${i},1)" ${i === currentEvalExercises.length - 1 ? 'disabled' : ''}>⬇️</button><button class="btn-icon danger" onclick="removeExercise(${i})">🗑️</button></div></div>`;
             }).join('');
         }
@@ -639,35 +650,74 @@
                     for (const ex of exercices.filter(e => e.EvalID === currentEval.ID)) {
                         await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EXERCICES', action: 'delete', id: ex.ID }) });
                     }
-                    // Supprimer l'entrée MENU_CONN existante
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'MENU_CONN', action: 'deleteByEvalId', evalId: currentEval.ID }) });
                 }
-row: [currentEval.ID, currentEval.Nom, currentEval.Description, currentEval.Type, currentEval.Duree, currentEval.Seuil, currentEval.Tentatives, currentEval.Affichage, '', '', currentEval.Statut]                for (const ex of currentEvalExercises) {
-                    await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'EXERCICES', action: 'add', row: [ex.ID, ex.EvalID, ex.Ordre, ex.Type, ex.Mode, ex.Nombre, ex.Banques, ex.Selection, ex.Config] }) });
+                
+                // EVALUATIONS: ID, Nom, Description, Type, Durée, Seuil, Tentatives, Affichage, Ouverture, Fermeture, Statut
+                await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 
+                    sheet: 'EVALUATIONS', 
+                    action: 'add', 
+                    row: [
+                        currentEval.ID, 
+                        currentEval.Nom, 
+                        currentEval.Description, 
+                        currentEval.Type,
+                        currentEval.Duree, 
+                        currentEval.Seuil, 
+                        currentEval.Tentatives, 
+                        currentEval.Affichage, 
+                        '', 
+                        '', 
+                        currentEval.Statut
+                    ] 
+                }) });
+                
+                // EXERCICES: ID, EvalID, Ordre, Type, Mode, Nombre, Banque, Selection, Config
+                for (const ex of currentEvalExercises) {
+                    await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 
+                        sheet: 'EXERCICES', 
+                        action: 'add', 
+                        row: [
+                            ex.ID, 
+                            ex.EvalID, 
+                            ex.Ordre, 
+                            ex.Type, 
+                            ex.Mode, 
+                            ex.Nombre, 
+                            ex.Banque,  // CORRIGÉ: Banque au lieu de Banques
+                            ex.Selection || '', 
+                            ex.Config || ''
+                        ] 
+                    }) });
                 }
                 
                 // Si publication, écrire dans MENU_CONN
                 if (statut === 'Publie') {
-                    // Calculer le numExo (prochain numéro pour cette leçon)
                     const existingForLecon = await getExistingNumExoForLecon(currentEval.NumLecon);
                     const numExo = existingForLecon + 1;
                     
                     // MENU_CONN: NumLeçon, NumExo, TitreLeçon, TitreExo, Matière, Statut, Type, EvalID
                     const menuRow = [
-                        currentEval.NumLecon,           // NumLeçon (ex: L4)
-                        numExo,                         // NumExo (1, 2, 3...)
-                        currentEval.Description || currentEval.Nom,  // TitreLeçon
-                        currentEval.Nom,                // TitreExo
-                        currentEval.Matiere,            // Matière
-                        'disponible',                   // Statut
-                        currentEval.Type,               // Type (entrainement/evaluation)
-                        currentEval.ID                  // EvalID
+                        currentEval.NumLecon,
+                        numExo,
+                        currentEval.Description || currentEval.Nom,
+                        currentEval.Nom,
+                        currentEval.Matiere,
+                        'disponible',
+                        currentEval.Type,
+                        currentEval.ID
                     ];
                     await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sheet: 'MENU_CONN', action: 'add', row: menuRow }) });
                     showToast(`✓ Publié dans ${currentEval.Type === 'evaluation' ? 'Évaluations' : 'Entraînements'} !`);
                 }
                 
-                if (existingEval) { const idx = evaluations.findIndex(e => e.ID === currentEval.ID); evaluations[idx] = { ...currentEval }; exercices = exercices.filter(e => e.EvalID !== currentEval.ID); } else { evaluations.push({ ...currentEval }); }
+                if (existingEval) { 
+                    const idx = evaluations.findIndex(e => e.ID === currentEval.ID); 
+                    evaluations[idx] = { ...currentEval }; 
+                    exercices = exercices.filter(e => e.EvalID !== currentEval.ID); 
+                } else { 
+                    evaluations.push({ ...currentEval }); 
+                }
                 exercices.push(...currentEvalExercises);
                 document.getElementById('navEvalCount').textContent = evaluations.length;
                 renderEvaluations();
@@ -678,7 +728,6 @@ row: [currentEval.ID, currentEval.Nom, currentEval.Description, currentEval.Type
             } catch (e) { console.error(e); showToast('Erreur', true); }
         }
         
-        // Fonction pour compter les exercices existants pour une leçon
         async function getExistingNumExoForLecon(numLecon) {
             try {
                 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=MENU_CONN`;
